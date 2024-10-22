@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import ProfileModifyButton from "@assets/icons/profile_modify_button.svg?react";
 import profile from "@assets/images/profile.png";
+import MainLayout from "@/layouts/MainLayout";
 
 // Styled Components
 
@@ -124,17 +125,20 @@ const MyPage = () => {
   };
 
   useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside); 
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
   const getMessage = () => {
-    return activeTab === "posts" ? "작성한 글이 없습니다." : "북마크한 글이 없습니다.";
+    return activeTab === "posts"
+      ? "작성한 글이 없습니다."
+      : "북마크한 글이 없습니다.";
   };
 
   return (
+    <MainLayout>
       <Container>
         <ProfileSection>
           <SettingsButtonWrapper>
@@ -169,6 +173,7 @@ const MyPage = () => {
         </ContentSection>
         <MessageContainer>{getMessage()}</MessageContainer>
       </Container>
+    </MainLayout>
   );
 };
 
