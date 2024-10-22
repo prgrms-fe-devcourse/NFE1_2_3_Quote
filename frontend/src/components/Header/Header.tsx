@@ -24,18 +24,15 @@ const Logo = styled.img`
   padding: 10px;
 `;
 
-const StyledDarkModeButton = styled(DarkModeButton)`
+const StyledModeButton = styled.div`
   width: 30px;
   height: 30px;
   margin-right: 1rem;
   cursor: pointer;
-`;
-
-const StyledLightModeButton = styled(LightModeButton)`
-  width: 30px;
-  height: 30px;
-  margin-right: 1rem;
-  cursor: pointer;
+  svg {
+    width: 30px;
+    height: 30px;
+  }
 `;
 
 const LoginButton = styled.button`
@@ -54,6 +51,10 @@ const Profile = styled.div`
   border-radius: 20px;
   overflow: hidden;
   cursor: pointer;
+
+  img {
+    width: 100%;
+  }
 `;
 
 const Header = () => {
@@ -64,18 +65,17 @@ const Header = () => {
     <HeaderContainer>
       <Logo src={logo} />
       <ButtonContainer>
-        {mode ? (
-          <StyledLightModeButton onClick={() => setMode(!mode)} />
-        ) : (
-          <StyledDarkModeButton onClick={() => setMode(!mode)} />
-        )}
+        <StyledModeButton>
+          {mode ? (
+            <LightModeButton onClick={() => setMode(!mode)} />
+          ) : (
+            <DarkModeButton onClick={() => setMode(!mode)} />
+          )}
+        </StyledModeButton>
         <LoginButton>{isLogin ? "로그아웃" : "시작하기"} </LoginButton>
         {isLogin && (
           <Profile>
-            <img
-              src={profile}
-              width='100%'
-            />
+            <img src={profile} />
           </Profile>
         )}
       </ButtonContainer>
