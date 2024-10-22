@@ -1,9 +1,10 @@
 import Header from "@/components/Header/Header";
+import WriteButton from "@/components/WriteButton/WriteButton";
 import styled from "styled-components";
 
 const Container = styled.div`
   width: 960px;
-  height: 100vh;
+  height: calc(100vh - 50px);
   margin: 0 auto;
 `;
 
@@ -15,7 +16,10 @@ const MainLayout = ({ children }: MainLayoutProps) => {
   return (
     <>
       <Header />
-      <Container>{children}</Container>
+      <Container>{children}
+      <WriteButton />
+      </Container>
+
     </>
   );
 };
