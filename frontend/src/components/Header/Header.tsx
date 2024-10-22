@@ -13,7 +13,7 @@ const HeaderContainer = styled.header`
   display: flex;
   justify-content: space-between;
   padding: 0 1rem;
-  border-bottom: 1px solid #E3E3E3;
+  border-bottom: 1px solid #e3e3e3;
 `;
 
 const ButtonContainer = styled.div`
@@ -66,12 +66,8 @@ const Header = () => {
     <HeaderContainer>
       <Logo src={logo} />
       <ButtonContainer>
-        <StyledModeButton>
-          {mode ? (
-            <LightModeButton onClick={() => setMode(!mode)} />
-          ) : (
-            <DarkModeButton onClick={() => setMode(!mode)} />
-          )}
+        <StyledModeButton onClick={() => setMode(!mode)}>
+          {mode ? <LightModeButton /> : <DarkModeButton />}
         </StyledModeButton>
         <LoginButton>{isLogin ? "로그아웃" : "시작하기"} </LoginButton>
         {isLogin && (
