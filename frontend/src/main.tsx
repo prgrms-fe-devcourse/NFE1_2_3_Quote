@@ -1,6 +1,5 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import App from "./App.tsx";
 import GlobalStyle from "@styles/GlobalStyle";
 import { RouterProvider } from "react-router-dom";
 import router from "./routes/Router.tsx";

@@ -1,24 +1,26 @@
 import LoginPage from "@/pages/LogInPage/LoginPage";
 import MainPage from "@/pages/MainPage/MainPage";
+import MyPage from "@/pages/MyPages/MyPage";
+import CreatePost from "@/pages/PostCreate/components/CreatePost";
 import SignUpPage from "@/pages/SignUpPage/SignUpPage";
 import { createBrowserRouter } from "react-router-dom";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <MainPage />, 
+    element: <MainPage />,
   },
   {
     path: "/login",
-    element: <LoginPage />, 
+    element: <LoginPage />,
   },
   {
     path: "/signup",
-    element: <SignUpPage />, 
+    element: <SignUpPage />,
   },
   {
     path: "/create-post",
-    // element:
+    element: <CreatePost />,
   },
   {
     path: "/post/:postId",
@@ -26,7 +28,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/mypage",
-    // element:
+    element: <MyPage />,
   },
   {
     path: "/user-page/:userId",
