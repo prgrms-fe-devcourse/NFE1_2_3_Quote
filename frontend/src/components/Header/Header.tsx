@@ -24,14 +24,14 @@ const Logo = styled.img`
   padding: 10px;
 `;
 
-const StyledDarkModeButton = styled(LightModeButton)`
+const StyledDarkModeButton = styled(DarkModeButton)`
   width: 30px;
   height: 30px;
   margin-right: 1rem;
   cursor: pointer;
 `;
 
-const StyledLightModeButton = styled(DarkModeButton)`
+const StyledLightModeButton = styled(LightModeButton)`
   width: 30px;
   height: 30px;
   margin-right: 1rem;
@@ -58,16 +58,16 @@ const Profile = styled.div`
 
 const Header = () => {
   const [mode, setMode] = useState<boolean>(false);
-  const [isLogin, setIsLogin] = useState<boolean>(false);
+  const [isLogin, setIsLogin] = useState<boolean>(true);
 
   return (
     <HeaderContainer>
       <Logo src={logo} />
       <ButtonContainer>
         {mode ? (
-          <StyledDarkModeButton onClick={() => setMode(!mode)} />
-        ) : (
           <StyledLightModeButton onClick={() => setMode(!mode)} />
+        ) : (
+          <StyledDarkModeButton onClick={() => setMode(!mode)} />
         )}
         <LoginButton>{isLogin ? "로그아웃" : "시작하기"} </LoginButton>
         {isLogin && (
