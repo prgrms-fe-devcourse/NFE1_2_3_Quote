@@ -3,20 +3,21 @@ import { useState } from "react";
 import styled from "styled-components";
 
 const CategorySelectContainer = styled.div`
-  width: 860px;
+  width: 100%;
   margin-top: 40px;
+  padding: 20px 0px;
   display: flex;
   flex-direction: row-reverse;
 `;
 
 const CategorySelectButton = styled.button`
-  width: 110px;
+  width: 100%;
   height: 50px;
-  padding: 8px;
+  padding: 0px;
   font-size: 20px;
   color: #303030;
   display: flex;
-  justify-content: center;
+  justify-content: end;
   align-items: center;
   border: none;
   background-color: #f3f3f3;
@@ -28,27 +29,31 @@ const DropBoxButton = styled(DropBoxBtn)`
 `;
 
 const CategoryListContainer = styled.div`
-  width: 150px;
-  height: 210px;
+  width: 135px;
+  height: 195px;
   position: absolute;
-  right: 40px;
-  top: 90px;
+  right: -25px;
+  top: 110px;
   background-color: #fff;
   box-shadow: 0px 0px 6px #dfdfdf;
   border: 1px solid #e3e3e3;
   border-radius: 10px;
+  overflow: hidden;
 `;
 
 const CategoryItem = styled.li`
   &:last-child {
     border: none;
   }
+  &:hover {
+    background-color: #d4d4d4;
+  }
   list-style: none;
   font-size: 16px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 12px;
+  padding: 10px;
   border-bottom: 1px solid #e3e3e3;
 `;
 
@@ -66,7 +71,7 @@ const CategorySelect = ({ category, setCategory }: CategorySelectProps) => {
   };
 
   return (
-    <div>
+    <>
       <CategorySelectContainer>
         <CategorySelectButton onClick={() => setShowList(!showList)}>
           {category}
@@ -85,7 +90,7 @@ const CategorySelect = ({ category, setCategory }: CategorySelectProps) => {
           ))}
         </CategoryListContainer>
       )}
-    </div>
+    </>
   );
 };
 

@@ -9,15 +9,13 @@ const Container = styled.div`
   height: 100%;
   position: relative;
   background-color: #f3f3f3;
-`;
-const WriteSection = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
 `;
 
 const ButtonContainer = styled.div`
-  width: 860px;
+  width: 100%;
   display: flex;
   justify-content: center;
   margin-top: 40px;
@@ -49,17 +47,15 @@ const CreatePost = () => {
   return (
     <MainLayout>
       <Container>
-        <WriteSection>
-          <CategorySelect
-            category={category}
-            setCategory={setCategory}
-          />
-          <CreatePostForm category={category} />
-          <ButtonContainer>
-            <CancelButton>취소</CancelButton>
-            <PublishButton>발행</PublishButton>
-          </ButtonContainer>
-        </WriteSection>
+        <CategorySelect
+          category={category}
+          setCategory={setCategory}
+        />
+        <CreatePostForm category={category} />
+        <ButtonContainer>
+          <CancelButton>취소</CancelButton>
+          <PublishButton>발행</PublishButton>
+        </ButtonContainer>
       </Container>
     </MainLayout>
   );

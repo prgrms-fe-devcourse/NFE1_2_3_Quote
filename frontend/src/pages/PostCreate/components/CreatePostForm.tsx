@@ -7,9 +7,8 @@ const TitleInput = styled.input`
   &:focus {
     outline: none;
   }
-  width: 860px;
+  width: 100%;
   height: 80px;
-  margin-top: 20px;
   padding: 18px;
   font-size: 28px;
   border: none;
@@ -24,7 +23,7 @@ const QuoteSentence = styled.textarea`
   &:focus {
     outline: none;
   }
-  width: 860px;
+  width: 100%;
   height: 240px;
   padding: 18px;
   font-size: 18px;
@@ -41,7 +40,7 @@ const MainInput = styled.textarea`
   &:focus {
     outline: none;
   }
-  width: 860px;
+  width: 100%;
   height: 430px;
   padding: 18px;
   font-size: 18px;
@@ -57,7 +56,7 @@ interface CategorySelectProps {
 
 const CreatePostForm = ({ category }: CategorySelectProps) => {
   return (
-    <div>
+    <>
       <TitleInput
         placeholder={
           category === "기타"
@@ -79,7 +78,7 @@ const CreatePostForm = ({ category }: CategorySelectProps) => {
             : "생각 또는 느낌을 자유롭게 입력해주세요."
         }
       />
-    </div>
+    </>
   );
 };
 
