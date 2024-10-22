@@ -23,7 +23,6 @@ const InputStyle = styled.input`
   font-size: 15px;
   outline-style: none;
   border-radius: 10px;
-  box-sizing: border-box;
   border: 1px solid black;
   padding: 16px 22px;
   margin-bottom: 27px;
@@ -39,7 +38,6 @@ const LoginBtn = styled.button`
   height: 60px;
   border-radius: 10px;
   background-color: #474040;
-  box-sizing: border-box;
   color: #f3f3f3;
   border-style: none;
   font-size: 18px;
