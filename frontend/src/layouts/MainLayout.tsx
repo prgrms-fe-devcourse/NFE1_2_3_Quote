@@ -1,3 +1,4 @@
+import Header from "@/components/Header/Header";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -11,7 +12,12 @@ interface MainLayoutProps {
 }
 
 const MainLayout = ({ children }: MainLayoutProps) => {
-  return <Container>{children}</Container>;
+  return (
+    <>
+      <Header />
+      <Container>{children}</Container>
+    </>
+  );
 };
 
 export default MainLayout;
