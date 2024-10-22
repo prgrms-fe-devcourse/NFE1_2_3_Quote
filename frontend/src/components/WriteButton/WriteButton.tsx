@@ -10,6 +10,7 @@ const StyledButton = styled.div`
   position: fixed;
   left: calc(50% + 480px + 20px);
   bottom: 50px;
+  cursor: pointer;
   svg {
     width: 100%;
     height: 100%;
