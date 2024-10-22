@@ -2,7 +2,6 @@ import { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import ProfileModifyButton from "@assets/icons/profile_modify_button.svg?react";
 import profile from "@assets/images/profile.png";
-import MainLayout from "@/layouts/MainLayout";
 
 // Styled Components
 
@@ -136,7 +135,6 @@ const MyPage = () => {
   };
 
   return (
-    <MainLayout>
       <Container>
         <ProfileSection>
           <SettingsButtonWrapper>
@@ -171,7 +169,6 @@ const MyPage = () => {
         </ContentSection>
         <MessageContainer>{getMessage()}</MessageContainer>
       </Container>
-    </MainLayout>
   );
 };
 
