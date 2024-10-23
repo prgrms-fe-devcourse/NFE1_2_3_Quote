@@ -1,7 +1,7 @@
 import LoginPage from "@/pages/LogInPage/LoginPage";
 import MainPage from "@/pages/MainPage/MainPage";
 import MyPage from "@/pages/MyPages/MyPage";
-import CreatePost from "@/pages/PostCreate/components/CreatePost";
+import CreatePost from "@/pages/PostCreate/CreatePost";
 import SignUpPage from "@/pages/SignUpPage/SignUpPage";
 import { createBrowserRouter } from "react-router-dom";
 
