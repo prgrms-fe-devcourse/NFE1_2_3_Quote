@@ -1,10 +1,11 @@
 import MainLayout from "@/layouts/MainLayout";
-import { FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 import styled from "styled-components";
 import logo from "@assets/images/quoteLogo.png";
 import { Link } from "react-router-dom";
+import { useLogin } from "../hooks/useLogin";
 
-const Container = styled.form`
+const Container = styled.div`
   width: 100%;
   height: 100vh;
   display: flex;
@@ -38,6 +39,10 @@ const InputStyle = styled.input`
   &:-webkit-autofill:active {
     transition: background-color 5000s ease-in-out 0s;
   }
+  //password타입일 때 글꼴때문에 입력되는 것이 안 보여서 글꼴 수정
+  &[type="password"] {
+    font-family: Arial, Helvetica, sans-serif;
+  }
 `;
 const ErrorMessage = styled.div`
   color: #d72121;
@@ -68,39 +73,111 @@ const CopyRight = styled.span`
   color: #474040;
 `;
 
+interface LoginData {
+  email: string;
+  password: string;
+}
+
+interface ErrorMessage {
+  emailErr?: string;
+  passwordErr?: string;
+}
+
 const LoginForm = () => {
-  const [errMsg, setErrorMsg] = useState("");
+  const [loginInfo, setLoginInfo] = useState<LoginData>({
+    email: "",
+    password: "",
+  });
+  const [errMsg, setErrorMsg] = useState<ErrorMessage>({});
+  const { mutate: loginMutation } = useLogin();
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
+    const { name, value } = e.target;
+    setLoginInfo({ ...loginInfo, [name]: value });
+  };
+
+  //이메일 입력 형식이 유효한지 확인
+  const isValidEmail = (email: string) => {
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i;
+    return emailRegex.test(email);
+  };
+
+  //비밀번호 형식이 유효한지 확인
+  const isValidPwd = (pwd: string) => {
+    const pwdRegex = /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*?_]).{8,15}$/;
+    return pwdRegex.test(pwd);
+  };
+
+  //유효하지 않으면 에러 반환
+  const isValid = () => {
+    const errors: ErrorMessage = {
+      emailErr: "",
+      passwordErr: "",
+    };
+
+    if (!isValidEmail(loginInfo.email)) {
+      errors.emailErr = "아이디를 정확하게 입력해주세요.";
+    }
+    if (!isValidPwd(loginInfo.password)) {
+      errors.passwordErr = "비밀번호를 정확하게 입력해주세요.";
+    }
+
+    return errors;
+  };
 
   const onSubmitHandler = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setErrorMsg({}); //버튼 누를 때 이전 에러 메세지 없애기
+
+    const errors = isValid();
+    const loginUser = {
+      email: loginInfo.email,
+      password: loginInfo.password,
+    };
+
+    if (isValidEmail(loginInfo.email) && isValidPwd(loginInfo.password)) {
+      loginMutation(loginUser);
+    } else {
+      setErrorMsg(errors);
+    }
   };
 
   return (
     <MainLayout>
-      <Container onSubmit={onSubmitHandler}>
+      <Container>
         <Header>
           <Logo src={logo} />
         </Header>
 
-        <InputDiv>
-          <InputStyle
-            type='text'
-            placeholder='이메일 입력'
-            name='email'
-          />
-          {errMsg && <ErrorMessage>{errMsg}</ErrorMessage>}
-        </InputDiv>
+        <form onSubmit={onSubmitHandler}>
+          <InputDiv>
+            <InputStyle
+              type='text'
+              placeholder='이메일 입력'
+              name='email'
+              onChange={handleChange}
+              value={loginInfo.email}
+              required
+            />
+            {errMsg.emailErr && <ErrorMessage>{errMsg.emailErr}</ErrorMessage>}
+          </InputDiv>
 
-        <InputDiv>
-          <InputStyle
-            type='text'
-            placeholder='비밀번호 입력'
-            name='password'
-          />
-          {errMsg && <ErrorMessage>{errMsg}</ErrorMessage>}
-        </InputDiv>
+          <InputDiv>
+            <InputStyle
+              type='password'
+              placeholder='비밀번호 입력'
+              name='password'
+              onChange={handleChange}
+              value={loginInfo.password}
+              required
+            />
+            {errMsg.passwordErr && (
+              <ErrorMessage>{errMsg.passwordErr}</ErrorMessage>
+            )}
+          </InputDiv>
 
-        <LoginBtn type='submit'>로그인</LoginBtn>
+          <LoginBtn type='submit'>로그인</LoginBtn>
+        </form>
 
         <MoveToSignUp>
           <span style={{ color: "#a7a7a7" }}>

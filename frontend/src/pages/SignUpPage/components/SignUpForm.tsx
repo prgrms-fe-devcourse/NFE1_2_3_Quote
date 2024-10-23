@@ -72,6 +72,21 @@ const CopyRight = styled.span`
   font-weight: bold;
   color: #474040;
 `;
+const AlertStyle = styled.div`
+  width: 200px;
+  font-size: 14px;
+  height: 40px;
+  text-align: center;
+  line-height: 40px;
+  background-color: #ffffff;
+  color: 393939;
+  position: fixed;
+  top: 5%;
+  left: 50%;
+  transform: translate(-50%, 5%);
+  border-radius: 10px;
+  box-shadow: 0 0 5px gray;
+`;
 
 interface SignUpData {
   nickname: string;
@@ -80,11 +95,12 @@ interface SignUpData {
   checkPwd: string;
 }
 
-interface ErrorMessage {
+export interface ErrorMessage {
   nicknameErr?: string;
   emailErr?: string;
   passwordErr?: string;
   checkPwdErr?: string;
+  message?: string;
 }
 
 const SignUpForm = () => {
@@ -94,8 +110,12 @@ const SignUpForm = () => {
     password: "",
     checkPwd: "",
   });
+  const [alert, setAlert] = useState("alert");
   const [errMsg, setErrorMsg] = useState<ErrorMessage>({});
-  const { mutate: signUp } = useSignUp();
+  const { mutate: signUp } = useSignUp({
+    setAlert: setAlert,
+    setError: setErrorMsg,
+  });
 
   //input값 반영
   const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
@@ -109,7 +129,7 @@ const SignUpForm = () => {
     return nicknameRegex.test(nickname);
   };
 
-  //닉네임 입력 형식이 유효한지 확인
+  //이메일 입력 형식이 유효한지 확인
   const isValidEmail = (email: string) => {
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i;
     return emailRegex.test(email);
@@ -259,6 +279,7 @@ const SignUpForm = () => {
 
         <CopyRight>Copyright © TEAM333333 All Rights Reserved.</CopyRight>
       </Container>
+      {alert && <AlertStyle>{alert}</AlertStyle>}
     </MainLayout>
   );
 };

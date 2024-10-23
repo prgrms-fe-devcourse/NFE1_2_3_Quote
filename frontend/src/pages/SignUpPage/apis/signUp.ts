@@ -30,11 +30,17 @@ export const signUpRequest = async (newUser: SignUpData) => {
     if (axios.isAxiosError(err)) {
       const status = err.response?.status;
 
+      if (status === 400) {
+        console.error("Duplicate error");
+      } 
       if (status === 500) {
         console.error("Server error");
       }
 
-      return null;
+      throw err;
+    } else {
+      console.error("Unexpected Error");
+      throw err;
     }
   }
 }
