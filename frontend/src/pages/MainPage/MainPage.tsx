@@ -4,7 +4,7 @@ import MainImage from "@assets/images/mainImage.png";
 import styled from "styled-components";
 import Search from "./components/Search";
 import CategoryMark from "./components/CategoryMark";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import PostCard from "./components/PostCard";
 import { Post } from "@/types/Types";
 import { categoryColors } from "@/styles/Colors";
@@ -49,7 +49,7 @@ const PostSection = styled.div`
 const PostContainer = styled.div`
   width: 870px; //270px * 3 + 10px * 6
   height: 100%;
-  margin: 10px auto;
+  margin: 20px auto;
   display: flex;
   flex-wrap: wrap;
 `;
@@ -64,11 +64,11 @@ const MainPage = () => {
     "기타",
   ];
 
-  const [category, setCategory] = useState("전체");
+  const [selectCategory, setSelectCategory] = useState("전체");
 
-  const handleSelectCategory = (category: string) => {
-    setCategory(category);
-  };
+  const handleSelectCategory = useCallback((category: string) => {
+    setSelectCategory(category);
+  }, []);
 
   return (
     <MainLayout>
@@ -80,6 +80,7 @@ const MainPage = () => {
               <CategoryMark
                 key={index}
                 category={category}
+                active={category === selectCategory}
                 color={categoryColors[category].bgColor}
                 onClick={() => {
                   handleSelectCategory(category);
@@ -94,6 +95,8 @@ const MainPage = () => {
             <PostCard post={sampleData2} />
             <PostCard post={sampleData3} />
             <PostCard post={sampleData2} />
+            <PostCard post={sampleData3} />
+            <PostCard post={sampleData2} />
           </PostContainer>
         </PostSection>
       </Container>
@@ -101,6 +104,7 @@ const MainPage = () => {
     </MainLayout>
   );
 };
+
 
 export default MainPage;
 

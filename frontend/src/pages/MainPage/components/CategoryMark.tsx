@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-const CategoryContainer = styled.div`
+const CategoryContainer = styled.div<{ color: string; $active: boolean }>`
   width: 120px;
   height: 60px;
   margin: 0 5px;
@@ -9,11 +9,15 @@ const CategoryContainer = styled.div`
   background-color: ${(props) => props.color};
   border-radius: 20px 20px 0 0;
   cursor: pointer;
-  opacity: 0.9;
+  opacity: ${(props) => (props.$active ? "1" : "0.9")};
 
+  transform: ${(props) => (props.$active ? "translate(0, -20px)" : "none")};
   &:hover {
-    opacity: 1;
+    ${(props) =>
+      !props.$active &&
+      `opacity: 1;
     transform: translate(0, -10px);
+    `}
   }
 `;
 
@@ -23,15 +27,20 @@ const CategoryText = styled.p`
 
 interface CategoryMarkProps {
   category: string;
+  active: boolean;
   color: string;
   onClick: () => void;
 }
 
 const CategoryMark = (props: CategoryMarkProps) => {
-  const { category, color } = props;
+  const { category, active, color, onClick } = props;
   return (
     <>
-      <CategoryContainer color={color}>
+      <CategoryContainer
+        color={color}
+        onClick={onClick}
+        $active={active}
+      >
         <CategoryText>{category}</CategoryText>
       </CategoryContainer>
     </>
