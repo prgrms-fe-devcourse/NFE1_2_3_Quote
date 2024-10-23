@@ -1,3 +1,4 @@
+import WriteButton from "@/components/WriteButton/WriteButton";
 import MainLayout from "@/layouts/MainLayout";
 import MainImage from "@assets/images/mainImage.png";
 import styled from "styled-components";
