@@ -22,7 +22,7 @@ const InputDiv = styled.div`
 `;
 const InputStyle = styled.input`
   width: 400px;
-  height: 43px;
+  height: 46px;
   font-size: 12px;
   outline-style: none;
   border-radius: 10px;
@@ -46,7 +46,7 @@ const ErrorMessage = styled.div`
 `;
 const LoginBtn = styled.button`
   width: 400px;
-  height: 45px;
+  height: 48px;
   border-radius: 10px;
   background-color: #474040;
   color: #f3f3f3;

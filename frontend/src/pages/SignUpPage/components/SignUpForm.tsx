@@ -23,7 +23,7 @@ const InputDiv = styled.div`
 `;
 const InputStyle = styled.input`
   width: 400px;
-  height: 43px;
+  height: 46px;
   font-size: 12px;
   outline-style: none;
   border-radius: 10px;
@@ -51,7 +51,7 @@ const ErrorMessage = styled.div`
 `;
 const SignUpBtn = styled.button`
   width: 400px;
-  height: 45px;
+  height: 48px;
   border-radius: 10px;
   background-color: #474040;
   color: #f3f3f3;
@@ -95,10 +95,7 @@ const SignUpForm = () => {
     checkPwd: "",
   });
   const [errMsg, setErrorMsg] = useState<ErrorMessage>({});
-  const { mutate: signUp } = useSignUp({
-    nicknameErr: errMsg.nicknameErr,
-    emailErr: errMsg.emailErr,
-  });
+  const { mutate: signUp } = useSignUp();
 
   //input값 반영
   const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
@@ -162,6 +159,7 @@ const SignUpForm = () => {
   //새로운 유저 정보 전송
   const onSubmitHandler = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setErrorMsg({}); //버튼 누를 때 이전 에러 메세지 없애기
 
     const errors = isValid();
     const newUser = {
@@ -206,7 +204,7 @@ const SignUpForm = () => {
 
           <InputDiv>
             <InputStyle
-              type='email'
+              type='text'
               placeholder='이메일 입력'
               name='email'
               value={info.email}

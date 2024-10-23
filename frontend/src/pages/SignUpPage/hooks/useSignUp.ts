@@ -1,13 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom"
 import { signUpRequest } from "../apis/signUp";
 
-interface duplicateCheck {
-  nicknameErr?: string;
-  emailErr?: string;
-}
-
-export const useSignUp = (setErrorMsg: duplicateCheck) => {
+export const useSignUp = () => {
   const signUpMutation = useMutation({
     mutationFn: signUpRequest,
 

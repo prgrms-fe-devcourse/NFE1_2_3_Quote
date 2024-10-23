@@ -20,7 +20,7 @@ export const authAxiosClient: AxiosInstance = axios.create({
 //회원가입 요청
 export const signUpRequest = async (newUser: SignUpData) => {
   try {
-    const res = await authAxiosClient.post('/signup', newUser);
+    const res = await authAxiosClient.post('/users/signup', newUser);
 
     if (res.status === 200) {
       console.log("SignUp Success");
