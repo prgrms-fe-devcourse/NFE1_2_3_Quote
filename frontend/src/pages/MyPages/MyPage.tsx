@@ -4,6 +4,7 @@ import ProfileModifyButton from "@assets/icons/profile_modify_button.svg?react";
 import profile from "@assets/images/profile.png";
 import MainLayout from "@/layouts/MainLayout";
 import ProfileEditModal from "@/pages/MyPages/components/ProfileEditModal";
+import DeleteModal from "@/pages/MyPages/components/DeleteModal";
 
 // Styled Components
 
@@ -116,12 +117,20 @@ const MyPage = () => {
   const [activeTab, setActiveTab] = useState("posts");
   const [menuVisible, setMenuVisible] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const settingsButtonRef = useRef<HTMLDivElement>(null);
 
-  const toggleMenu = () => setMenuVisible(!menuVisible);
+  const toggleMenu = () => {
+    setMenuVisible((prev) => !prev);
+  };
 
   const handleClickOutside = (event: MouseEvent) => {
-    if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+    if (
+      menuRef.current &&
+      !menuRef.current.contains(event.target as Node) &&
+      !settingsButtonRef.current?.contains(event.target as Node)
+    ) {
       setMenuVisible(false);
     }
   };
@@ -139,19 +148,32 @@ const MyPage = () => {
       : "북마크한 글이 없습니다.";
   };
 
+  const handleDeleteAccount = () => {
+    alert("회원 탈퇴가 완료되었습니다.");
+    setIsDeleteModalOpen(false);
+  };
+
+  const handleProfileEditClick = () => {
+    setMenuVisible(false);
+    setIsModalOpen(true);
+  };
+
+  const handleDeleteClick = () => {
+    setMenuVisible(false);
+    setIsDeleteModalOpen(true);
+  };
+
   return (
     <MainLayout>
       <Container>
         <ProfileSection>
-          <SettingsButtonWrapper>
+          <SettingsButtonWrapper ref={settingsButtonRef}>
             <ProfileModifyButton onClick={toggleMenu} />
           </SettingsButtonWrapper>
           {menuVisible && (
             <Menu ref={menuRef}>
-              <MenuItem onClick={() => setIsModalOpen(true)}>
-                프로필 수정
-              </MenuItem>
-              <MenuItem>회원탈퇴</MenuItem>
+              <MenuItem onClick={handleProfileEditClick}>프로필 수정</MenuItem>
+              <MenuItem onClick={handleDeleteClick}>회원탈퇴</MenuItem>
             </Menu>
           )}
           <ProfileImage
@@ -179,6 +201,12 @@ const MyPage = () => {
 
         {isModalOpen && (
           <ProfileEditModal onClose={() => setIsModalOpen(false)} />
+        )}
+        {isDeleteModalOpen && (
+          <DeleteModal
+            onClose={() => setIsDeleteModalOpen(false)}
+            onConfirm={handleDeleteAccount}
+          />
         )}
       </Container>
     </MainLayout>
