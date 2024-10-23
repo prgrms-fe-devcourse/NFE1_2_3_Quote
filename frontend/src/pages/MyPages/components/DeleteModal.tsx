@@ -65,6 +65,11 @@ interface DeleteModalProps {
 }
 
 const DeleteModal = ({ onClose, onConfirm }: DeleteModalProps) => {
+  const handleConfirm = () => {
+    onConfirm();
+    onClose();
+  };
+
   return (
     <ModalOverlay>
       <ModalContainer>
@@ -75,7 +80,7 @@ const DeleteModal = ({ onClose, onConfirm }: DeleteModalProps) => {
         </ModalMessage>
         <ButtonContainer>
           <CancelButton onClick={onClose}>취소</CancelButton>
-          <ConfirmButton onClick={onConfirm}>탈퇴</ConfirmButton>
+          <ConfirmButton onClick={handleConfirm}>탈퇴</ConfirmButton>
         </ButtonContainer>
       </ModalContainer>
     </ModalOverlay>

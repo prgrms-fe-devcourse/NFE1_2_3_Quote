@@ -181,10 +181,15 @@ const SaveButton = styled(Button)`
 
 interface ProfileEditModalProps {
   onClose: () => void;
+  showSuccessMessage: () => void;
   mode?: boolean;
 }
 
-function ProfileEditModal({ onClose, mode = false }: ProfileEditModalProps) {
+function ProfileEditModal({
+  onClose,
+  showSuccessMessage,
+  mode = false,
+}: ProfileEditModalProps) {
   const [imgSrc, setImgSrc] = useState(PROFILE);
   const [nickname, setNickname] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -229,8 +234,8 @@ function ProfileEditModal({ onClose, mode = false }: ProfileEditModalProps) {
     } else if (nickname.length > 8) {
       setError("닉네임은 8자 이내로 입력해주세요.");
     } else {
-      alert("프로필이 성공적으로 수정되었습니다.");
       onClose();
+      showSuccessMessage();
     }
   };
 
