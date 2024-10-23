@@ -5,6 +5,8 @@ import ProfileImgLightMode from "@assets/icons/profile_img_lightMode.svg?react";
 import ProfileImgDarkMode from "@assets/icons/profile_img_darkMode.svg?react";
 import ModifyUserNameButton from "@assets/icons/modify_userName_button.svg?react";
 
+// Styled Components
+
 const ModalOverlay = styled.div`
   position: fixed;
   top: 0;
