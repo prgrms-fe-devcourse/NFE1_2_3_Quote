@@ -8,6 +8,7 @@ import { useCallback, useState } from "react";
 import PostCard from "./components/PostCard";
 import { Post } from "@/types/Types";
 import { categoryColors } from "@/styles/Colors";
+import { useGetPostData } from "./hooks/useGetPostData";
 
 const Container = styled.div`
   width: 100%;
@@ -54,6 +55,11 @@ const PostContainer = styled.div`
   flex-wrap: wrap;
 `;
 
+const NoPostText = styled.p`
+  margin: 20px auto;
+  font-size: 18px;
+` 
+
 const MainPage = () => {
   const categoryList: string[] = [
     "전체",
@@ -69,6 +75,16 @@ const MainPage = () => {
   const handleSelectCategory = useCallback((category: string) => {
     setSelectCategory(category);
   }, []);
+
+  const { data, isLoading, isError } = useGetPostData();
+  const postData = data || [];
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+  if (isError) {
+    return <div>Error: {isError}</div>;
+  }
 
   return (
     <MainLayout>
@@ -91,12 +107,16 @@ const MainPage = () => {
         </TopSection>
         <PostSection>
           <PostContainer>
-            <PostCard post={sampleData1} />
-            <PostCard post={sampleData2} />
-            <PostCard post={sampleData3} />
-            <PostCard post={sampleData2} />
-            <PostCard post={sampleData3} />
-            <PostCard post={sampleData2} />
+            {postData?.length > 0 ? (
+              postData.map((post: Post, index: number) => (
+                <PostCard
+                  key={index}
+                  post={post}
+                />
+              ))
+            ) : (
+              <NoPostText>포스트 글이 없습니다.</NoPostText>
+            )}
           </PostContainer>
         </PostSection>
       </Container>
@@ -105,43 +125,4 @@ const MainPage = () => {
   );
 };
 
-
 export default MainPage;
-
-const sampleData1: Post = {
-  _id: "111",
-  category: "도서",
-  title: "서시",
-  content:
-    "죽는 날까지 하늘을 우러러 한 점 부끄럼이 없기를, 잎새에 이는 바람에도 나는 괴로워했다",
-  quote: "인상깊음",
-  author: "테스트123",
-  authorId: "123",
-  date: "2024-10-23",
-  bookmarkCount: "309",
-};
-const sampleData2: Post = {
-  _id: "111",
-  category: "노래",
-  title: "서시",
-  content:
-    "죽는 날까지 하늘을 우러러 한 점 부끄럼이 없기를, 잎새에 이는 바람에도 나는 괴로워했다",
-  quote: "인상깊음",
-  author: "테스트123",
-  authorId: "123",
-  date: "2024-10-23",
-  bookmarkCount: "309",
-};
-
-const sampleData3: Post = {
-  _id: "111",
-  category: "대사",
-  title: "서시",
-  content:
-    "죽는 날까지 하늘을 우러러 한 점 부끄럼이 없기를, 잎새에 이는 바람에도 나는 괴로워했다",
-  quote: "인상깊음",
-  author: "테스트123",
-  authorId: "123",
-  date: "2024-10-23",
-  bookmarkCount: "309",
-};

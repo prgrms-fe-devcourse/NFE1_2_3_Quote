@@ -76,13 +76,13 @@ const PostCard = (props: PostCardProps) => {
     <>
       <PostCardContainer color={categoryColors[post.category].bgColor}>
         <PostContentContainer color={categoryColors[post.category].fontColor}>
-          <PostContent>{post.content}</PostContent>
+          <PostContent>{post.quote}</PostContent>
           <PostTitle>{post.title}</PostTitle>
         </PostContentContainer>
         <BottomContainer>
           <BookMark>
             <BookMarkIcon />
-            {post.bookmarkCount}
+            {post.likes}
           </BookMark>
           <UserText>{post.author}</UserText>
         </BottomContainer>
