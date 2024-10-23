@@ -3,14 +3,8 @@ import SearchButton from "@assets/icons/search_button.svg?react";
 
 const SearchContainer = styled.div`
   width: 500px;
-  margin: 0 auto;
   display: flex;
   flex-direction: column;
-  position: absolute;
-  left: 50%;
-  top: 30%;
-  transform: translate(-50%, -50%);
-  z-index: 1;
 `;
 
 const ResetSearchButton = styled.button`
@@ -49,7 +43,7 @@ const StyledSearchButton = styled(SearchButton)`
 
 const Search = () => {
   return (
-    <div>
+    <>
       <SearchContainer>
         <ResetSearchButton>검색 초기화</ResetSearchButton>
         <SearchInputContainer>
@@ -57,7 +51,7 @@ const Search = () => {
           <StyledSearchButton />
         </SearchInputContainer>
       </SearchContainer>
-    </div>
+    </>
   );
 };
 

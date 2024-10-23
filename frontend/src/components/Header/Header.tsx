@@ -14,6 +14,10 @@ const HeaderContainer = styled.header`
   justify-content: space-between;
   padding: 0 1rem;
   border-bottom: 1px solid #e3e3e3;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 1;
 `;
 
 const ButtonContainer = styled.div`
