@@ -7,6 +7,7 @@ const Layout = styled.div`
   height: 100vh;
   margin: 0 auto;
   background-color: #f3f3f3;
+  position: relative;
 `;
 
 const Container = styled.div`
