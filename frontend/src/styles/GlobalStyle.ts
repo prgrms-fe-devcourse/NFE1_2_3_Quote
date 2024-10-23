@@ -20,6 +20,8 @@ const GlobalStyle = createGlobalStyle`
     }
     body {
         margin: 0;
+        height: 100%;
+        background-color: #f3f3f3;
     }
 `;
 
