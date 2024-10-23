@@ -16,6 +16,7 @@ const ModalOverlay = styled.div`
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  overflow: hidden;
 `;
 
 const ModalContainer = styled.div`
@@ -185,11 +186,11 @@ interface ProfileEditModalProps {
   mode?: boolean;
 }
 
-function ProfileEditModal({
+const ProfileEditModal = ({
   onClose,
   showSuccessMessage,
   mode = false,
-}: ProfileEditModalProps) {
+}: ProfileEditModalProps) => {
   const [imgSrc, setImgSrc] = useState(PROFILE);
   const [nickname, setNickname] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -287,6 +288,6 @@ function ProfileEditModal({
       </ModalContainer>
     </ModalOverlay>
   );
-}
+};
 
 export default ProfileEditModal;

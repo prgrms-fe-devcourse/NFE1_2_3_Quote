@@ -1,8 +1,9 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback, memo } from "react";
 import styled, { keyframes } from "styled-components";
 import ProfileModifyButton from "@assets/icons/profile_modify_button.svg?react";
 import profile from "@assets/images/profile.png";
 import MainLayout from "@/layouts/MainLayout";
+import WriteButton from "@/components/WriteButton/WriteButton";
 import ProfileEditModal from "@/pages/MyPages/components/ProfileEditModal";
 import DeleteModal from "@/pages/MyPages/components/DeleteModal";
 
@@ -14,6 +15,7 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   caret-color: transparent;
+  overflow: hidden;
 `;
 
 const fadeOut = keyframes`
@@ -45,7 +47,7 @@ const ProfileSection = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin-top: 20px;
+  margin-top: 70px;
   width: 100%;
   max-width: 600px;
 `;
@@ -87,10 +89,10 @@ const UserEmail = styled.p`
 `;
 
 const ContentSection = styled.div`
-  width: 700px;
+  width: 860px;
   height: 60px;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
   margin-top: 50px;
 `;
 
@@ -136,7 +138,7 @@ const MenuItem = styled.button`
   }
 `;
 
-const MyPage = () => {
+const MyPage = memo(() => {
   const [activeTab, setActiveTab] = useState("posts");
   const [menuVisible, setMenuVisible] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -146,11 +148,11 @@ const MyPage = () => {
   const menuRef = useRef<HTMLDivElement>(null);
   const settingsButtonRef = useRef<HTMLDivElement>(null);
 
-  const toggleMenu = () => {
+  const toggleMenu = useCallback(() => {
     setMenuVisible((prev) => !prev);
-  };
+  }, []);
 
-  const handleClickOutside = (event: MouseEvent) => {
+  const handleClickOutside = useCallback((event: MouseEvent) => {
     if (
       menuRef.current &&
       !menuRef.current.contains(event.target as Node) &&
@@ -158,14 +160,14 @@ const MyPage = () => {
     ) {
       setMenuVisible(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []);
+  }, [handleClickOutside]);
 
   const getMessage = () => {
     return activeTab === "posts"
@@ -173,33 +175,32 @@ const MyPage = () => {
       : "북마크한 글이 없습니다.";
   };
 
-  
-  const handleDeleteAccount = () => {
-    setShowDeleteSuccess(true); 
+  const handleDeleteAccount = useCallback(() => {
+    setShowDeleteSuccess(true);
     setIsDeleteModalOpen(false);
-  
+
     setTimeout(() => {
       setShowDeleteSuccess(false);
     }, 3000);
-  };
+  }, []);
 
-  const handleProfileEditClick = () => {
+  const handleProfileEditClick = useCallback(() => {
     setMenuVisible(false);
     setIsModalOpen(true);
-  };
+  }, []);
 
-  const handleDeleteClick = () => {
+  const handleDeleteClick = useCallback(() => {
     setMenuVisible(false);
     setIsDeleteModalOpen(true);
-  };
+  }, []);
 
-  const showEditSuccessMessage = () => {
+  const showEditSuccessMessage = useCallback(() => {
     setShowEditSuccess(true);
 
     setTimeout(() => {
       setShowEditSuccess(false);
     }, 3000);
-  };
+  }, []);
 
   return (
     <MainLayout>
@@ -244,9 +245,7 @@ const MyPage = () => {
           />
         )}
         {showEditSuccess && (
-          <SuccessMessage>
-            프로필 수정이 완료되었습니다.
-          </SuccessMessage>
+          <SuccessMessage>프로필 수정이 완료되었습니다.</SuccessMessage>
         )}
         {isDeleteModalOpen && (
           <DeleteModal
@@ -255,13 +254,12 @@ const MyPage = () => {
           />
         )}
         {showDeleteSuccess && (
-          <SuccessMessage>
-            탈퇴가 완료되었습니다.
-          </SuccessMessage>
+          <SuccessMessage>탈퇴가 완료되었습니다.</SuccessMessage>
         )}
       </Container>
+      <WriteButton />
     </MainLayout>
   );
-};
+});
 
 export default MyPage;
