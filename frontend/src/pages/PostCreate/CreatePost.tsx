@@ -15,13 +15,13 @@ const Container = styled.div`
 `;
 
 const ButtonContainer = styled.div`
-  width: 100%;
+  width: 90%;
   display: flex;
   justify-content: center;
-  margin-top: 40px;
+  margin: 20px;
 `;
 const CancelButton = styled.button`
-  width: 140px;
+  width: 130px;
   height: 45px;
   margin: 20px 10px;
   font-size: 16px;
@@ -32,7 +32,7 @@ const CancelButton = styled.button`
 `;
 
 const PublishButton = styled.button`
-  width: 140px;
+  width: 130px;
   height: 45px;
   margin: 20px 10px;
   font-size: 16px;

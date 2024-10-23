@@ -7,9 +7,9 @@ const TitleInput = styled.input`
   &:focus {
     outline: none;
   }
-  width: 100%;
-  height: 80px;
-  padding: 18px;
+  width: 90%;
+  height: 50px;
+  padding: 16px;
   font-size: 28px;
   border: none;
   border-bottom: 1px solid #797979;
@@ -23,9 +23,9 @@ const QuoteSentence = styled.textarea`
   &:focus {
     outline: none;
   }
-  width: 100%;
-  height: 240px;
-  padding: 18px;
+  width: 90%;
+  height: 190px;
+  padding: 16px;
   font-size: 18px;
   resize: none;
   border: none;
@@ -40,9 +40,9 @@ const MainInput = styled.textarea`
   &:focus {
     outline: none;
   }
-  width: 100%;
-  height: 430px;
-  padding: 18px;
+  width: 90%;
+  height: 300px;
+  padding: 16px;
   font-size: 18px;
   resize: none;
   border: none;

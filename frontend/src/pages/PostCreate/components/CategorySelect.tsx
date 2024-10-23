@@ -3,15 +3,14 @@ import { useState } from "react";
 import styled from "styled-components";
 
 const CategorySelectContainer = styled.div`
-  width: 100%;
-  margin-top: 40px;
-  padding: 20px 0px;
+  width: 90%;
+  margin-top: 20px;
   display: flex;
   flex-direction: row-reverse;
 `;
 
 const CategorySelectButton = styled.button`
-  width: 100%;
+  width: 90%;
   height: 50px;
   padding: 0px;
   font-size: 20px;
@@ -32,8 +31,8 @@ const CategoryListContainer = styled.div`
   width: 135px;
   height: 195px;
   position: absolute;
-  right: -25px;
-  top: 110px;
+  right: 25px;
+  top: 70px;
   background-color: #fff;
   box-shadow: 0px 0px 6px #dfdfdf;
   border: 1px solid #e3e3e3;
