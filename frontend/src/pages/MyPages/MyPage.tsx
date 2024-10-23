@@ -3,6 +3,7 @@ import styled from "styled-components";
 import ProfileModifyButton from "@assets/icons/profile_modify_button.svg?react";
 import profile from "@assets/images/profile.png";
 import MainLayout from "@/layouts/MainLayout";
+import ProfileEditModal from "@/pages/MyPages/components/ProfileEditModal";
 
 // Styled Components
 
@@ -114,6 +115,7 @@ const MenuItem = styled.button`
 const MyPage = () => {
   const [activeTab, setActiveTab] = useState("posts");
   const [menuVisible, setMenuVisible] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
   const toggleMenu = () => setMenuVisible(!menuVisible);
@@ -146,7 +148,9 @@ const MyPage = () => {
           </SettingsButtonWrapper>
           {menuVisible && (
             <Menu ref={menuRef}>
-              <MenuItem>프로필 수정</MenuItem>
+              <MenuItem onClick={() => setIsModalOpen(true)}>
+                프로필 수정
+              </MenuItem>
               <MenuItem>회원탈퇴</MenuItem>
             </Menu>
           )}
@@ -172,6 +176,10 @@ const MyPage = () => {
           </TabButton>
         </ContentSection>
         <MessageContainer>{getMessage()}</MessageContainer>
+
+        {isModalOpen && (
+          <ProfileEditModal onClose={() => setIsModalOpen(false)} />
+        )}
       </Container>
     </MainLayout>
   );
