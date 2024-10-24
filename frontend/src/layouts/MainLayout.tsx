@@ -22,7 +22,6 @@ interface MainLayoutProps {
 const MainLayout = ({ children }: MainLayoutProps) => {
   const location = useLocation();
 
-  // 특정 경로에서 Header를 숨김
   const hideHeader =
     location.pathname === "/login" || location.pathname === "/signup";
 
