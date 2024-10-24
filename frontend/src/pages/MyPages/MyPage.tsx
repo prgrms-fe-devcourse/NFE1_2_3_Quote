@@ -1,7 +1,11 @@
-import { useState, useRef, useEffect } from "react";
-import styled from "styled-components";
+import { useState, useRef, useEffect, useCallback, memo } from "react";
+import styled, { keyframes } from "styled-components";
 import ProfileModifyButton from "@assets/icons/profile_modify_button.svg?react";
 import profile from "@assets/images/profile.png";
+import MainLayout from "@/layouts/MainLayout";
+import WriteButton from "@/components/WriteButton/WriteButton";
+import ProfileEditModal from "@/pages/MyPages/components/ProfileEditModal";
+import DeleteModal from "@/pages/MyPages/components/DeleteModal";
 
 // Styled Components
 
@@ -11,6 +15,30 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   caret-color: transparent;
+  overflow: hidden;
+`;
+
+const fadeOut = keyframes`
+  0% { opacity: 1; }
+  100% { opacity: 0; }
+`;
+
+const SuccessMessage = styled.div`
+  position: fixed;
+  top: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #fff;
+  color: #303030;
+  padding: 10px 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+  font-size: 14px;
+  font-weight: bold;
+  z-index: 1100;
+  pointer-events: none;
+  opacity: 1;
+  animation: ${fadeOut} 2s ease-in-out 1s forwards;
 `;
 
 const ProfileSection = styled.div`
@@ -19,7 +47,7 @@ const ProfileSection = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin-top: 20px;
+  margin-top: 70px;
   width: 100%;
   max-width: 600px;
 `;
@@ -61,22 +89,22 @@ const UserEmail = styled.p`
 `;
 
 const ContentSection = styled.div`
-  width: 700px;
+  width: 860px;
   height: 60px;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
   margin-top: 50px;
 `;
 
-const TabButton = styled.button<{ isActive: boolean }>`
+const TabButton = styled.button<{ $isActive: boolean }>`
   width: 50%;
   height: 100%;
   background: none;
   border: none;
   font-size: 18px;
   cursor: pointer;
-  color: ${(props) => (props.isActive ? "#303030" : "#A7A7A7")};
-  border-bottom: ${(props) => (props.isActive ? "2px solid black" : "none")};
+  color: ${({ $isActive }) => ($isActive ? "#303030" : "#A7A7A7")};
+  border-bottom: ${({ $isActive }) => ($isActive ? "2px solid black" : "none")};
 `;
 
 const MessageContainer = styled.div`
@@ -110,40 +138,81 @@ const MenuItem = styled.button`
   }
 `;
 
-const MyPage = () => {
+const MyPage = memo(() => {
   const [activeTab, setActiveTab] = useState("posts");
   const [menuVisible, setMenuVisible] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showEditSuccess, setShowEditSuccess] = useState(false);
+  const [showDeleteSuccess, setShowDeleteSuccess] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const settingsButtonRef = useRef<HTMLDivElement>(null);
 
-  const toggleMenu = () => setMenuVisible(!menuVisible);
+  const toggleMenu = useCallback(() => {
+    setMenuVisible((prev) => !prev);
+  }, []);
 
-  const handleClickOutside = (event: MouseEvent) => {
-    if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+  const handleClickOutside = useCallback((event: MouseEvent) => {
+    if (
+      menuRef.current &&
+      !menuRef.current.contains(event.target as Node) &&
+      !settingsButtonRef.current?.contains(event.target as Node)
+    ) {
       setMenuVisible(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside); 
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []);
+  }, [handleClickOutside]);
 
   const getMessage = () => {
-    return activeTab === "posts" ? "작성한 글이 없습니다." : "북마크한 글이 없습니다.";
+    return activeTab === "posts"
+      ? "작성한 글이 없습니다."
+      : "북마크한 글이 없습니다.";
   };
 
+  const handleDeleteAccount = useCallback(() => {
+    setShowDeleteSuccess(true);
+    setIsDeleteModalOpen(false);
+
+    setTimeout(() => {
+      setShowDeleteSuccess(false);
+    }, 3000);
+  }, []);
+
+  const handleProfileEditClick = useCallback(() => {
+    setMenuVisible(false);
+    setIsModalOpen(true);
+  }, []);
+
+  const handleDeleteClick = useCallback(() => {
+    setMenuVisible(false);
+    setIsDeleteModalOpen(true);
+  }, []);
+
+  const showEditSuccessMessage = useCallback(() => {
+    setShowEditSuccess(true);
+
+    setTimeout(() => {
+      setShowEditSuccess(false);
+    }, 3000);
+  }, []);
+
   return (
+    <MainLayout>
       <Container>
         <ProfileSection>
-          <SettingsButtonWrapper>
+          <SettingsButtonWrapper ref={settingsButtonRef}>
             <ProfileModifyButton onClick={toggleMenu} />
           </SettingsButtonWrapper>
           {menuVisible && (
             <Menu ref={menuRef}>
-              <MenuItem>프로필 수정</MenuItem>
-              <MenuItem>회원탈퇴</MenuItem>
+              <MenuItem onClick={handleProfileEditClick}>프로필 수정</MenuItem>
+              <MenuItem onClick={handleDeleteClick}>회원탈퇴</MenuItem>
             </Menu>
           )}
           <ProfileImage
@@ -155,21 +224,42 @@ const MyPage = () => {
         </ProfileSection>
         <ContentSection>
           <TabButton
-            isActive={activeTab === "posts"}
+            $isActive={activeTab === "posts"}
             onClick={() => setActiveTab("posts")}
           >
             작성한 글
           </TabButton>
           <TabButton
-            isActive={activeTab === "bookmarks"}
+            $isActive={activeTab === "bookmarks"}
             onClick={() => setActiveTab("bookmarks")}
           >
             북마크
           </TabButton>
         </ContentSection>
         <MessageContainer>{getMessage()}</MessageContainer>
+
+        {isModalOpen && (
+          <ProfileEditModal
+            onClose={() => setIsModalOpen(false)}
+            showSuccessMessage={showEditSuccessMessage}
+          />
+        )}
+        {showEditSuccess && (
+          <SuccessMessage>프로필 수정이 완료되었습니다.</SuccessMessage>
+        )}
+        {isDeleteModalOpen && (
+          <DeleteModal
+            onClose={() => setIsDeleteModalOpen(false)}
+            onConfirm={handleDeleteAccount}
+          />
+        )}
+        {showDeleteSuccess && (
+          <SuccessMessage>탈퇴가 완료되었습니다.</SuccessMessage>
+        )}
       </Container>
+      <WriteButton />
+    </MainLayout>
   );
-};
+});
 
 export default MyPage;
