@@ -41,7 +41,7 @@ const CategoryContainer = styled.div`
 
 const PostSection = styled.div`
   width: 960px;
-  height: 60%;
+  height: 50%;
   margin: 0 auto;
   display: flex;
   justify-content: center;
@@ -58,7 +58,7 @@ const PostContainer = styled.div`
 const NoPostText = styled.p`
   margin: 20px auto;
   font-size: 18px;
-` 
+`;
 
 const MainPage = () => {
   const categoryList: string[] = [
@@ -77,8 +77,12 @@ const MainPage = () => {
   }, []);
 
   const { data, isLoading, isError } = useGetPostData();
-  const postData = data || [];
-
+  const sortedPostData = data?.sort((postA, postB) => {
+    return (
+      new Date(postB.createdAt).getTime() - new Date(postA.createdAt).getTime()
+    );
+  });
+  const postData = sortedPostData || [];
   if (isLoading) {
     return <div>Loading...</div>;
   }
