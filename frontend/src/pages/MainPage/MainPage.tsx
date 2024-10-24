@@ -8,7 +8,7 @@ import { useCallback, useState } from "react";
 import PostCard from "./components/PostCard";
 import { Post } from "@/types/Types";
 import { categoryColors } from "@/styles/Colors";
-import { useGetPostData } from "./hooks/useGetPostData";
+import { useGetCategoryPostData, useGetPostData } from "./hooks/useGetPostData";
 
 const Container = styled.div`
   width: 100%;
@@ -74,14 +74,16 @@ const MainPage = () => {
 
   const handleSelectCategory = useCallback((category: string) => {
     setSelectCategory(category);
+    console.log('선택한 카테고리', category)
   }, []);
 
-  const { data, isLoading, isError } = useGetPostData();
+  const { data, isLoading, isError } = useGetCategoryPostData(selectCategory);
   const sortedPostData = data?.sort((postA, postB) => {
     return (
       new Date(postB.createdAt).getTime() - new Date(postA.createdAt).getTime()
     );
   });
+
   const postData = sortedPostData || [];
   if (isLoading) {
     return <div>Loading...</div>;
