@@ -89,7 +89,7 @@ const LoginForm = () => {
     password: "",
   });
   const [errMsg, setErrorMsg] = useState<ErrorMessage>({});
-  const { mutate: loginMutation } = useLogin();
+  const { mutate: loginMutation } = useLogin(setErrorMsg);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
@@ -116,7 +116,7 @@ const LoginForm = () => {
     };
 
     if (!isValidEmail(loginInfo.email)) {
-      errors.emailErr = "아이디를 정확하게 입력해주세요.";
+      errors.emailErr = "아이디를 올바른 형식으로 입력해주세요.";
     }
     if (!isValidPwd(loginInfo.password)) {
       errors.passwordErr = "비밀번호를 정확하게 입력해주세요.";
