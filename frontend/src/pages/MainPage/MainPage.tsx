@@ -10,6 +10,7 @@ import { Post } from "@/types/Types";
 import { categoryColors } from "@/styles/Colors";
 import { useGetCategoryPostData } from "./hooks/useGetPostData";
 import { useNavigate } from "react-router-dom";
+import { getUserData } from "./apis/userApi";
 
 const Container = styled.div`
   width: 100%;
@@ -72,6 +73,7 @@ const MainPage = () => {
   ];
 
   const [selectCategory, setSelectCategory] = useState("전체");
+  const [userId, setUserId] = useState<string>("");
   const navigate = useNavigate();
 
   const handleSelectCategory = useCallback((category: string) => {
@@ -90,7 +92,16 @@ const MainPage = () => {
     );
   });
 
-  console.log(data)
+  console.log(data);
+
+  const getUserId = useCallback(() => {
+    getUserData().then((user) => {
+      setUserId(user.id);
+    });
+    console.log("userId", userId);
+  }, [userId]);
+
+  getUserId();
 
   const postData = sortedPostData || [];
   if (isLoading) {

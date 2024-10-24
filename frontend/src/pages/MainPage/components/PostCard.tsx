@@ -81,6 +81,7 @@ const PostCard = (props: PostCardProps) => {
 
   const [bookmark, setBookmark] = useState<boolean>(false)
 
+  
   return (
     <>
       <PostCardContainer
@@ -94,7 +95,7 @@ const PostCard = (props: PostCardProps) => {
         <BottomContainer>
           <BookMark onClick={handleCheckBookmark}>
             <BookMarkIcon />
-            {post.likes.length}
+            {/* {post.likes} */}
           </BookMark>
           <UserText>{post.author}</UserText>
         </BottomContainer>

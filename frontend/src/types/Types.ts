@@ -7,8 +7,18 @@ export interface Post {
   author: string;
   authorId: string;
   date: string;
-  likes: string[];
+  bookMarked: string[];
   createdAt: string;
   updatedAt: string;
   __v: 0;
+}
+
+export interface UserMe {
+  id: string;
+  createdAt: string;
+  email: string;
+  nickname: string;
+  profileImage: string;
+  myPosts: Post[];
+  bookMarkedPosts: Post[];
 }

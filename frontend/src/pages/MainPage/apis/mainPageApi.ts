@@ -2,7 +2,6 @@ import { Post } from "@/types/Types";
 import axios, { AxiosInstance } from "axios";
 
 const URL = "http://43.200.164.241:8000";
-const TOKEN = import.meta.env.TOKEN;
 
 // 포스트 전용 axiosClient
 export const postAxiosClient: AxiosInstance = axios.create({
@@ -45,4 +44,3 @@ export const getCategoryPostData = async (
     }
   }
 };
-
