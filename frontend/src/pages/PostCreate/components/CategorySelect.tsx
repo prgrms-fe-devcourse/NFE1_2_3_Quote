@@ -3,16 +3,14 @@ import { useState } from "react";
 import styled from "styled-components";
 
 const CategorySelectContainer = styled.div`
-  width: 100%;
-  margin-top: 40px;
-  padding: 20px 0px;
+  width: 90%;
+  margin-top: 50px;
+  padding-top: 20px;
   display: flex;
   flex-direction: row-reverse;
 `;
 
 const CategorySelectButton = styled.button`
-  width: 100%;
-  height: 50px;
   padding: 0px;
   font-size: 20px;
   color: #303030;
@@ -21,24 +19,31 @@ const CategorySelectButton = styled.button`
   align-items: center;
   border: none;
   background-color: #f3f3f3;
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 const DropBoxButton = styled(DropBoxBtn)`
   font-size: 24px;
   margin-left: 4px;
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 const CategoryListContainer = styled.div`
   width: 135px;
   height: 195px;
   position: absolute;
-  right: -25px;
-  top: 110px;
+  right: 25px;
+  top: 100px;
   background-color: #fff;
   box-shadow: 0px 0px 6px #dfdfdf;
   border: 1px solid #e3e3e3;
   border-radius: 10px;
   overflow: hidden;
+  z-index: 1;
 `;
 
 const CategoryItem = styled.li`
@@ -47,6 +52,7 @@ const CategoryItem = styled.li`
   }
   &:hover {
     background-color: #d4d4d4;
+    cursor: pointer;
   }
   list-style: none;
   font-size: 16px;
@@ -59,14 +65,14 @@ const CategoryItem = styled.li`
 
 interface CategorySelectProps {
   category: string;
-  setCategory: (value: string) => void;
+  setCategory: (item: string) => void;
 }
 
 const CategorySelect = ({ category, setCategory }: CategorySelectProps) => {
   const [showList, setShowList] = useState(false);
   const categoryList = ["도서", "노래", "대사", "인터뷰", "기타"];
-  const handleCategorySelect = (value: string) => {
-    setCategory(value);
+  const handleCategorySelect = (item: string) => {
+    setCategory(item);
     setShowList(!showList);
   };
 
