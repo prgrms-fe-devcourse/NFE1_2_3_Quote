@@ -2,6 +2,9 @@ import { useState } from "react";
 import styled, { keyframes } from "styled-components";
 import CancelPopUp from "./CancelPopUp";
 import CategorySelect from "./CategorySelect";
+import { useMutation } from "@tanstack/react-query";
+import { createPost } from "../apis/api";
+import { useNavigate } from "react-router-dom";
 
 const TitleContainer = styled.div`
   width: 90%;
@@ -15,7 +18,7 @@ const TitleInput = styled.input`
   }
   width: 100%;
   padding: 20px;
-  font-size: 28px;
+  font-size: 26px;
   border: none;
   border-bottom: 1px solid #797979;
   background-color: #f3f3f3;
@@ -79,16 +82,10 @@ const ContentInput = styled.textarea`
   background-color: #f3f3f3;
 `;
 
-const ButtonContainer = styled.div`
-  width: 90%;
-  display: flex;
-  justify-content: center;
-  margin: 20px;
-`;
 const CancelButton = styled.button`
   width: 130px;
   height: 45px;
-  margin: 20px 10px;
+  margin: 40px 10px;
   font-size: 16px;
   color: #474040;
   background-color: #f3f3f3;
@@ -101,7 +98,7 @@ const CancelButton = styled.button`
 const PublishButton = styled.button`
   width: 130px;
   height: 45px;
-  margin: 20px 10px;
+  margin: 40px 10px;
   font-size: 16px;
   color: #f3f3f3;
   background-color: #474040;
@@ -132,7 +129,25 @@ const CreateError = styled.div`
   background-color: #fff;
   box-shadow: 0px 0px 6px #dfdfdf;
   border-radius: 10px;
-  animation: ${fadeOut} 1s ease-in-out 1s forwards;
+  animation: ${fadeOut} 2s ease-in-out 1s forwards;
+`;
+
+const CreateSuccess = styled.div`
+  position: fixed;
+  top: 70px;
+  width: 260px;
+  height: 45px;
+  padding: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #393939;
+  font-size: 16px;
+  font-weight: bold;
+  background-color: #fff;
+  box-shadow: 0px 0px 6px #dfdfdf;
+  border-radius: 10px;
+  animation: ${fadeOut} 2s ease-in-out 1s forwards;
 `;
 
 const CreatePostForm = () => {
@@ -162,10 +177,25 @@ const CreatePostForm = () => {
   const [showCancelPopUp, setShowCancelPopUp] = useState(false);
   const [showMsg, setShowMsg] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const [showSuccessMsg, setShowSuccessMsg] = useState(false);
+  const navigate = useNavigate();
 
   const handleCancel = () => {
     setShowCancelPopUp(!showCancelPopUp);
   };
+
+  const { mutate } = useMutation({
+    mutationFn: createPost,
+    onSuccess: () => {
+      setShowSuccessMsg(true);
+      setTimeout(() => {
+        navigate("/");
+      }, 2000);
+    },
+    onError(error) {
+      console.log(error);
+    },
+  });
 
   const handleCreatePost = () => {
     if (!title.trim()) {
@@ -192,6 +222,12 @@ const CreatePostForm = () => {
       }, 2000);
       return;
     }
+    mutate({
+      title: title,
+      category: category,
+      content: content,
+      quote: quote,
+    });
   };
 
   return (
@@ -237,7 +273,7 @@ const CreatePostForm = () => {
           onChange={handleContentChange}
         />
       </ContentContainer>
-      <ButtonContainer>
+      <div>
         <CancelButton
           type='button'
           onClick={handleCancel}
@@ -245,12 +281,12 @@ const CreatePostForm = () => {
           취소
         </CancelButton>
         <PublishButton
-          type='submit'
+          type='button'
           onClick={handleCreatePost}
         >
           발행
         </PublishButton>
-      </ButtonContainer>
+      </div>
       {showCancelPopUp && (
         <CancelPopUp
           showCancelPopUp={showCancelPopUp}
@@ -258,6 +294,9 @@ const CreatePostForm = () => {
         />
       )}
       {showMsg && <CreateError>{errorMsg}</CreateError>}
+      {showSuccessMsg && (
+        <CreateSuccess>글 작성이 완료되었습니다</CreateSuccess>
+      )}
     </>
   );
 };
