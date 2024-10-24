@@ -8,7 +8,8 @@ import { useCallback, useState } from "react";
 import PostCard from "./components/PostCard";
 import { Post } from "@/types/Types";
 import { categoryColors } from "@/styles/Colors";
-import { useGetCategoryPostData, useGetPostData } from "./hooks/useGetPostData";
+import { useGetCategoryPostData } from "./hooks/useGetPostData";
+import { useNavigate } from "react-router-dom";
 
 const Container = styled.div`
   width: 100%;
@@ -71,10 +72,15 @@ const MainPage = () => {
   ];
 
   const [selectCategory, setSelectCategory] = useState("전체");
+  const navigate = useNavigate();
 
   const handleSelectCategory = useCallback((category: string) => {
     setSelectCategory(category);
-    console.log('선택한 카테고리', category)
+    console.log("선택한 카테고리", category);
+  }, []);
+
+  const handleSelectPost = useCallback((postId: string) => {
+    navigate(`/post/${postId}`);
   }, []);
 
   const { data, isLoading, isError } = useGetCategoryPostData(selectCategory);
@@ -84,12 +90,14 @@ const MainPage = () => {
     );
   });
 
+  console.log(data)
+
   const postData = sortedPostData || [];
   if (isLoading) {
     return <div>Loading...</div>;
   }
   if (isError) {
-    return <div>Error: {isError}</div>;
+    return <div>Error</div>;
   }
 
   return (
@@ -114,10 +122,11 @@ const MainPage = () => {
         <PostSection>
           <PostContainer>
             {postData?.length > 0 ? (
-              postData.map((post: Post, index: number) => (
+              postData.map((post: Post) => (
                 <PostCard
-                  key={index}
+                  key={post._id}
                   post={post}
+                  onClick={() => handleSelectPost(post._id)}
                 />
               ))
             ) : (

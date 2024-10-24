@@ -2,6 +2,7 @@ import { Post } from "@/types/Types";
 import axios, { AxiosInstance } from "axios";
 
 const URL = "http://43.200.164.241:8000";
+const TOKEN = import.meta.env.TOKEN;
 
 // 포스트 전용 axiosClient
 export const postAxiosClient: AxiosInstance = axios.create({
@@ -27,16 +28,21 @@ export const getPostData = async (): Promise<Post[]> => {
 };
 
 //특정 카테고리 포스트 목록 불러오기
-export const getCategoryPostData = async (category : string) : Promise<Post[]> => {
+export const getCategoryPostData = async (
+  category: string,
+): Promise<Post[]> => {
   try {
-    console.log('url 카테고리', category)
-    const response = await postAxiosClient.get(`${URL}/posts/quote/${category}`)
+    console.log("url 카테고리", category);
+    const response = await postAxiosClient.get(
+      `${URL}/posts/quote/${category}`,
+    );
     return response.data.data;
-  }catch(error) {
+  } catch (error) {
     if (axios.isAxiosError(error)) {
       throw new Error(`서버 통신 실패`);
     } else {
       throw new Error("포스트 불러오기 실패");
     }
   }
-}
+};
+

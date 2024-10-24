@@ -1,5 +1,5 @@
 import { Post } from "@/types/Types";
-import { useQueries, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { getCategoryPostData, getPostData } from "../apis/mainPageApi";
 
 //포스트 목록

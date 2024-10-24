@@ -2,6 +2,7 @@ import styled from "styled-components";
 import BookMarkIcon from "@assets/icons/bookMark_before_select.svg?react";
 import { Post } from "@/types/Types";
 import { categoryColors } from "@/styles/Colors";
+import { useCallback, useState } from "react";
 
 const PostCardContainer = styled.div`
   width: 270px;
@@ -14,6 +15,7 @@ const PostCardContainer = styled.div`
   overflow: hidden;
   background-color: ${(props) => props.color};
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
 `;
 
 const PostContentContainer = styled.div`
@@ -67,22 +69,32 @@ const UserText = styled.p`
 
 interface PostCardProps {
   post: Post;
+  onClick: () => void;
 }
 
 const PostCard = (props: PostCardProps) => {
-  const { post } = props;
+  const { post, onClick } = props;
+  
+  const handleCheckBookmark = useCallback(() => {
+
+  }, [])
+
+  const [bookmark, setBookmark] = useState<boolean>(false)
 
   return (
     <>
-      <PostCardContainer color={categoryColors[post.category].bgColor}>
+      <PostCardContainer
+        color={categoryColors[post.category].bgColor}
+        onClick={onClick}
+      >
         <PostContentContainer color={categoryColors[post.category].fontColor}>
           <PostContent>{post.quote}</PostContent>
           <PostTitle>{post.title}</PostTitle>
         </PostContentContainer>
         <BottomContainer>
-          <BookMark>
+          <BookMark onClick={handleCheckBookmark}>
             <BookMarkIcon />
-            {post.likes}
+            {post.likes.length}
           </BookMark>
           <UserText>{post.author}</UserText>
         </BottomContainer>

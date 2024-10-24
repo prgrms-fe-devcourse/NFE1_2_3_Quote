@@ -7,7 +7,7 @@ export interface Post {
   author: string;
   authorId: string;
   date: string;
-  likes: string;
+  likes: string[];
   createdAt: string;
   updatedAt: string;
   __v: 0;
