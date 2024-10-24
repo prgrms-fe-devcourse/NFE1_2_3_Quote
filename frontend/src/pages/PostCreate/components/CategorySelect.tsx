@@ -10,7 +10,6 @@ const CategorySelectContainer = styled.div`
 `;
 
 const CategorySelectButton = styled.button`
-  width: 90%;
   height: 50px;
   padding: 0px;
   font-size: 20px;
@@ -20,11 +19,17 @@ const CategorySelectButton = styled.button`
   align-items: center;
   border: none;
   background-color: #f3f3f3;
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 const DropBoxButton = styled(DropBoxBtn)`
   font-size: 24px;
   margin-left: 4px;
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 const CategoryListContainer = styled.div`
@@ -38,6 +43,7 @@ const CategoryListContainer = styled.div`
   border: 1px solid #e3e3e3;
   border-radius: 10px;
   overflow: hidden;
+  z-index: 1;
 `;
 
 const CategoryItem = styled.li`
@@ -46,6 +52,7 @@ const CategoryItem = styled.li`
   }
   &:hover {
     background-color: #d4d4d4;
+    cursor: pointer;
   }
   list-style: none;
   font-size: 16px;
@@ -58,14 +65,14 @@ const CategoryItem = styled.li`
 
 interface CategorySelectProps {
   category: string;
-  setCategory: (value: string) => void;
+  setCategory: (item: string) => void;
 }
 
 const CategorySelect = ({ category, setCategory }: CategorySelectProps) => {
   const [showList, setShowList] = useState(false);
   const categoryList = ["도서", "노래", "대사", "인터뷰", "기타"];
-  const handleCategorySelect = (value: string) => {
-    setCategory(value);
+  const handleCategorySelect = (item: string) => {
+    setCategory(item);
     setShowList(!showList);
   };
 
