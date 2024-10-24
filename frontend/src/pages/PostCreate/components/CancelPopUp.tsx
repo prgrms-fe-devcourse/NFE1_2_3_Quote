@@ -6,7 +6,7 @@ const PopUpContainer = styled.div`
   height: 200px;
   position: absolute;
   display: flex;
-  top: 210px;
+  top: 240px;
   flex-direction: column;
   justify-content: center;
   align-items: center;

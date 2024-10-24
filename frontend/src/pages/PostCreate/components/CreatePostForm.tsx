@@ -1,5 +1,5 @@
 import { useState } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import CancelPopUp from "./CancelPopUp";
 import CategorySelect from "./CategorySelect";
 
@@ -25,7 +25,7 @@ const TitleText = styled.p`
   color: #a7a7a7;
   position: absolute;
   right: 55px;
-  top: 90px;
+  top: 120px;
   margin: 12px;
 `;
 
@@ -54,7 +54,7 @@ const QuoteText = styled.p`
   color: #a7a7a7;
   position: absolute;
   right: 55px;
-  top: 260px;
+  top: 290px;
   margin: 12px;
 `;
 
@@ -112,6 +112,29 @@ const PublishButton = styled.button`
   }
 `;
 
+const fadeOut = keyframes`
+  0% { opacity: 1; }
+  100% { opacity: 0; }
+`;
+
+const CreateError = styled.div`
+  position: fixed;
+  top: 70px;
+  width: 260px;
+  height: 45px;
+  padding: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #d72121;
+  font-size: 16px;
+  font-weight: bold;
+  background-color: #fff;
+  box-shadow: 0px 0px 6px #dfdfdf;
+  border-radius: 10px;
+  animation: ${fadeOut} 1s ease-in-out 1s forwards;
+`;
+
 const CreatePostForm = () => {
   const [category, setCategory] = useState("도서");
   const [title, setTitle] = useState("");
@@ -137,9 +160,38 @@ const CreatePostForm = () => {
   };
 
   const [showCancelPopUp, setShowCancelPopUp] = useState(false);
+  const [showMsg, setShowMsg] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
   const handleCancel = () => {
     setShowCancelPopUp(!showCancelPopUp);
+  };
+
+  const handleCreatePost = () => {
+    if (!title.trim()) {
+      setShowMsg(true);
+      setErrorMsg("제목을 입력해주세요.");
+      setTimeout(() => {
+        setShowMsg(false);
+      }, 2000);
+      return;
+    }
+    if (!quote.trim()) {
+      setShowMsg(true);
+      setErrorMsg("문장을 입력해주세요.");
+      setTimeout(() => {
+        setShowMsg(false);
+      }, 2000);
+      return;
+    }
+    if (!content.trim()) {
+      setShowMsg(true);
+      setErrorMsg("본문을 입력해주세요.");
+      setTimeout(() => {
+        setShowMsg(false);
+      }, 2000);
+      return;
+    }
   };
 
   return (
@@ -192,7 +244,12 @@ const CreatePostForm = () => {
         >
           취소
         </CancelButton>
-        <PublishButton type='submit'>발행</PublishButton>
+        <PublishButton
+          type='submit'
+          onClick={handleCreatePost}
+        >
+          발행
+        </PublishButton>
       </ButtonContainer>
       {showCancelPopUp && (
         <CancelPopUp
@@ -200,6 +257,7 @@ const CreatePostForm = () => {
           setShowCancelPopUp={setShowCancelPopUp}
         />
       )}
+      {showMsg && <CreateError>{errorMsg}</CreateError>}
     </>
   );
 };

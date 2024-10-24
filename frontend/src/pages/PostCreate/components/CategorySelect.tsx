@@ -4,13 +4,13 @@ import styled from "styled-components";
 
 const CategorySelectContainer = styled.div`
   width: 90%;
-  margin-top: 20px;
+  margin-top: 50px;
+  padding-top: 20px;
   display: flex;
   flex-direction: row-reverse;
 `;
 
 const CategorySelectButton = styled.button`
-  height: 50px;
   padding: 0px;
   font-size: 20px;
   color: #303030;
@@ -37,7 +37,7 @@ const CategoryListContainer = styled.div`
   height: 195px;
   position: absolute;
   right: 25px;
-  top: 70px;
+  top: 100px;
   background-color: #fff;
   box-shadow: 0px 0px 6px #dfdfdf;
   border: 1px solid #e3e3e3;
