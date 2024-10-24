@@ -11,7 +11,7 @@ export const loginRequest = async (user: LoginData) => {
   try {
     const res = await authAxiosClient.post('/users/signin', user);
 
-    if (res.status === 200) {
+    if (res.status === 200 || res.status === 201) {
       console.log("Login Success");
       return res.data; 
     } 
@@ -31,18 +31,5 @@ export const loginRequest = async (user: LoginData) => {
       console.error("Unexpected Error");
       throw err;
     }
-  }
-}
-
-//로그아웃
-export const logout = () => {
-  try {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      throw new Error('Token does not exist');
-    } 
-    localStorage.removeItem('token');
-  } catch (err) {
-    console.error("Logout failed");
   }
 }

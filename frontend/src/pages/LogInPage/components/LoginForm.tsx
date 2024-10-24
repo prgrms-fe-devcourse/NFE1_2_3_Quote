@@ -119,7 +119,7 @@ const LoginForm = () => {
       errors.emailErr = "아이디를 올바른 형식으로 입력해주세요.";
     }
     if (!isValidPwd(loginInfo.password)) {
-      errors.passwordErr = "비밀번호를 정확하게 입력해주세요.";
+      errors.passwordErr = "비밀번호를 올바른 형식으로 입력해주세요.";
     }
 
     return errors;
