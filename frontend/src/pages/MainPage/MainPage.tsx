@@ -4,7 +4,7 @@ import MainImage from "@assets/images/mainImage.png";
 import styled from "styled-components";
 import Search from "./components/Search";
 import CategoryMark from "./components/CategoryMark";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import PostCard from "./components/PostCard";
 import { Post } from "@/types/Types";
 import { categoryColors } from "@/styles/Colors";
@@ -62,18 +62,19 @@ const NoPostText = styled.p`
   font-size: 18px;
 `;
 
-const MainPage = () => {
-  const categoryList: string[] = [
-    "전체",
-    "도서",
-    "노래",
-    "대사",
-    "인터뷰",
-    "기타",
-  ];
+//상수로 빼기
+const CATEGORY_LIST: string[] = [
+  "전체",
+  "도서",
+  "노래",
+  "대사",
+  "인터뷰",
+  "기타",
+];
 
+const MainPage = () => {
   const [selectCategory, setSelectCategory] = useState("전체");
-  const [userId, setUserId] = useState<string>("");
+  const [userId, setUserId] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const handleSelectCategory = useCallback((category: string) => {
@@ -91,18 +92,17 @@ const MainPage = () => {
     );
   });
 
-
-  const getUserId = useCallback(() => {
-    getUserData().then((user) => {
+  useEffect(() => {
+    const getUserId = async () => {
+      const user = await getUserData();
       setUserId(user.id);
-    });
-    console.log("userId", userId);
-  }, [userId]);
-
-  getUserId();
+      console.log(user.id)
+    };
+    getUserId();
+  }, []);
 
   const postData = sortedPostData || [];
-  if (isLoading) {
+  if (isLoading || !userId) {
     return <div>Loading...</div>;
   }
   if (isError) {
@@ -115,7 +115,7 @@ const MainPage = () => {
         <TopSection>
           <Search />
           <CategoryContainer>
-            {categoryList.map((category, index) => (
+            {CATEGORY_LIST.map((category, index) => (
               <CategoryMark
                 key={index}
                 category={category}

@@ -1,6 +1,6 @@
 import { Post } from "@/types/Types";
 import { useQuery } from "@tanstack/react-query";
-import { getCategoryPostData, getPostData } from "../apis/mainPageApi";
+import { getCategoryPostData, getPostData } from "../apis/postApi";
 
 //포스트 목록
 export const useGetPostData = () => {

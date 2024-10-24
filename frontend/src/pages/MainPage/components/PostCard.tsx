@@ -5,6 +5,7 @@ import { Post } from "@/types/Types";
 import { categoryColors } from "@/styles/Colors";
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { postBookmark } from "../apis/bookmarkApi";
 
 const PostCardContainer = styled.div`
   width: 270px;
@@ -82,19 +83,35 @@ interface PostCardProps {
 const PostCard = (props: PostCardProps) => {
   const { post, userId, onClick } = props;
 
-  const handleCheckBookmark = useCallback(() => {}, []);
+  //북마크 표시
   const [bookmark, setBookmark] = useState<boolean>(false);
-
+  const [bookmarkCount, setBookmarkCount] = useState<number>(
+    post.bookMarked.length,
+  );
   useEffect(() => {
     const isBookmark = post.bookMarked
       .map((user) => user.userId)
       .includes(userId);
     setBookmark(isBookmark);
   }, []);
+
+  //북마크 눌렀을 때
+  const handleCheckBookmark = useCallback(() => {
+    postBookmark(post._id);
+    setBookmark(!bookmark);
+    if (bookmark) {
+      setBookmarkCount((prev) => prev - 1);
+    } else {
+      setBookmarkCount((prev) => prev + 1);
+    }
+  }, [bookmark]);
+
+  //작성자 닉네임 눌렀을 때 페이지 이동
   const navigate = useNavigate();
   const handleSelectAuthor = useCallback(() => {
     navigate(`/user-page/${post.authorId}`);
   }, []);
+
   return (
     <>
       <PostCardContainer color={categoryColors[post.category].bgColor}>
@@ -108,7 +125,7 @@ const PostCard = (props: PostCardProps) => {
         <BottomContainer>
           <BookMark onClick={handleCheckBookmark}>
             {bookmark ? <BookMarkAfter /> : <BookMarkBefore />}
-            {/* {post.likes} */}
+            {bookmarkCount}
           </BookMark>
           <UserText onClick={handleSelectAuthor}>{post.author}</UserText>
         </BottomContainer>
