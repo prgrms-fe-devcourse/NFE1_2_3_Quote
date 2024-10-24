@@ -3,6 +3,7 @@ import MainPage from "@/pages/MainPage/MainPage";
 import MyPage from "@/pages/MyPages/MyPage";
 import CreatePost from "@/pages/PostCreate/CreatePost";
 import SignUpPage from "@/pages/SignUpPage/SignUpPage";
+import UserPage from "@/pages/UserPages/UserPage";
 import { createBrowserRouter } from "react-router-dom";
 
 const router = createBrowserRouter([
@@ -32,7 +33,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/user-page/:userId",
-    // element:
+    element: <UserPage/>
   },
 ]);
 
