@@ -7,7 +7,7 @@ export interface Post {
   author: string;
   authorId: string;
   date: string;
-  bookMarked: string[];
+  bookMarked: { [key: string]: string }[];
   createdAt: string;
   updatedAt: string;
   __v: 0;

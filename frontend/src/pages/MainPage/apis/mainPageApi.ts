@@ -31,7 +31,6 @@ export const getCategoryPostData = async (
   category: string,
 ): Promise<Post[]> => {
   try {
-    console.log("url 카테고리", category);
     const response = await postAxiosClient.get(
       `${URL}/posts/quote/${category}`,
     );

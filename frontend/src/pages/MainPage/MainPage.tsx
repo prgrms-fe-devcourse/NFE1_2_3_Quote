@@ -78,7 +78,6 @@ const MainPage = () => {
 
   const handleSelectCategory = useCallback((category: string) => {
     setSelectCategory(category);
-    console.log("선택한 카테고리", category);
   }, []);
 
   const handleSelectPost = useCallback((postId: string) => {
@@ -92,7 +91,6 @@ const MainPage = () => {
     );
   });
 
-  console.log(data);
 
   const getUserId = useCallback(() => {
     getUserData().then((user) => {
@@ -137,6 +135,7 @@ const MainPage = () => {
                 <PostCard
                   key={post._id}
                   post={post}
+                  userId={userId}
                   onClick={() => handleSelectPost(post._id)}
                 />
               ))

@@ -23,7 +23,6 @@ export const useGetPostData = () => {
 // };
 
 export const useGetCategoryPostData = (category: string) => {
-  console.log('넘겨온 카테고리', category)
   const { data, isLoading, isError } = useQuery<Post[]>({
     queryKey: ["categoryPost", category],
     queryFn: () =>
