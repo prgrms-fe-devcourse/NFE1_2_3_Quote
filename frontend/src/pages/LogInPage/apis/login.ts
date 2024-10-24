@@ -22,7 +22,10 @@ export const loginRequest = async (user: LoginData) => {
         console.error("Server error");
       }
 
-      return null;
+      throw err;
+    } else {
+      console.error("Unexpected Error");
+      throw err;
     }
   }
 }

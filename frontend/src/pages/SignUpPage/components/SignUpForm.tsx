@@ -1,8 +1,8 @@
 import MainLayout from "@/layouts/MainLayout";
 import { ChangeEvent, FormEvent, useState } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import logo from "@assets/images/quoteLogo.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSignUp } from "../hooks/useSignUp";
 
 const Container = styled.div`
@@ -24,7 +24,7 @@ const InputDiv = styled.div`
 const InputStyle = styled.input`
   width: 400px;
   height: 46px;
-  font-size: 12px;
+  font-size: 14px;
   outline-style: none;
   border-radius: 10px;
   border: 0.9px solid black;
@@ -46,7 +46,7 @@ const InputStyle = styled.input`
 `;
 const ErrorMessage = styled.div`
   color: #d72121;
-  font-size: 10px;
+  font-size: 12px;
   margin: 6px 0 0 10px;
 `;
 const SignUpBtn = styled.button`
@@ -72,6 +72,10 @@ const CopyRight = styled.span`
   font-weight: bold;
   color: #474040;
 `;
+const fadeOut = keyframes`
+  0% { opacity: 1; }
+  100% { opacity: 0; }
+`;
 const AlertStyle = styled.div`
   width: 200px;
   font-size: 14px;
@@ -86,6 +90,8 @@ const AlertStyle = styled.div`
   transform: translate(-50%, 5%);
   border-radius: 10px;
   box-shadow: 0 0 5px gray;
+  opacity: 1;
+  animation: ${fadeOut} 2s ease-in-out 1s forwards;
 `;
 
 interface SignUpData {
@@ -104,16 +110,26 @@ export interface ErrorMessage {
 }
 
 const SignUpForm = () => {
+  const navigate = useNavigate();
   const [info, setInfo] = useState<SignUpData>({
     nickname: "",
     email: "",
     password: "",
     checkPwd: "",
   });
-  const [alert, setAlert] = useState("alert");
+  const [alert, setAlert] = useState("");
   const [errMsg, setErrorMsg] = useState<ErrorMessage>({});
+
+  const showAlert = () => {
+    setAlert("회원가입이 완료되었습니다.");
+    setTimeout(() => {
+      setAlert("");
+      navigate("/login");
+    }, 2000);
+  };
+
   const { mutate: signUp } = useSignUp({
-    setAlert: setAlert,
+    showAlert: showAlert,
     setError: setErrorMsg,
   });
 
@@ -167,7 +183,7 @@ const SignUpForm = () => {
     }
     if (!isValidPwd(info.password)) {
       errors.passwordErr =
-        "비밀번호는 영문 대소문자, 숫자, 특수문자를 포함하여 8~15자 이내로 입력해주세요.";
+        "비밀번호는 영문, 숫자, 특수문자를 포함하여 8~15자 이내로 입력해주세요.";
     }
     if (!doubleCheckPwd(info.checkPwd)) {
       errors.checkPwdErr = "비밀번호가 일치하지 않습니다.";
@@ -237,7 +253,7 @@ const SignUpForm = () => {
           <InputDiv>
             <InputStyle
               type='password'
-              placeholder='비밀번호 입력(영문 대소문자, 숫자, 특수문자 포함 8~15자)'
+              placeholder='비밀번호 입력(영문, 숫자, 특수문자 포함 8~15자)'
               name='password'
               value={info.password}
               onChange={handleChange}

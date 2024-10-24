@@ -24,7 +24,7 @@ const InputDiv = styled.div`
 const InputStyle = styled.input`
   width: 400px;
   height: 46px;
-  font-size: 12px;
+  font-size: 14px;
   outline-style: none;
   border-radius: 10px;
   border: 0.9px solid black;

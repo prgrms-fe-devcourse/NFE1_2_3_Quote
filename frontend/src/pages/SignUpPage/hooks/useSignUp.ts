@@ -5,17 +5,17 @@ import axios from "axios";
 import { ErrorMessage } from "../components/SignUpForm";
 
 interface setFunc {
-  setAlert: Dispatch<React.SetStateAction<string>>;
+  showAlert: () => void;
   setError: Dispatch<React.SetStateAction<ErrorMessage>>;
 }
 
-export const useSignUp = ({setAlert, setError}: setFunc) => {
+export const useSignUp = ({showAlert, setError}: setFunc) => {
   const signUpMutation = useMutation({
     mutationFn: signUpRequest,
 
     onSuccess: () => {
       console.log("SignUp Success");
-      setAlert('회원가입이 완료되었습니다.');
+      showAlert();
     },
     onError: (error) => {
       if (axios.isAxiosError(error) && error.response?.status === 400) {
