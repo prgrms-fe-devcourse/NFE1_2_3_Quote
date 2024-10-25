@@ -7,6 +7,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { postBookmark } from "../apis/bookmarkApi";
 import { useAuthStore } from "@/pages/LogInPage/store/authStore";
+import { useBookmarkMutation } from "../hooks/useBookmarkMutation";
 
 const PostCardContainer = styled.div`
   width: 270px;
@@ -99,20 +100,17 @@ const PostCard = (props: PostCardProps) => {
     setBookmark(isBookmark);
   }, [post.bookMarked]);
 
+  const { mutate: addBookmark } = useBookmarkMutation(post, bookmark, userId);
   //북마크 눌렀을 때
   const handleCheckBookmark = useCallback(() => {
     if (!isLogin) {
       navigate("/login");
       return;
     }
-    postBookmark(post._id);
+    addBookmark(post._id);
     setBookmark(!bookmark);
-    if (bookmark) {
-      setBookmarkCount((prev) => prev - 1);
-    } else {
-      setBookmarkCount((prev) => prev + 1);
-    }
-  }, [bookmark]);
+    setBookmarkCount((prevCount) => (bookmark ? prevCount - 1 : prevCount + 1))
+  }, [isLogin, addBookmark, post._id, bookmark]);
 
   //작성자 닉네임 눌렀을 때 페이지 이동
   const navigate = useNavigate();
@@ -137,7 +135,7 @@ const PostCard = (props: PostCardProps) => {
         <BottomContainer>
           <BookMark onClick={handleCheckBookmark}>
             {bookmark ? <BookMarkAfter /> : <BookMarkBefore />}
-            {bookmarkCount}
+            {post.bookMarked.length}
           </BookMark>
           <UserText onClick={handleSelectAuthor}>
             {post.authorId.nickname}

@@ -1,7 +1,6 @@
 import axios from "axios";
 import { userAxiosClient } from "./userApi";
 
-const URL = "http://43.200.164.241:8000";
 
 export const postBookmark = async (postId: string) => {
   try {
