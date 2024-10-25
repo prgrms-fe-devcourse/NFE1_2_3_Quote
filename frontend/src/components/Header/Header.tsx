@@ -30,6 +30,7 @@ const ButtonContainer = styled.div`
 
 const Logo = styled.img`
   padding: 10px;
+  cursor: pointer;
 `;
 
 const StyledModeButton = styled.div`
@@ -66,7 +67,9 @@ const Profile = styled.div`
 `;
 
 const Header = () => {
-  const [mode, setMode] = useState<boolean>(false);
+  const [mode, setMode] = useState<boolean>(
+    localStorage.getItem("darkMode") === "true",
+  );
   const [logoutModal, setLogoutModal] = useState<boolean>(false);
   // const [isLogin, setIsLogin] = useState<boolean>(true);
   const { isLogin } = useAuthStore();
@@ -82,10 +85,21 @@ const Header = () => {
     }
   };
 
+  const handleLogoClick = () => {
+    navigate("/");
+  };
+
+  const handleProfileClick = () => {
+    navigate("/mypage");
+  };
+
   return (
     <>
       <HeaderContainer>
-        <Logo src={logo} />
+        <Logo
+          src={logo}
+          onClick={handleLogoClick}
+        />
         <ButtonContainer>
           <StyledModeButton onClick={() => setMode(!mode)}>
             {mode ? <LightModeButton /> : <DarkModeButton />}
@@ -95,7 +109,10 @@ const Header = () => {
           </LoginButton>
           {isLogin && (
             <Profile>
-              <img src={profile} />
+              <img
+                src={profile}
+                onClick={handleProfileClick}
+              />
             </Profile>
           )}
         </ButtonContainer>
