@@ -1,12 +1,13 @@
 import axios from "axios";
 import { postAxiosClient } from "./postApi";
+import { userAxiosClient } from "./userApi";
 
 const URL = "http://43.200.164.241:8000";
 
 export const getSearchPost = async (title: string, category : string) => {
   try {
-    const response = await postAxiosClient.get(`${URL}/posts/search?title=${title}&category=${category}`);
-    console.log(response)
+    const response = await userAxiosClient.get(`${URL}/posts/search?title=${title}&category=${category}`);
+    console.log(response.data)
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {

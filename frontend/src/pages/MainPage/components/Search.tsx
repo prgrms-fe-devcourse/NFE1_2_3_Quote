@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import SearchButton from "@assets/icons/search_button.svg?react";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { getSearchPost } from "../apis/searchApi";
 
 const SearchContainer = styled.div`
@@ -44,17 +44,41 @@ const StyledSearchButton = styled(SearchButton)`
 `;
 
 const Search = () => {
-  const [searchWord, setSearchWord] = useState<string>('지금')
+  const [searchWord, setSearchWord] = useState<string>("");
+  const inputRef = useRef<HTMLInputElement>(null);
   const handleSearchTitle = useCallback(() => {
-    getSearchPost(searchWord, "전체")
-  }, []);
+    if (!searchWord) {
+      console.log("검색어를 입력해주세요");
+      return;
+    }
+    getSearchPost(searchWord, "");
+  }, [searchWord]);
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleSearchTitle();
+    }
+  };
+
+  const handleResetSearch = useCallback(() => {
+    if(inputRef.current) {
+      inputRef.current.value = ""
+    }
+    setSearchWord('')
+  }, [])
 
   return (
     <>
       <SearchContainer>
-        <ResetSearchButton>검색 초기화</ResetSearchButton>
+        <ResetSearchButton onClick={handleResetSearch}>검색 초기화</ResetSearchButton>
         <SearchInputContainer>
-          <SearchInput placeholder='제목을 입력해주세요.' />
+          <SearchInput
+            type='text'
+            placeholder='제목을 입력해주세요.'
+            ref={inputRef}
+            onChange={() => setSearchWord(inputRef.current?.value || "")}
+            onKeyDown={handleKeyDown}
+          />
           <StyledSearchButton onClick={handleSearchTitle} />
         </SearchInputContainer>
       </SearchContainer>
