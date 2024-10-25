@@ -68,6 +68,7 @@ const LogoutModal = ({ isModalOpen, onClose }: LogoutModal) => {
     } else {
       onClose();
     }
+    window.location.reload();
   };
 
   return (

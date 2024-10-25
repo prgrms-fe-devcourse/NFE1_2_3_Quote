@@ -6,7 +6,7 @@ interface StoreState {
   storeLogout: () => void;
 }
 
-const getToken = () => {
+export const getToken = () => {
   const token = localStorage.getItem('token');
   return token;
 }
