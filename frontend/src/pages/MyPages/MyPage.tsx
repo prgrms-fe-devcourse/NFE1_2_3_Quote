@@ -1,6 +1,11 @@
+import { useNavigate } from "react-router-dom";
 import { useState, useRef, useEffect, useCallback, memo } from "react";
 import styled, { keyframes } from "styled-components";
-import { fetchUserProfile, UserProfile } from "./apis/mypage";
+import {
+  fetchUserProfile,
+  UserProfile,
+  deleteUserAccount,
+} from "./apis/mypage";
 import ProfileModifyButton from "@assets/icons/profile_modify_button.svg?react";
 import profile from "@assets/images/profile.png";
 import MainLayout from "@/layouts/MainLayout";
@@ -8,6 +13,7 @@ import WriteButton from "@/components/WriteButton/WriteButton";
 import ProfileEditModal from "@/pages/MyPages/components/ProfileEditModal";
 import DeleteModal from "@/pages/MyPages/components/DeleteModal";
 import PostCard from "./components/PostCard";
+import { useAuthStore } from "@/pages/LogInPage/store/authStore";
 
 // Styled Components
 
@@ -148,6 +154,8 @@ const MyPage = memo(() => {
   const [showEditSuccess, setShowEditSuccess] = useState(false);
   const [showDeleteSuccess, setShowDeleteSuccess] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const navigate = useNavigate();
+  const { storeLogout } = useAuthStore();
 
   const menuRef = useRef<HTMLDivElement>(null);
   const settingsButtonRef = useRef<HTMLDivElement>(null);
@@ -203,14 +211,22 @@ const MyPage = memo(() => {
       <MessageContainer>{emptyMessage}</MessageContainer>
     );
 
-  const handleDeleteAccount = useCallback(() => {
-    setShowDeleteSuccess(true);
-    setIsDeleteModalOpen(false);
+  const handleDeleteAccount = async () => {
+    try {
+      await deleteUserAccount();
+      localStorage.removeItem("token");
+      setShowDeleteSuccess(true);
 
-    setTimeout(() => {
-      setShowDeleteSuccess(false);
-    }, 3000);
-  }, []);
+      setTimeout(() => {
+        setShowDeleteSuccess(false);
+        navigate("/");
+        storeLogout();
+      }, 3000);
+    } catch (error) {
+      console.error("탈퇴 실패:", error);
+      alert("탈퇴에 실패했습니다. 다시 시도해 주세요.");
+    }
+  };
 
   const handleProfileEditClick = useCallback(() => {
     setMenuVisible(false);

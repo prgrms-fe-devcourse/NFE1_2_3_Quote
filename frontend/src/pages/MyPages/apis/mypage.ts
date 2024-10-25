@@ -12,7 +12,7 @@ export interface UserProfile {
 
 // 공통 헤더 설정 함수
 const getAuthHeaders = () => ({
-  Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+  Authorization: `Bearer ${localStorage.getItem("token")}`,
 });
 
 // 사용자 프로필 조회 함수
@@ -51,6 +51,22 @@ export async function updateNickname(nickname: string) {
     { headers: getAuthHeaders() }
   );
   validateResponse(response, "닉네임 변경에 실패했습니다.");
+}
+
+// 회원탈퇴 함수
+export async function deleteUserAccount() {
+  try {
+    const headers = getAuthHeaders();
+    const response = await authAxiosClient.delete("/users", { headers });
+    
+    if (response.status !== 200) {
+      console.error("응답 상태 코드:", response.status);
+      throw new Error("회원 탈퇴에 실패했습니다.");
+    }
+  } catch (error) {
+    console.error("회원 탈퇴 요청 실패:", error);
+    throw error;
+  }
 }
 
 // 응답 유효성 검사 함수
