@@ -1,14 +1,5 @@
 import { authAxiosClient } from "@/pages/SignUpPage/apis/signUp";
-
-// 사용자 프로필 인터페이스 정의
-export interface UserProfile {
-  id: string;
-  email: string;
-  nickname: string;
-  profileImage: string;
-  myPosts: any[];
-  bookMarkedPosts: any[];
-}
+import { UserMe } from "@/types/Types";
 
 // 공통 헤더 설정 함수
 const getAuthHeaders = () => ({
@@ -16,7 +7,7 @@ const getAuthHeaders = () => ({
 });
 
 // 사용자 프로필 조회 함수
-export async function fetchUserProfile() {
+export async function fetchUserProfile(): Promise<UserMe> {
   const response = await authAxiosClient.get("/users/me", {
     headers: getAuthHeaders(),
   });
@@ -26,7 +17,7 @@ export async function fetchUserProfile() {
 }
 
 // 프로필 이미지 업로드 함수
-export async function uploadProfileImage(file: File) {
+export async function uploadProfileImage(file: File): Promise<string> {
   validateFileType(file);
 
   const formData = new FormData();
@@ -44,21 +35,22 @@ export async function uploadProfileImage(file: File) {
 }
 
 // 닉네임 변경 함수
-export async function updateNickname(nickname: string) {
+export async function updateNickname(nickname: string): Promise<void> {
   const response = await authAxiosClient.patch(
     "/users",
     { nickname },
-    { headers: getAuthHeaders() }
+    { headers: getAuthHeaders() },
   );
   validateResponse(response, "닉네임 변경에 실패했습니다.");
 }
 
 // 회원탈퇴 함수
-export async function deleteUserAccount() {
+export async function deleteUserAccount(): Promise<void> {
   try {
-    const headers = getAuthHeaders();
-    const response = await authAxiosClient.delete("/users", { headers });
-    
+    const response = await authAxiosClient.delete("/users", {
+      headers: getAuthHeaders(),
+    });
+
     if (response.status !== 200) {
       console.error("응답 상태 코드:", response.status);
       throw new Error("회원 탈퇴에 실패했습니다.");
@@ -77,7 +69,7 @@ const validateResponse = (response: any, errorMessage: string) => {
   if (!response.data?.success) {
     throw new Error(errorMessage);
   }
-}
+};
 
 // 파일 형식 검사 함수
 const validateFileType = (file: File) => {
@@ -85,4 +77,4 @@ const validateFileType = (file: File) => {
   if (!validTypes.includes(file.type)) {
     throw new Error("PNG 또는 JPEG 파일만 업로드할 수 있습니다.");
   }
-}
+};

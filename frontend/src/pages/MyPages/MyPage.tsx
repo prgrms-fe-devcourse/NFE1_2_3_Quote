@@ -3,9 +3,9 @@ import { useState, useRef, useEffect, useCallback, memo } from "react";
 import styled, { keyframes } from "styled-components";
 import {
   fetchUserProfile,
-  UserProfile,
   deleteUserAccount,
 } from "./apis/mypage";
+import { UserMe } from "@/types/Types"
 import ProfileModifyButton from "@assets/icons/profile_modify_button.svg?react";
 import profile from "@assets/images/profile.png";
 import MainLayout from "@/layouts/MainLayout";
@@ -147,7 +147,7 @@ const MenuItem = styled.button`
 `;
 
 const MyPage = memo(() => {
-  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [userProfile, setUserProfile] = useState<UserMe | null>(null);
   const [activeTab, setActiveTab] = useState("posts");
   const [menuVisible, setMenuVisible] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
