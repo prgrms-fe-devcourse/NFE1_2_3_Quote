@@ -6,6 +6,7 @@ import { categoryColors } from "@/styles/Colors";
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { postBookmark } from "../apis/bookmarkApi";
+import { useQueryClient } from "@tanstack/react-query";
 
 const PostCardContainer = styled.div`
   width: 270px;
@@ -94,16 +95,20 @@ const PostCard = (props: PostCardProps) => {
       .includes(userId);
     setBookmark(isBookmark);
   }, []);
+  const queryClient = useQueryClient();
 
   //북마크 눌렀을 때
   const handleCheckBookmark = useCallback(() => {
     postBookmark(post._id);
+    queryClient.invalidateQueries({
+      queryKey: ["categoryPost"],
+    });
     setBookmark(!bookmark);
-    if (bookmark) {
-      setBookmarkCount((prev) => prev - 1);
-    } else {
-      setBookmarkCount((prev) => prev + 1);
-    }
+    // if (bookmark) {
+    //   setBookmarkCount((prev) => prev - 1);
+    // } else {
+    //   setBookmarkCount((prev) => prev + 1);
+    // }
   }, [bookmark]);
 
   //작성자 닉네임 눌렀을 때 페이지 이동
@@ -127,7 +132,9 @@ const PostCard = (props: PostCardProps) => {
             {bookmark ? <BookMarkAfter /> : <BookMarkBefore />}
             {bookmarkCount}
           </BookMark>
-          <UserText onClick={handleSelectAuthor}>{post.author}</UserText>
+          <UserText onClick={handleSelectAuthor}>
+            {post.authorId.nickname}
+          </UserText>
         </BottomContainer>
       </PostCardContainer>
     </>

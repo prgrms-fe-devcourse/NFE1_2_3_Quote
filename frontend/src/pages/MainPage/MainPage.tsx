@@ -96,10 +96,12 @@ const MainPage = () => {
     const getUserId = async () => {
       const user = await getUserData();
       setUserId(user.id);
-      console.log(user.id)
+      console.log(user.id);
     };
     getUserId();
   }, []);
+
+  console.log(data)
 
   const postData = sortedPostData || [];
   if (isLoading || !userId) {
@@ -113,7 +115,7 @@ const MainPage = () => {
     <MainLayout>
       <Container>
         <TopSection>
-          <Search />
+          <Search/>
           <CategoryContainer>
             {CATEGORY_LIST.map((category, index) => (
               <CategoryMark

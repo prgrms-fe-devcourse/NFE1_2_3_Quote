@@ -43,3 +43,17 @@ export const getCategoryPostData = async (
     }
   }
 };
+
+export const getSearchPost = async (title: string, category : string) => {
+  try {
+    const response = await postAxiosClient.get(`${URL}/posts/search?title=${title}&category=${category}`);
+    console.log(response.data.data)
+    return response.data.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(`서버 통신 실패`);
+    } else {
+      throw new Error("포스트 불러오기 실패");
+    }
+  }
+};

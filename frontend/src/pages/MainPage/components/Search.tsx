@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import SearchButton from "@assets/icons/search_button.svg?react";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { getSearchPost } from "../apis/searchApi";
+import { useCallback, useRef, useState } from "react";
+import { getSearchPost } from "../apis/postApi"
 
 const SearchContainer = styled.div`
   width: 500px;
@@ -61,16 +61,18 @@ const Search = () => {
   };
 
   const handleResetSearch = useCallback(() => {
-    if(inputRef.current) {
-      inputRef.current.value = ""
+    if (inputRef.current) {
+      inputRef.current.value = "";
     }
-    setSearchWord('')
-  }, [])
+    setSearchWord("");
+  }, []);
 
   return (
     <>
       <SearchContainer>
-        <ResetSearchButton onClick={handleResetSearch}>검색 초기화</ResetSearchButton>
+        <ResetSearchButton onClick={handleResetSearch}>
+          검색 초기화
+        </ResetSearchButton>
         <SearchInputContainer>
           <SearchInput
             type='text'
