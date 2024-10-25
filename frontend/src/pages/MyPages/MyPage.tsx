@@ -1,11 +1,13 @@
 import { useState, useRef, useEffect, useCallback, memo } from "react";
 import styled, { keyframes } from "styled-components";
+import { fetchUserProfile, UserProfile } from "./apis/mypage";
 import ProfileModifyButton from "@assets/icons/profile_modify_button.svg?react";
 import profile from "@assets/images/profile.png";
 import MainLayout from "@/layouts/MainLayout";
 import WriteButton from "@/components/WriteButton/WriteButton";
 import ProfileEditModal from "@/pages/MyPages/components/ProfileEditModal";
 import DeleteModal from "@/pages/MyPages/components/DeleteModal";
+import PostCard from "./components/PostCard";
 
 // Styled Components
 
@@ -139,6 +141,7 @@ const MenuItem = styled.button`
 `;
 
 const MyPage = memo(() => {
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [activeTab, setActiveTab] = useState("posts");
   const [menuVisible, setMenuVisible] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -147,6 +150,19 @@ const MyPage = memo(() => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const settingsButtonRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const loadProfile = async () => {
+      try {
+        const profile = await fetchUserProfile();
+        setUserProfile(profile);
+      } catch (error) {
+        console.error("Failed to load user profile:", error);
+      }
+    };
+
+    loadProfile();
+  }, []);
 
   const toggleMenu = useCallback(() => {
     setMenuVisible((prev) => !prev);
@@ -169,10 +185,30 @@ const MyPage = memo(() => {
     };
   }, [handleClickOutside]);
 
-  const getMessage = () => {
-    return activeTab === "posts"
-      ? "작성한 글이 없습니다."
-      : "북마크한 글이 없습니다.";
+  const getPosts = () => {
+    if (activeTab === "posts") {
+      return userProfile?.myPosts.length ? (
+        userProfile.myPosts.map((post, index) => (
+          <PostCard
+            key={index}
+            post={post}
+          />
+        ))
+      ) : (
+        <MessageContainer>작성한 글이 없습니다.</MessageContainer>
+      );
+    } else {
+      return userProfile?.bookMarkedPosts.length ? (
+        userProfile.bookMarkedPosts.map((post, index) => (
+          <PostCard
+            key={index}
+            post={post}
+          />
+        ))
+      ) : (
+        <MessageContainer>북마크한 글이 없습니다.</MessageContainer>
+      );
+    }
   };
 
   const handleDeleteAccount = useCallback(() => {
@@ -216,11 +252,11 @@ const MyPage = memo(() => {
             </Menu>
           )}
           <ProfileImage
-            src={profile}
+            src={userProfile?.profileImage || profile}
             alt='Profile'
           />
-          <UserName>user</UserName>
-          <UserEmail>user@gmail.com</UserEmail>
+          <UserName>{userProfile?.nickname || "user"}</UserName>
+          <UserEmail>{userProfile?.email || "user@gmail.com"}</UserEmail>
         </ProfileSection>
         <ContentSection>
           <TabButton
@@ -236,7 +272,7 @@ const MyPage = memo(() => {
             북마크
           </TabButton>
         </ContentSection>
-        <MessageContainer>{getMessage()}</MessageContainer>
+        <MessageContainer>{getPosts()}</MessageContainer>
 
         {isModalOpen && (
           <ProfileEditModal

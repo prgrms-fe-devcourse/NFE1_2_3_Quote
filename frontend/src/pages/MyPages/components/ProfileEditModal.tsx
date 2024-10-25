@@ -1,5 +1,10 @@
-import { useState, useRef, ChangeEvent } from "react";
+import { useState, useRef, ChangeEvent, useEffect } from "react";
 import styled from "styled-components";
+import {
+  uploadProfileImage,
+  updateNickname,
+  fetchUserProfile,
+} from "../apis/mypage";
 import PROFILE from "@assets/images/profile.png";
 import ProfileImgLightMode from "@assets/icons/profile_img_lightMode.svg?react";
 import ProfileImgDarkMode from "@assets/icons/profile_img_darkMode.svg?react";
@@ -196,23 +201,31 @@ const ProfileEditModal = ({
   const [imgSrc, setImgSrc] = useState(PROFILE);
   const [nickname, setNickname] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+  useEffect(() => {
+    const loadUserData = async () => {
+      try {
+        const profile = await fetchUserProfile();
+        setNickname(profile.nickname);
+        setImgSrc(profile.profileImage || PROFILE);
+      } catch (error) {
+        console.error("Failed to load user profile:", error);
+      }
+    };
+
+    loadUserData();
+  }, []);
+
+  const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file && (file.type === "image/png" || file.type === "image/jpeg")) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        if (reader.result) {
-          setImgSrc(reader.result as string);
-
-          if (fileInputRef.current) {
-            fileInputRef.current.value = "";
-          }
-        }
-      };
-      reader.readAsDataURL(file);
+      try {
+        const imageUrl = await uploadProfileImage(file);
+        setImgSrc(imageUrl);
+      } catch (error) {
+        setError("이미지 업로드에 실패했습니다.");
+      }
     } else {
       alert("PNG 또는 JPEG 파일만 업로드할 수 있습니다.");
     }
@@ -222,23 +235,26 @@ const ProfileEditModal = ({
     setImgSrc(PROFILE);
   };
 
-  const openFilePicker = () => {
-    fileInputRef.current?.click();
-  };
-
   const handleNicknameChange = (event: ChangeEvent<HTMLInputElement>) => {
     setNickname(event.target.value);
     if (error) setError(null);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (nickname.trim().length === 0) {
       setError("1글자 이상 입력해주세요.");
+      return;
     } else if (nickname.length > 8) {
       setError("닉네임은 8자 이내로 입력해주세요.");
-    } else {
-      onClose();
+      return;
+    }
+
+    try {
+      await updateNickname(nickname);
       showSuccessMessage();
+      onClose();
+    } catch (error) {
+      setError("프로필 수정에 실패했습니다.");
     }
   };
 
@@ -259,7 +275,7 @@ const ProfileEditModal = ({
             ref={fileInputRef}
             onChange={handleFileChange}
           />
-          <CameraIconWrapper onClick={openFilePicker}>
+          <CameraIconWrapper onClick={() => fileInputRef.current?.click()}>
             {mode ? <ProfileImgDarkMode /> : <ProfileImgLightMode />}
           </CameraIconWrapper>
         </ProfileImageWrapper>
@@ -272,7 +288,6 @@ const ProfileEditModal = ({
             placeholder='닉네임 입력'
             value={nickname}
             onChange={handleNicknameChange}
-            ref={inputRef}
             autoFocus
           />
           <NicknameCounter>{nickname.length}/8</NicknameCounter>
