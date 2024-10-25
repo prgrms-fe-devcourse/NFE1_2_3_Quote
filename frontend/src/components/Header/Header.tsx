@@ -4,6 +4,9 @@ import LightModeButton from "@assets/icons/lightMode_button.svg?react";
 import logo from "@assets/images/quoteLogo.png";
 import profile from "@assets/images/profile.png";
 import { useState } from "react";
+import { useAuthStore } from "@/pages/LogInPage/store/authStore";
+import { useNavigate } from "react-router-dom";
+import LogoutModal from "@/pages/LogInPage/components/LogoutModal";
 
 const HeaderContainer = styled.header`
   background-color: #f3f3f3;
@@ -64,23 +67,46 @@ const Profile = styled.div`
 
 const Header = () => {
   const [mode, setMode] = useState<boolean>(false);
-  const [isLogin, setIsLogin] = useState<boolean>(true);
+  const [logoutModal, setLogoutModal] = useState<boolean>(false);
+  // const [isLogin, setIsLogin] = useState<boolean>(true);
+  const { isLogin } = useAuthStore();
+  const navigate = useNavigate();
+
+  const showLogoutModal = () => {
+    if (isLogin) {
+      //로그인 상태(버튼이 로그아웃)일 때 로그아웃 모달창 띄우기
+      setLogoutModal(true);
+    } else {
+      //로그아웃 상태(버튼이 시작하기)일 때 로그인 페이지로 이동
+      navigate("/login");
+    }
+  };
 
   return (
-    <HeaderContainer>
-      <Logo src={logo} />
-      <ButtonContainer>
-        <StyledModeButton onClick={() => setMode(!mode)}>
-          {mode ? <LightModeButton /> : <DarkModeButton />}
-        </StyledModeButton>
-        <LoginButton>{isLogin ? "로그아웃" : "시작하기"} </LoginButton>
-        {isLogin && (
-          <Profile>
-            <img src={profile} />
-          </Profile>
-        )}
-      </ButtonContainer>
-    </HeaderContainer>
+    <>
+      <HeaderContainer>
+        <Logo src={logo} />
+        <ButtonContainer>
+          <StyledModeButton onClick={() => setMode(!mode)}>
+            {mode ? <LightModeButton /> : <DarkModeButton />}
+          </StyledModeButton>
+          <LoginButton onClick={showLogoutModal}>
+            {isLogin ? "로그아웃" : "시작하기"}{" "}
+          </LoginButton>
+          {isLogin && (
+            <Profile>
+              <img src={profile} />
+            </Profile>
+          )}
+        </ButtonContainer>
+      </HeaderContainer>
+      {logoutModal && (
+        <LogoutModal
+          isModalOpen={logoutModal}
+          onClose={() => setLogoutModal(false)}
+        />
+      )}
+    </>
   );
 };
 
