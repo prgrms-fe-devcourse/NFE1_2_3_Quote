@@ -5,7 +5,7 @@ const URL = "http://43.200.164.241:8000";
 
 export const postBookmark = async (postId: string) => {
   try {
-    const response = await userAxiosClient.post(`${URL}/posts/${postId}/like`);
+    const response = await userAxiosClient.post(`/posts/${postId}/like`);
     console.log(response)
     return response.data;
   } catch (error) {
