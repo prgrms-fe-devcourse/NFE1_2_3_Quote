@@ -148,6 +148,7 @@ const MyPage = memo(() => {
   const [showEditSuccess, setShowEditSuccess] = useState(false);
   const [showDeleteSuccess, setShowDeleteSuccess] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
   const menuRef = useRef<HTMLDivElement>(null);
   const settingsButtonRef = useRef<HTMLDivElement>(null);
 
@@ -185,31 +186,22 @@ const MyPage = memo(() => {
     };
   }, [handleClickOutside]);
 
-  const getPosts = () => {
-    if (activeTab === "posts") {
-      return userProfile?.myPosts.length ? (
-        userProfile.myPosts.map((post, index) => (
-          <PostCard
-            key={index}
-            post={post}
-          />
-        ))
-      ) : (
-        <MessageContainer>작성한 글이 없습니다.</MessageContainer>
-      );
-    } else {
-      return userProfile?.bookMarkedPosts.length ? (
-        userProfile.bookMarkedPosts.map((post, index) => (
-          <PostCard
-            key={index}
-            post={post}
-          />
-        ))
-      ) : (
-        <MessageContainer>북마크한 글이 없습니다.</MessageContainer>
-      );
-    }
-  };
+  const getPosts = () =>
+    activeTab === "posts"
+      ? renderPosts(userProfile?.myPosts, "작성한 글이 없습니다.")
+      : renderPosts(userProfile?.bookMarkedPosts, "북마크한 글이 없습니다.");
+
+  const renderPosts = (posts: any[] | undefined, emptyMessage: string) =>
+    posts?.length ? (
+      posts.map((post, index) => (
+        <PostCard
+          key={index}
+          post={post}
+        />
+      ))
+    ) : (
+      <MessageContainer>{emptyMessage}</MessageContainer>
+    );
 
   const handleDeleteAccount = useCallback(() => {
     setShowDeleteSuccess(true);
@@ -237,6 +229,19 @@ const MyPage = memo(() => {
       setShowEditSuccess(false);
     }, 3000);
   }, []);
+
+  const handleUpdateProfile = (
+    updatedImage: string,
+    updatedNickname: string,
+  ) => {
+    setUserProfile((prevProfile) => ({
+      ...prevProfile!,
+      profileImage: `${updatedImage}?timestamp=${new Date().getTime()}`,
+      nickname: updatedNickname,
+    }));
+
+    window.location.reload();
+  };
 
   return (
     <MainLayout>
@@ -278,6 +283,7 @@ const MyPage = memo(() => {
           <ProfileEditModal
             onClose={() => setIsModalOpen(false)}
             showSuccessMessage={showEditSuccessMessage}
+            onUpdateProfile={handleUpdateProfile}
           />
         )}
         {showEditSuccess && (

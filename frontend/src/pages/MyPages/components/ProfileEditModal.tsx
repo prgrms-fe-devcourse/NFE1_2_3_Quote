@@ -191,16 +191,21 @@ interface ProfileEditModalProps {
   onClose: () => void;
   showSuccessMessage: () => void;
   mode?: boolean;
+  onUpdateProfile: (updatedImage: string, updatedNickname: string) => void;
 }
 
 const ProfileEditModal = ({
   onClose,
   showSuccessMessage,
   mode = false,
+  onUpdateProfile,
 }: ProfileEditModalProps) => {
   const [imgSrc, setImgSrc] = useState(PROFILE);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [nickname, setNickname] = useState("");
   const [error, setError] = useState<string | null>(null);
+  
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -217,21 +222,21 @@ const ProfileEditModal = ({
     loadUserData();
   }, []);
 
-  const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file && (file.type === "image/png" || file.type === "image/jpeg")) {
-      try {
-        const imageUrl = await uploadProfileImage(file);
-        setImgSrc(imageUrl);
-      } catch (error) {
-        setError("이미지 업로드에 실패했습니다.");
-      }
-    } else {
-      alert("PNG 또는 JPEG 파일만 업로드할 수 있습니다.");
+    if (!file || !["image/png", "image/jpeg"].includes(file.type)) {
+      return alert("PNG 또는 JPEG 파일만 업로드할 수 있습니다.");
     }
+
+    setSelectedFile(file);
+    const reader = new FileReader();
+    reader.onload = () => setPreviewImage(reader.result as string);
+    reader.readAsDataURL(file);
   };
 
   const handleResetProfile = () => {
+    setPreviewImage(null);
+    setSelectedFile(null);
     setImgSrc(PROFILE);
   };
 
@@ -250,10 +255,16 @@ const ProfileEditModal = ({
     }
 
     try {
+      const newImageUrl = selectedFile
+        ? await uploadProfileImage(selectedFile)
+        : imgSrc;
+
       await updateNickname(nickname);
+      onUpdateProfile(newImageUrl, nickname);
       showSuccessMessage();
       onClose();
-    } catch (error) {
+      window.location.reload();
+    } catch {
       setError("프로필 수정에 실패했습니다.");
     }
   };
@@ -265,7 +276,7 @@ const ProfileEditModal = ({
         <ProfileImageWrapper>
           <ProfileImage>
             <StyledImg
-              src={imgSrc}
+              src={previewImage || imgSrc}
               alt='Profile'
             />
           </ProfileImage>

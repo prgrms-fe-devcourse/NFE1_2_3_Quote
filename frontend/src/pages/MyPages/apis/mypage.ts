@@ -1,5 +1,6 @@
 import { authAxiosClient } from "@/pages/SignUpPage/apis/signUp";
 
+// 사용자 프로필 인터페이스 정의
 export interface UserProfile {
   id: string;
   email: string;
@@ -9,70 +10,63 @@ export interface UserProfile {
   bookMarkedPosts: any[];
 }
 
-export const fetchUserProfile = async (): Promise<UserProfile> => {
-  try {
-    const token = localStorage.getItem("authToken");
-    const res = await authAxiosClient.get("/users/me", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+// 공통 헤더 설정 함수
+const getAuthHeaders = () => ({
+  Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+});
 
-    if (res.status !== 200 || !res.data.success) {
-      throw new Error("Failed to fetch user profile.");
-    }
+// 사용자 프로필 조회 함수
+export async function fetchUserProfile() {
+  const response = await authAxiosClient.get("/users/me", {
+    headers: getAuthHeaders(),
+  });
+  validateResponse(response, "사용자 프로필 조회에 실패했습니다.");
 
-    return res.data.data;
-  } catch (error) {
-    console.error("Failed to fetch user profile:", error);
-    throw error;
-  }
-};
+  return response.data.data;
+}
 
-// 프로필 이미지 업로드
-export const uploadProfileImage = async (file: File): Promise<string> => {
+// 프로필 이미지 업로드 함수
+export async function uploadProfileImage(file: File) {
+  validateFileType(file);
+
   const formData = new FormData();
-  formData.append("Image", file); 
+  formData.append("image", file);
 
-  try {
-    const token = localStorage.getItem("authToken");
-    const res = await authAxiosClient.patch("/users/upload", formData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "multipart/form-data",
-      },
-    });
+  const response = await authAxiosClient.patch("/users/upload", formData, {
+    headers: {
+      ...getAuthHeaders(),
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  validateResponse(response, "프로필 이미지 업로드에 실패했습니다.");
 
-    if (res.status !== 200 && res.status !== 201) {
-      throw new Error("Failed to upload profile image.");
-    }
+  return response.data.profileImage;
+}
 
-    return res.data.profileImage;
-  } catch (error) {
-    console.error("Image upload failed:", error);
-    throw error;
+// 닉네임 변경 함수
+export async function updateNickname(nickname: string) {
+  const response = await authAxiosClient.patch(
+    "/users",
+    { nickname },
+    { headers: getAuthHeaders() }
+  );
+  validateResponse(response, "닉네임 변경에 실패했습니다.");
+}
+
+// 응답 유효성 검사 함수
+const validateResponse = (response: any, errorMessage: string) => {
+  if (response.status !== 200 && response.status !== 201) {
+    throw new Error(errorMessage);
   }
-};
-
-// 닉네임 변경
-export const updateNickname = async (nickname: string): Promise<void> => {
-  try {
-    const token = localStorage.getItem("authToken");
-    const res = await authAxiosClient.patch(
-      "/users",
-      { nickname },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      },
-    );
-
-    if (res.status !== 200 && res.status !== 201) {
-      throw new Error("Failed to update nickname.");
-    }
-  } catch (error) {
-    console.error("Failed to update nickname:", error);
-    throw error;
+  if (!response.data?.success) {
+    throw new Error(errorMessage);
   }
-};
+}
+
+// 파일 형식 검사 함수
+const validateFileType = (file: File) => {
+  const validTypes = ["image/png", "image/jpeg"];
+  if (!validTypes.includes(file.type)) {
+    throw new Error("PNG 또는 JPEG 파일만 업로드할 수 있습니다.");
+  }
+}
