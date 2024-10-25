@@ -1,7 +1,8 @@
 import styled from "styled-components";
 import SearchButton from "@assets/icons/search_button.svg?react";
 import { useCallback, useRef, useState } from "react";
-import { getSearchPost } from "../apis/postApi"
+import { getSearchPostData } from "../apis/postApi";
+import { useGetCategoryPostData } from "../hooks/useGetPostData";
 
 const SearchContainer = styled.div`
   width: 500px;
@@ -43,16 +44,29 @@ const StyledSearchButton = styled(SearchButton)`
   cursor: pointer;
 `;
 
-const Search = () => {
-  const [searchWord, setSearchWord] = useState<string>("");
-  const inputRef = useRef<HTMLInputElement>(null);
-  const handleSearchTitle = useCallback(() => {
-    if (!searchWord) {
-      console.log("검색어를 입력해주세요");
+interface SearchProps {
+  searchWord: string;
+  onChangeSearchWord: (searchWord: string) => void;
+}
+
+const Search = (props: SearchProps) => {
+  const { searchWord, onChangeSearchWord } = props;
+  const [searchInput, setSearchInput] = useState<string>(searchWord);
+  // const inputRef = useRef<HTMLInputElement>(null);
+  // const handleSearchTitle = useCallback(() => {
+  //   if (!searchWord) {
+  //     console.log("검색어를 입력해주세요");
+  //     return;
+  //   }
+  // }, [searchWord]);
+
+  const handleSearchTitle = () => {
+    if (!searchInput) {
+      console.log("검색어를 입력하세요");
       return;
     }
-    getSearchPost(searchWord, "");
-  }, [searchWord]);
+    onChangeSearchWord(searchInput);
+  };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -61,10 +75,8 @@ const Search = () => {
   };
 
   const handleResetSearch = useCallback(() => {
-    if (inputRef.current) {
-      inputRef.current.value = "";
-    }
-    setSearchWord("");
+    setSearchInput("");
+    onChangeSearchWord("");
   }, []);
 
   return (
@@ -77,8 +89,8 @@ const Search = () => {
           <SearchInput
             type='text'
             placeholder='제목을 입력해주세요.'
-            ref={inputRef}
-            onChange={() => setSearchWord(inputRef.current?.value || "")}
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
             onKeyDown={handleKeyDown}
           />
           <StyledSearchButton onClick={handleSearchTitle} />

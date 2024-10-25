@@ -44,7 +44,8 @@ export const getCategoryPostData = async (
   }
 };
 
-export const getSearchPost = async (title: string, category : string) => {
+//검색된 목록 불러오기
+export const getSearchPostData = async (title: string, category : string): Promise<Post[]> => {
   try {
     const response = await postAxiosClient.get(`${URL}/posts/search?title=${title}&category=${category}`);
     console.log(response.data.data)

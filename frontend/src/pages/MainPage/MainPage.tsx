@@ -75,6 +75,7 @@ const CATEGORY_LIST: string[] = [
 const MainPage = () => {
   const [selectCategory, setSelectCategory] = useState("전체");
   const [userId, setUserId] = useState<string | null>(null);
+  const [searchWord, setSearchWord] = useState<string>("");
   const navigate = useNavigate();
 
   const handleSelectCategory = useCallback((category: string) => {
@@ -85,7 +86,7 @@ const MainPage = () => {
     navigate(`/post/${postId}`);
   }, []);
 
-  const { data, isLoading, isError } = useGetCategoryPostData(selectCategory);
+  const { data, isLoading, isError } = useGetCategoryPostData(selectCategory, searchWord);
   const sortedPostData = data?.sort((postA, postB) => {
     return (
       new Date(postB.createdAt).getTime() - new Date(postA.createdAt).getTime()
@@ -115,7 +116,7 @@ const MainPage = () => {
     <MainLayout>
       <Container>
         <TopSection>
-          <Search/>
+          <Search searchWord={searchWord} onChangeSearchWord={setSearchWord}/>
           <CategoryContainer>
             {CATEGORY_LIST.map((category, index) => (
               <CategoryMark

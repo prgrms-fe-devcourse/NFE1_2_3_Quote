@@ -104,11 +104,11 @@ const PostCard = (props: PostCardProps) => {
       queryKey: ["categoryPost"],
     });
     setBookmark(!bookmark);
-    // if (bookmark) {
-    //   setBookmarkCount((prev) => prev - 1);
-    // } else {
-    //   setBookmarkCount((prev) => prev + 1);
-    // }
+    if (bookmark) {
+      setBookmarkCount((prev) => prev - 1);
+    } else {
+      setBookmarkCount((prev) => prev + 1);
+    }
   }, [bookmark]);
 
   //작성자 닉네임 눌렀을 때 페이지 이동
