@@ -11,6 +11,7 @@ import { categoryColors } from "@/styles/Colors";
 import { useGetCategoryPostData } from "./hooks/useGetPostData";
 import { useNavigate } from "react-router-dom";
 import { getUserData } from "./apis/userApi";
+import { useAuthStore } from "../LogInPage/store/authStore";
 
 const Container = styled.div`
   width: 100%;
@@ -74,7 +75,7 @@ const CATEGORY_LIST: string[] = [
 
 const MainPage = () => {
   const [selectCategory, setSelectCategory] = useState("전체");
-  const [userId, setUserId] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string>("");
   const [searchWord, setSearchWord] = useState<string>("");
   const navigate = useNavigate();
 
@@ -83,40 +84,50 @@ const MainPage = () => {
   }, []);
 
   const handleSelectPost = useCallback((postId: string) => {
+    if (!isLogin) {
+      navigate("/login");
+      return
+    }
     navigate(`/post/${postId}`);
   }, []);
 
-  const { data, isLoading, isError } = useGetCategoryPostData(selectCategory, searchWord);
+  const { data, isLoading, isError } = useGetCategoryPostData(
+    selectCategory,
+    searchWord,
+  );
   const sortedPostData = data?.sort((postA, postB) => {
     return (
       new Date(postB.createdAt).getTime() - new Date(postA.createdAt).getTime()
     );
   });
 
-  useEffect(() => {
-    const getUserId = async () => {
-      const user = await getUserData();
-      setUserId(user.id);
-      console.log(user.id);
-    };
-    getUserId();
+  const { isLogin } = useAuthStore();
+
+  const getUserId = useCallback(async () => {
+    const user = await getUserData();
+    setUserId(user.id);
+    console.log(user.id);
   }, []);
 
-  console.log(data)
+  useEffect(() => {
+    if (isLogin) {
+      getUserId();
+    }else {
+      setUserId('none')
+    }
+  }, [isLogin]);
 
   const postData = sortedPostData || [];
-  if (isLoading || !userId) {
-    return <div>Loading...</div>;
-  }
-  if (isError) {
-    return <div>Error</div>;
-  }
 
+  console.log(postData)
   return (
     <MainLayout>
       <Container>
         <TopSection>
-          <Search searchWord={searchWord} onChangeSearchWord={setSearchWord}/>
+          <Search
+            searchWord={searchWord}
+            onChangeSearchWord={setSearchWord}
+          />
           <CategoryContainer>
             {CATEGORY_LIST.map((category, index) => (
               <CategoryMark
@@ -133,12 +144,17 @@ const MainPage = () => {
         </TopSection>
         <PostSection>
           <PostContainer>
-            {postData?.length > 0 ? (
+            {isLoading || !userId ? (
+              <NoPostText>Loading...</NoPostText>
+            ) : isError ? (
+              <NoPostText>Error</NoPostText>
+            ) : postData?.length > 0 ? (
               postData.map((post: Post) => (
                 <PostCard
                   key={post._id}
                   post={post}
                   userId={userId}
+                  isLogin={isLogin}
                   onClick={() => handleSelectPost(post._id)}
                 />
               ))

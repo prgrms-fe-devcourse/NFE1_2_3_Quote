@@ -6,7 +6,7 @@ import { categoryColors } from "@/styles/Colors";
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { postBookmark } from "../apis/bookmarkApi";
-import { useQueryClient } from "@tanstack/react-query";
+import { useAuthStore } from "@/pages/LogInPage/store/authStore";
 
 const PostCardContainer = styled.div`
   width: 270px;
@@ -78,31 +78,34 @@ const UserText = styled.p`
 interface PostCardProps {
   post: Post;
   userId: string;
+  isLogin: boolean;
   onClick: () => void;
 }
 
 const PostCard = (props: PostCardProps) => {
-  const { post, userId, onClick } = props;
-
+  const { post, userId, isLogin, onClick } = props;
   //북마크 표시
   const [bookmark, setBookmark] = useState<boolean>(false);
   const [bookmarkCount, setBookmarkCount] = useState<number>(
     post.bookMarked.length,
   );
   useEffect(() => {
+    if(userId === 'none') {
+      return
+    }
     const isBookmark = post.bookMarked
       .map((user) => user.userId)
       .includes(userId);
     setBookmark(isBookmark);
-  }, []);
-  const queryClient = useQueryClient();
+  }, [post.bookMarked]);
 
   //북마크 눌렀을 때
   const handleCheckBookmark = useCallback(() => {
+    if (!isLogin) {
+      navigate("/login");
+      return;
+    }
     postBookmark(post._id);
-    queryClient.invalidateQueries({
-      queryKey: ["categoryPost"],
-    });
     setBookmark(!bookmark);
     if (bookmark) {
       setBookmarkCount((prev) => prev - 1);
@@ -114,6 +117,10 @@ const PostCard = (props: PostCardProps) => {
   //작성자 닉네임 눌렀을 때 페이지 이동
   const navigate = useNavigate();
   const handleSelectAuthor = useCallback(() => {
+    if (!isLogin) {
+      navigate("/login");
+      return;
+    }
     navigate(`/user-page/${post.authorId}`);
   }, []);
 

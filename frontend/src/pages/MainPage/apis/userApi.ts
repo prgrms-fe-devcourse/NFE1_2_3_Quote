@@ -10,8 +10,16 @@ export const userAxiosClient: AxiosInstance = axios.create({
   timeout: 2000,
   headers: {
     accept: "application/json",
-    Authorization: `bearer ${getToken()}`,
   },
+});
+
+// 최신 토큰 가져오도록 함
+userAxiosClient.interceptors.request.use((config) => {
+  const token = getToken();
+  if (token) {
+    config.headers["Authorization"] = `Bearer ${token}`;
+  }
+  return config;
 });
 
 export const getUserData = async () => {
