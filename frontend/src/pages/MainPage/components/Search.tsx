@@ -1,5 +1,7 @@
 import styled from "styled-components";
 import SearchButton from "@assets/icons/search_button.svg?react";
+import { useCallback, useState } from "react";
+import { getSearchPost } from "../apis/searchApi";
 
 const SearchContainer = styled.div`
   width: 500px;
@@ -42,13 +44,18 @@ const StyledSearchButton = styled(SearchButton)`
 `;
 
 const Search = () => {
+  const [searchWord, setSearchWord] = useState<string>('지금')
+  const handleSearchTitle = useCallback(() => {
+    getSearchPost(searchWord, "전체")
+  }, []);
+
   return (
     <>
       <SearchContainer>
         <ResetSearchButton>검색 초기화</ResetSearchButton>
         <SearchInputContainer>
           <SearchInput placeholder='제목을 입력해주세요.' />
-          <StyledSearchButton />
+          <StyledSearchButton onClick={handleSearchTitle} />
         </SearchInputContainer>
       </SearchContainer>
     </>
