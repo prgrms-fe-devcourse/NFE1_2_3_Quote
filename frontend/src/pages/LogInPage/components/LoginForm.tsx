@@ -4,6 +4,8 @@ import styled from "styled-components";
 import logo from "@assets/images/quoteLogo.png";
 import { Link } from "react-router-dom";
 import { useLogin } from "../hooks/useLogin";
+import PwdHideEye from "@assets/icons/pwd_hideEye.svg?react";
+import PwdShowEye from "@assets/icons/pwd_showEye.svg?react";
 
 const Container = styled.div`
   width: 100%;
@@ -28,7 +30,7 @@ const InputStyle = styled.input`
   outline-style: none;
   border-radius: 10px;
   border: 0.9px solid black;
-  padding: 16px;
+  padding: 14px 35px 14px 16px;
   &:-webkit-autofill {
     -webkit-box-shadow: 0 0 0 30px #fff inset;
     -webkit-text-fill-color: #000;
@@ -42,6 +44,9 @@ const InputStyle = styled.input`
   //password타입일 때 글꼴때문에 입력되는 것이 안 보여서 글꼴 수정
   &[type="password"] {
     font-family: Arial, Helvetica, sans-serif;
+  }
+  &::placeholder {
+    font-family: "NanumSquareRegular";
   }
 `;
 const ErrorMessage = styled.div`
@@ -72,6 +77,16 @@ const CopyRight = styled.span`
   font-weight: bold;
   color: #474040;
 `;
+const EyeContainer = styled.div`
+  width: 22px;
+  cursor: pointer;
+  position: absolute;
+  z-index: 10;
+  right: 7px;
+  display: flex;
+  align-items: center;
+  top: 15px;
+`;
 
 interface LoginData {
   email: string;
@@ -90,6 +105,7 @@ const LoginForm = () => {
   });
   const [errMsg, setErrorMsg] = useState<ErrorMessage>({});
   const { mutate: loginMutation } = useLogin(setErrorMsg);
+  const [showPwd, setShowPwd] = useState<boolean>(false);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
@@ -162,10 +178,14 @@ const LoginForm = () => {
             {errMsg.emailErr && <ErrorMessage>{errMsg.emailErr}</ErrorMessage>}
           </InputDiv>
 
-          <InputDiv>
+          <InputDiv
+            style={{
+              position: "relative",
+            }}
+          >
             <InputStyle
-              type='password'
-              placeholder='비밀번호 입력'
+              type={showPwd ? "text" : "password"}
+              placeholder='비밀번호 입력(영문, 숫자, 특수문자 포함 8~15자)'
               name='password'
               onChange={handleChange}
               value={loginInfo.password}
@@ -174,6 +194,9 @@ const LoginForm = () => {
             {errMsg.passwordErr && (
               <ErrorMessage>{errMsg.passwordErr}</ErrorMessage>
             )}
+            <EyeContainer onClick={() => setShowPwd(!showPwd)}>
+              {showPwd ? <PwdShowEye /> : <PwdHideEye />}
+            </EyeContainer>
           </InputDiv>
 
           <LoginBtn type='submit'>로그인</LoginBtn>
