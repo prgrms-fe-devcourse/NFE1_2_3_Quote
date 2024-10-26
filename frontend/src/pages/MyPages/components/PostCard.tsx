@@ -1,7 +1,11 @@
 import styled from "styled-components";
-import BookMarkIcon from "@assets/icons/bookMark_before_select.svg?react";
+import BookMarkBefore from "@assets/icons/bookMark_before_select.svg?react";
+import BookMarkAfter from "@assets/icons/bookMark_after_select.svg?react";
 import { Post } from "@/types/Types";
 import { categoryColors } from "@/styles/Colors";
+import { useCallback, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { postBookmark } from "../apis/bookmarkApi";
 
 const PostCardContainer = styled.div`
   width: 190px;
@@ -72,28 +76,78 @@ const UserText = styled.p`
   display: flex;
   justify-content: end;
   align-items: center;
+
+  &:hover {
+    text-decoration: underline;
+  }
 `;
 
 interface PostCardProps {
   post: Post;
+  userId: string;
+  isLogin: boolean;
+  onClick: () => void;
 }
 
 const PostCard = (props: PostCardProps) => {
-  const { post } = props;
+  const { post, userId, isLogin, onClick } = props;
+
+  const [bookmark, setBookmark] = useState<boolean>(false);
+  const [bookmarkCount, setBookmarkCount] = useState<number>(
+    post.bookMarked.length,
+  );
+
+  useEffect(() => {
+    if (userId === "none") {
+      return;
+    }
+    const isBookmark = post.bookMarked
+      .map((user) => user.userId)
+      .includes(userId);
+    setBookmark(isBookmark);
+  }, [post.bookMarked]);
+
+  const handleCheckBookmark = useCallback(() => {
+    if (!isLogin) {
+      navigate("/login");
+      return;
+    }
+    postBookmark(post._id);
+    setBookmark(!bookmark);
+    if (bookmark) {
+      setBookmarkCount((prev) => prev - 1);
+    } else {
+      setBookmarkCount((prev) => prev + 1);
+    }
+  }, [bookmark]);
+
+  const navigate = useNavigate();
+  const handleSelectAuthor = useCallback(() => {
+    if (!isLogin) {
+      navigate("/login");
+      return;
+    }
+    navigate(`/user-page/${post.authorId}`);
+  }, []);
 
   return (
     <>
       <PostCardContainer color={categoryColors[post.category].bgColor}>
-        <PostContentContainer color={categoryColors[post.category].fontColor}>
-          <PostContent>{post.content}</PostContent>
+        <PostContentContainer
+          color={categoryColors[post.category].fontColor}
+          onClick={onClick}
+        >
+          <PostContent>{post.quote}</PostContent>
           <PostTitle>{post.title}</PostTitle>
         </PostContentContainer>
         <BottomContainer>
-          <BookMark>
-            <BookMarkIcon />
-            {post.bookmarkCount}
+          <BookMark onClick={handleCheckBookmark}>
+            {bookmark ? <BookMarkAfter /> : <BookMarkBefore />}
+            {bookmarkCount}
           </BookMark>
-          <UserText>{post.author}</UserText>
+          <UserText onClick={handleSelectAuthor}>
+            {post.authorId.nickname}
+          </UserText>
         </BottomContainer>
       </PostCardContainer>
     </>
