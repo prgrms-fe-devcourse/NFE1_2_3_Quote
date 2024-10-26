@@ -95,12 +95,7 @@ export class PostsService {
     if (!post) {
       throw new BadRequestException('There is no post');
     }
-    //포스트 작성자와 현재 유저가 같은지 확인
-    if (post.authorId.toString() !== user.id) {
-      throw new UnauthorizedException(
-        'You do not have permission to delete this post',
-      );
-    }
+
     await this.postRepository.deletePostById(user, postId);
   }
 

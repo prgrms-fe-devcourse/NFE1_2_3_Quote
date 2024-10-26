@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 
 import { Model, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
@@ -120,8 +120,14 @@ export class PostsRepository {
 
   //포스트 삭제하기
   async deletePostById(user: User, postId: string) {
-    //포스트 검색
     const post = await this.postModel.findById(postId);
+
+    //포스트 작성자와 현재 유저가 같은지 확인
+    if (post.authorId !== user.id) {
+      throw new UnauthorizedException(
+        'You do not have permission to delete this post',
+      );
+    }
     // 좋아요 누른 사용자 ID로 사용자 검색
     const likedUsers = await this.usersModel.find({
       _id: { $in: post.bookMarked.map((bookMark) => bookMark.userId) },
