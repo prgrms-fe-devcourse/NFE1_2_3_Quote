@@ -95,7 +95,9 @@ export async function fetchMyPosts(userMe: UserMe): Promise<Post[]> {
 // 북마크한 포스트 조회 함수
 export async function fetchBookmarkedPosts(userMe: UserMe): Promise<Post[]> {
   try {
-    const validBookmarkedIds = userMe.bookMarkedPosts.map((postId) => String(postId));
+    const validBookmarkedIds = userMe.bookMarkedPosts.map((postId) =>
+      String(postId),
+    );
 
     if (validBookmarkedIds.length === 0) {
       console.warn("유효한 북마크 포스트 ID가 없습니다.");
