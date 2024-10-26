@@ -2,6 +2,7 @@ import LoginPage from "@/pages/LogInPage/LoginPage";
 import MainPage from "@/pages/MainPage/MainPage";
 import MyPage from "@/pages/MyPages/MyPage";
 import CreatePost from "@/pages/PostCreate/CreatePost";
+import PostDetailPage from "@/pages/PostDetail/PostDetailPage";
 import SignUpPage from "@/pages/SignUpPage/SignUpPage";
 import UserPage from "@/pages/UserPages/UserPage";
 import { createBrowserRouter } from "react-router-dom";
@@ -25,7 +26,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/post/:postId",
-    // element:
+    element: <PostDetailPage />,
   },
   {
     path: "/mypage",
@@ -33,7 +34,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/user-page/:userId",
-    element: <UserPage/>
+    element: <UserPage />,
   },
 ]);
 
