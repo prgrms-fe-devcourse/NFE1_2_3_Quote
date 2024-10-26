@@ -5,7 +5,6 @@ import { Post } from "@/types/Types";
 export const postBookmark = async (postId: string): Promise<Post> => {
   try {
     const response = await userAxiosClient.post(`/posts/${postId}/like`);
-    console.log(response.data.data);
     return response.data.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {

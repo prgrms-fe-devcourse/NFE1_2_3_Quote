@@ -126,7 +126,6 @@ const MainPage = () => {
   });
 
   const postData = sortedPostData || [];
-  console.log(postData);
 
   return (
     <MainLayout>
@@ -153,7 +152,7 @@ const MainPage = () => {
         <PostSection>
           <PostContainer>
             {isLoading || !userId ? (
-              <NoPostText>Loading...</NoPostText>
+              <NoPostText>Loading ...</NoPostText>
             ) : isError ? (
               <NoPostText>Error</NoPostText>
             ) : postData?.length > 0 ? (

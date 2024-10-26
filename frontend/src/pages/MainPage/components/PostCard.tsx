@@ -3,11 +3,10 @@ import BookMarkBefore from "@assets/icons/bookMark_before_select.svg?react";
 import BookMarkAfter from "@assets/icons/bookMark_after_select.svg?react";
 import { Post } from "@/types/Types";
 import { categoryColors } from "@/styles/Colors";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { postBookmark } from "../apis/bookmarkApi";
-import { useAuthStore } from "@/pages/LogInPage/store/authStore";
 import { useBookmarkMutation } from "../hooks/useBookmarkMutation";
+
 
 const PostCardContainer = styled.div`
   width: 270px;
