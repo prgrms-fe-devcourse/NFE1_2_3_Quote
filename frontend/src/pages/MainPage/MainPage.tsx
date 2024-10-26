@@ -4,10 +4,14 @@ import MainImage from "@assets/images/mainImage.png";
 import styled from "styled-components";
 import Search from "./components/Search";
 import CategoryMark from "./components/CategoryMark";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import PostCard from "./components/PostCard";
 import { Post } from "@/types/Types";
 import { categoryColors } from "@/styles/Colors";
+import { useGetCategoryPostData } from "./hooks/useGetPostData";
+import { useNavigate } from "react-router-dom";
+import { getUserData } from "./apis/userApi";
+import { useAuthStore } from "../LogInPage/store/authStore";
 
 const Container = styled.div`
   width: 100%;
@@ -40,7 +44,7 @@ const CategoryContainer = styled.div`
 
 const PostSection = styled.div`
   width: 960px;
-  height: 60%;
+  height: 50%;
   margin: 0 auto;
   display: flex;
   justify-content: center;
@@ -54,29 +58,78 @@ const PostContainer = styled.div`
   flex-wrap: wrap;
 `;
 
-const MainPage = () => {
-  const categoryList: string[] = [
-    "전체",
-    "도서",
-    "노래",
-    "대사",
-    "인터뷰",
-    "기타",
-  ];
+const NoPostText = styled.p`
+  margin: 20px auto;
+  font-size: 18px;
+`;
 
+//상수로 빼기
+const CATEGORY_LIST: string[] = [
+  "전체",
+  "도서",
+  "노래",
+  "대사",
+  "인터뷰",
+  "기타",
+];
+
+const MainPage = () => {
   const [selectCategory, setSelectCategory] = useState("전체");
+  const [userId, setUserId] = useState<string>("");
+  const [searchWord, setSearchWord] = useState<string>("");
+  const navigate = useNavigate();
 
   const handleSelectCategory = useCallback((category: string) => {
     setSelectCategory(category);
   }, []);
 
+  const handleSelectPost = useCallback((postId: string) => {
+    if (!isLogin) {
+      navigate("/login");
+      return
+    }
+    navigate(`/post/${postId}`);
+  }, []);
+
+  const { data, isLoading, isError } = useGetCategoryPostData(
+    selectCategory,
+    searchWord,
+  );
+  const sortedPostData = data?.sort((postA, postB) => {
+    return (
+      new Date(postB.createdAt).getTime() - new Date(postA.createdAt).getTime()
+    );
+  });
+
+  const { isLogin } = useAuthStore();
+
+  const getUserId = useCallback(async () => {
+    const user = await getUserData();
+    setUserId(user.id);
+    console.log(user.id);
+  }, []);
+
+  useEffect(() => {
+    if (isLogin) {
+      getUserId();
+    }else {
+      setUserId('none')
+    }
+  }, [isLogin]);
+
+  const postData = sortedPostData || [];
+
+  console.log(postData)
   return (
     <MainLayout>
       <Container>
         <TopSection>
-          <Search />
+          <Search
+            searchWord={searchWord}
+            onChangeSearchWord={setSearchWord}
+          />
           <CategoryContainer>
-            {categoryList.map((category, index) => (
+            {CATEGORY_LIST.map((category, index) => (
               <CategoryMark
                 key={index}
                 category={category}
@@ -91,12 +144,23 @@ const MainPage = () => {
         </TopSection>
         <PostSection>
           <PostContainer>
-            <PostCard post={sampleData1} />
-            <PostCard post={sampleData2} />
-            <PostCard post={sampleData3} />
-            <PostCard post={sampleData2} />
-            <PostCard post={sampleData3} />
-            <PostCard post={sampleData2} />
+            {isLoading || !userId ? (
+              <NoPostText>Loading...</NoPostText>
+            ) : isError ? (
+              <NoPostText>Error</NoPostText>
+            ) : postData?.length > 0 ? (
+              postData.map((post: Post) => (
+                <PostCard
+                  key={post._id}
+                  post={post}
+                  userId={userId}
+                  isLogin={isLogin}
+                  onClick={() => handleSelectPost(post._id)}
+                />
+              ))
+            ) : (
+              <NoPostText>포스트 글이 없습니다.</NoPostText>
+            )}
           </PostContainer>
         </PostSection>
       </Container>
@@ -105,43 +169,4 @@ const MainPage = () => {
   );
 };
 
-
 export default MainPage;
-
-const sampleData1: Post = {
-  _id: "111",
-  category: "도서",
-  title: "서시",
-  content:
-    "죽는 날까지 하늘을 우러러 한 점 부끄럼이 없기를, 잎새에 이는 바람에도 나는 괴로워했다",
-  quote: "인상깊음",
-  author: "테스트123",
-  authorId: "123",
-  date: "2024-10-23",
-  bookmarkCount: "309",
-};
-const sampleData2: Post = {
-  _id: "111",
-  category: "노래",
-  title: "서시",
-  content:
-    "죽는 날까지 하늘을 우러러 한 점 부끄럼이 없기를, 잎새에 이는 바람에도 나는 괴로워했다",
-  quote: "인상깊음",
-  author: "테스트123",
-  authorId: "123",
-  date: "2024-10-23",
-  bookmarkCount: "309",
-};
-
-const sampleData3: Post = {
-  _id: "111",
-  category: "대사",
-  title: "서시",
-  content:
-    "죽는 날까지 하늘을 우러러 한 점 부끄럼이 없기를, 잎새에 이는 바람에도 나는 괴로워했다",
-  quote: "인상깊음",
-  author: "테스트123",
-  authorId: "123",
-  date: "2024-10-23",
-  bookmarkCount: "309",
-};
