@@ -78,48 +78,56 @@ const MainPage = () => {
   const [userId, setUserId] = useState<string>("");
   const [searchWord, setSearchWord] = useState<string>("");
   const navigate = useNavigate();
+  const { isLogin } = useAuthStore();
 
+  //카테고리 선택
   const handleSelectCategory = useCallback((category: string) => {
     setSelectCategory(category);
   }, []);
 
-  const handleSelectPost = useCallback((postId: string) => {
-    if (!isLogin) {
-      navigate("/login");
-      return
-    }
-    navigate(`/post/${postId}`);
+  //포스트 선택 시
+  const handleSelectPost = useCallback(
+    (postId: string) => {
+      if (!isLogin) {
+        navigate("/login");
+        return;
+      }
+      console.log(postId);
+      navigate(`/post/${postId}`);
+    },
+    [isLogin],
+  );
+
+  //userId 받아오기
+  const getUserId = useCallback(async () => {
+    const user = await getUserData();
+    setUserId(user.id);
   }, []);
 
+  useEffect(() => {
+    if (isLogin) {
+      getUserId();
+    } else {
+      setUserId("none");
+    }
+  }, [isLogin]);
+
+  //포스트 목록 불러오기
   const { data, isLoading, isError } = useGetCategoryPostData(
     selectCategory,
     searchWord,
   );
+
+  //최신순 정렬
   const sortedPostData = data?.sort((postA, postB) => {
     return (
       new Date(postB.createdAt).getTime() - new Date(postA.createdAt).getTime()
     );
   });
 
-  const { isLogin } = useAuthStore();
-
-  const getUserId = useCallback(async () => {
-    const user = await getUserData();
-    setUserId(user.id);
-    console.log(user.id);
-  }, []);
-
-  useEffect(() => {
-    if (isLogin) {
-      getUserId();
-    }else {
-      setUserId('none')
-    }
-  }, [isLogin]);
-
   const postData = sortedPostData || [];
+  console.log(postData);
 
-  console.log(postData)
   return (
     <MainLayout>
       <Container>

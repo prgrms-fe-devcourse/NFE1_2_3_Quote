@@ -85,42 +85,26 @@ interface PostCardProps {
 
 const PostCard = (props: PostCardProps) => {
   const { post, userId, isLogin, onClick } = props;
-  //북마크 표시
-  const [bookmark, setBookmark] = useState<boolean>(false);
-  const [bookmarkCount, setBookmarkCount] = useState<number>(
-    post.bookMarked.length,
-  );
-  useEffect(() => {
-    if(userId === 'none') {
-      return
-    }
-    const isBookmark = post.bookMarked
-      .map((user) => user.userId)
-      .includes(userId);
-    setBookmark(isBookmark);
-  }, [post.bookMarked]);
+  const navigate = useNavigate();
 
-  const { mutate: addBookmark } = useBookmarkMutation(post, bookmark, userId);
   //북마크 눌렀을 때
+  const { mutate: addBookmark } = useBookmarkMutation(userId);
   const handleCheckBookmark = useCallback(() => {
     if (!isLogin) {
       navigate("/login");
       return;
     }
     addBookmark(post._id);
-    setBookmark(!bookmark);
-    setBookmarkCount((prevCount) => (bookmark ? prevCount - 1 : prevCount + 1))
-  }, [isLogin, addBookmark, post._id, bookmark]);
+  }, [isLogin, post._id]);
 
   //작성자 닉네임 눌렀을 때 페이지 이동
-  const navigate = useNavigate();
   const handleSelectAuthor = useCallback(() => {
     if (!isLogin) {
       navigate("/login");
       return;
     }
-    navigate(`/user-page/${post.authorId}`);
-  }, []);
+    navigate(`/user-page/${post.authorId._id}`);
+  }, [isLogin, post.authorId]);
 
   return (
     <>
@@ -134,7 +118,11 @@ const PostCard = (props: PostCardProps) => {
         </PostContentContainer>
         <BottomContainer>
           <BookMark onClick={handleCheckBookmark}>
-            {bookmark ? <BookMarkAfter /> : <BookMarkBefore />}
+            {post.bookMarked.map((user) => user.userId).includes(userId) ? (
+              <BookMarkAfter />
+            ) : (
+              <BookMarkBefore />
+            )}
             {post.bookMarked.length}
           </BookMark>
           <UserText onClick={handleSelectAuthor}>
