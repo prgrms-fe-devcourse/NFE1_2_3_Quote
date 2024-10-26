@@ -18,6 +18,14 @@ const PostCardContainer = styled.div`
   overflow: hidden;
   background-color: ${(props) => props.color};
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.25);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 12px 16px rgba(0, 0, 0, 0.3);
+  }
 `;
 
 const PostContentContainer = styled.div`
@@ -27,6 +35,7 @@ const PostContentContainer = styled.div`
   justify-content: space-between;
   height: calc(300px - 50px);
   color: ${(props) => props.color};
+  cursor: pointer;
 `;
 
 const PostContent = styled.p`
@@ -76,6 +85,7 @@ const UserText = styled.p`
   display: flex;
   justify-content: end;
   align-items: center;
+  cursor: pointer;
 
   &:hover {
     text-decoration: underline;
@@ -85,50 +95,55 @@ const UserText = styled.p`
 interface PostCardProps {
   post: Post;
   userId: string;
-  isLogin: boolean;
   onClick: () => void;
+  onAddBookmark?: (post: Post) => void;
+  onRemoveBookmark?: (postId: string) => void;
 }
 
-const PostCard = (props: PostCardProps) => {
-  const { post, userId, isLogin, onClick } = props;
-
+const PostCard = ({
+  post,
+  userId,
+  onClick,
+  onRemoveBookmark,
+  onAddBookmark,
+}: PostCardProps) => {
   const [bookmark, setBookmark] = useState<boolean>(false);
   const [bookmarkCount, setBookmarkCount] = useState<number>(
-    post.bookMarked.length,
+    post.bookMarked?.length || 0,
   );
 
   useEffect(() => {
-    if (userId === "none") {
-      return;
+    if (post.bookMarked) {
+      const isBookmark = post.bookMarked.some((user) => user.userId === userId);
+      setBookmark(isBookmark);
     }
-    const isBookmark = post.bookMarked
-      .map((user) => user.userId)
-      .includes(userId);
-    setBookmark(isBookmark);
-  }, [post.bookMarked]);
+  }, [post.bookMarked, userId]);
 
-  const handleCheckBookmark = useCallback(() => {
-    if (!isLogin) {
-      navigate("/login");
-      return;
+  const handleCheckBookmark = useCallback(async () => {
+    try {
+      await postBookmark(post._id);
+
+      setBookmark((prev) => !prev);
+      setBookmarkCount((prev) => (bookmark ? prev - 1 : prev + 1));
+
+      if (bookmark) {
+        onRemoveBookmark?.(post._id);
+      } else {
+        onAddBookmark?.(post);
+      }
+    } catch (error) {
+      console.error("Bookmark error:", error);
     }
-    postBookmark(post._id);
-    setBookmark(!bookmark);
-    if (bookmark) {
-      setBookmarkCount((prev) => prev - 1);
-    } else {
-      setBookmarkCount((prev) => prev + 1);
-    }
-  }, [bookmark]);
+  }, [bookmark, post._id, onRemoveBookmark, onAddBookmark]);
 
   const navigate = useNavigate();
   const handleSelectAuthor = useCallback(() => {
-    if (!isLogin) {
-      navigate("/login");
-      return;
+    if (post.authorId._id === userId) {
+      navigate("/mypage");
+    } else {
+      navigate(`/user-page/${post.authorId._id}`);
     }
-    navigate(`/user-page/${post.authorId}`);
-  }, []);
+  }, [navigate, post.authorId._id, userId]);
 
   return (
     <>

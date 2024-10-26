@@ -4,8 +4,10 @@ import styled, { keyframes } from "styled-components";
 import {
   fetchUserProfile,
   deleteUserAccount,
+  fetchMyPosts,
+  fetchBookmarkedPosts,
 } from "./apis/mypage";
-import { UserMe } from "@/types/Types"
+import { UserMe, Post } from "@/types/Types";
 import ProfileModifyButton from "@assets/icons/profile_modify_button.svg?react";
 import profile from "@assets/images/profile.png";
 import MainLayout from "@/layouts/MainLayout";
@@ -98,7 +100,7 @@ const UserEmail = styled.p`
 
 const ContentSection = styled.div`
   width: 860px;
-  height: 60px;
+  height: 100%;
   display: flex;
   justify-content: space-evenly;
   margin-top: 50px;
@@ -110,6 +112,8 @@ const TabButton = styled.button<{ $isActive: boolean }>`
   background: none;
   border: none;
   font-size: 18px;
+  padding-top: 20px;
+  padding-bottom: 15px;
   cursor: pointer;
   color: ${({ $isActive }) => ($isActive ? "#303030" : "#A7A7A7")};
   border-bottom: ${({ $isActive }) => ($isActive ? "2px solid black" : "none")};
@@ -119,6 +123,15 @@ const MessageContainer = styled.div`
   margin-top: 50px;
   font-size: 18px;
   color: #a7a7a7;
+`;
+
+const PostContainer = styled.div`
+  width: 840px;
+  height: 100%;
+  margin: 10px auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
 `;
 
 const Menu = styled.div`
@@ -148,6 +161,9 @@ const MenuItem = styled.button`
 
 const MyPage = memo(() => {
   const [userProfile, setUserProfile] = useState<UserMe | null>(null);
+  const [myPosts, setMyPosts] = useState<Post[]>([]);
+  const [bookmarkedPosts, setBookmarkedPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("posts");
   const [menuVisible, setMenuVisible] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -161,16 +177,24 @@ const MyPage = memo(() => {
   const settingsButtonRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const loadProfile = async () => {
+    const loadProfileAndPosts = async () => {
       try {
         const profile = await fetchUserProfile();
         setUserProfile(profile);
+
+        const myPosts = await fetchMyPosts(profile);
+        setMyPosts(myPosts);
+
+        const bookmarkedPosts = await fetchBookmarkedPosts(profile);
+        setBookmarkedPosts(bookmarkedPosts);
       } catch (error) {
-        console.error("Failed to load user profile:", error);
+        console.error("Failed to load profile or posts:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
-    loadProfile();
+    loadProfileAndPosts();
   }, []);
 
   const toggleMenu = useCallback(() => {
@@ -195,20 +219,36 @@ const MyPage = memo(() => {
   }, [handleClickOutside]);
 
   const getPosts = () =>
-    activeTab === "posts"
-      ? renderPosts(userProfile?.myPosts, "작성한 글이 없습니다.")
-      : renderPosts(userProfile?.bookMarkedPosts, "북마크한 글이 없습니다.");
+    activeTab === "posts" ? renderPosts(myPosts) : renderPosts(bookmarkedPosts);
 
-  const renderPosts = (posts: any[] | undefined, emptyMessage: string) =>
-    posts?.length ? (
-      posts.map((post, index) => (
-        <PostCard
-          key={index}
-          post={post}
-        />
-      ))
+  const handleAddBookmark = (post: Post) => {
+    setBookmarkedPosts((prev) => [...prev, post]);
+  };
+
+  const handleRemoveBookmark = (postId: string) => {
+    setBookmarkedPosts((prev) => prev.filter((post) => post._id !== postId));
+  };
+
+  const renderPosts = (posts: Post[]) =>
+    posts.length ? (
+      <PostContainer>
+        {posts.map((post) => (
+          <PostCard
+            key={post._id}
+            post={post}
+            userId={userProfile?.id || ""}
+            onClick={() => navigate(`/posts/${post._id}`)}
+            onAddBookmark={handleAddBookmark}
+            onRemoveBookmark={handleRemoveBookmark}
+          />
+        ))}
+      </PostContainer>
     ) : (
-      <MessageContainer>{emptyMessage}</MessageContainer>
+      <MessageContainer>
+        {activeTab === "posts"
+          ? "작성한 글이 없습니다."
+          : "북마크한 글이 없습니다."}
+      </MessageContainer>
     );
 
   const handleDeleteAccount = async () => {
@@ -259,6 +299,8 @@ const MyPage = memo(() => {
     window.location.reload();
   };
 
+  if (loading) return <MessageContainer>로딩 중...</MessageContainer>;
+
   return (
     <MainLayout>
       <Container>
@@ -293,7 +335,7 @@ const MyPage = memo(() => {
             북마크
           </TabButton>
         </ContentSection>
-        <MessageContainer>{getPosts()}</MessageContainer>
+        <>{getPosts()}</>
 
         {isModalOpen && (
           <ProfileEditModal

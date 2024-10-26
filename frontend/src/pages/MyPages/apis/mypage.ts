@@ -1,5 +1,5 @@
 import { authAxiosClient } from "@/pages/SignUpPage/apis/signUp";
-import { UserMe } from "@/types/Types";
+import { UserMe, Post } from "@/types/Types";
 
 // 공통 헤더 설정 함수
 const getAuthHeaders = () => ({
@@ -57,6 +57,59 @@ export async function deleteUserAccount(): Promise<void> {
     }
   } catch (error) {
     console.error("회원 탈퇴 요청 실패:", error);
+    throw error;
+  }
+}
+
+// 특정 포스트 조회 함수
+export async function fetchPostById(postId: string): Promise<Post> {
+  const response = await authAxiosClient.get(`/posts/${postId}`, {
+    headers: getAuthHeaders(),
+  });
+  validateResponse(response, "포스트 조회에 실패했습니다.");
+  return response.data.data;
+}
+
+// 내가 작성한 포스트 조회 함수
+export async function fetchMyPosts(userMe: UserMe): Promise<Post[]> {
+  try {
+    const validPostIds = userMe.myPosts.map((postId) => String(postId));
+
+    if (validPostIds.length === 0) {
+      console.warn("유효한 포스트 ID가 없습니다.");
+      return [];
+    }
+
+    const posts = await Promise.all(
+      validPostIds.map((postId) => fetchPostById(postId)),
+    );
+
+    const validPosts = posts.filter((post) => post !== null);
+    return validPosts;
+  } catch (error) {
+    console.error("내 포스트를 가져오는 중 오류 발생:", error);
+    throw error;
+  }
+}
+
+// 북마크한 포스트 조회 함수
+export async function fetchBookmarkedPosts(userMe: UserMe): Promise<Post[]> {
+  try {
+    const validBookmarkedIds = userMe.bookMarkedPosts.map((postId) => String(postId));
+
+    if (validBookmarkedIds.length === 0) {
+      console.warn("유효한 북마크 포스트 ID가 없습니다.");
+      return [];
+    }
+
+    const posts = await Promise.all(
+      validBookmarkedIds.map((postId) => fetchPostById(postId)),
+    );
+
+    const validPosts = posts.filter((post) => post !== null);
+    return validPosts;
+  } catch (error) {
+    console.error("북마크한 포스트를 가져오는 중 오류 발생:", error);
     throw error;
   }
 }
