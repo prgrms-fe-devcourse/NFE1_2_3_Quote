@@ -24,7 +24,7 @@ userAxiosClient.interceptors.request.use((config) => {
 
 export const getUserData = async () => {
   try {
-    const response = await userAxiosClient.get(`${URL}/users/me`);
+    const response = await userAxiosClient.get(`/users/me`);
     return response.data.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {

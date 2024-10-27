@@ -1,13 +1,11 @@
 import axios from "axios";
 import { userAxiosClient } from "./userApi";
+import { Post } from "@/types/Types";
 
-const URL = "http://43.200.164.241:8000";
-
-export const postBookmark = async (postId: string) => {
+export const postBookmark = async (postId: string): Promise<Post> => {
   try {
-    const response = await userAxiosClient.post(`${URL}/posts/${postId}/like`);
-    console.log(response)
-    return response.data;
+    const response = await userAxiosClient.post(`/posts/${postId}/like`);
+    return response.data.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
       throw new Error(`서버 통신 실패`);

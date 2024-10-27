@@ -1,8 +1,7 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import SearchButton from "@assets/icons/search_button.svg?react";
-import { useCallback, useRef, useState } from "react";
-import { getSearchPostData } from "../apis/postApi";
-import { useGetCategoryPostData } from "../hooks/useGetPostData";
+import { useCallback, useState } from "react";
+
 
 const SearchContainer = styled.div`
   width: 500px;
@@ -44,6 +43,29 @@ const StyledSearchButton = styled(SearchButton)`
   cursor: pointer;
 `;
 
+const fadeOut = keyframes`
+  0% { opacity: 1; }
+  100% { opacity: 0; }
+`;
+
+const SearchMessage = styled.div`
+  position: fixed;
+  top: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #fff;
+  color: #303030;
+  padding: 10px 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+  font-size: 14px;
+  font-weight: bold;
+  z-index: 1100;
+  pointer-events: none;
+  opacity: 1;
+  animation: ${fadeOut} 2s ease-in-out 1s forwards;
+`;
+
 interface SearchProps {
   searchWord: string;
   onChangeSearchWord: (searchWord: string) => void;
@@ -52,19 +74,14 @@ interface SearchProps {
 const Search = (props: SearchProps) => {
   const { searchWord, onChangeSearchWord } = props;
   const [searchInput, setSearchInput] = useState<string>(searchWord);
-  // const inputRef = useRef<HTMLInputElement>(null);
-  // const handleSearchTitle = useCallback(() => {
-  //   if (!searchWord) {
-  //     console.log("검색어를 입력해주세요");
-  //     return;
-  //   }
-  // }, [searchWord]);
-
+  const [showMessage, setShowMessage] = useState(false);
+  //검색
   const handleSearchTitle = () => {
     if (!searchInput) {
-      console.log("검색어를 입력하세요");
+      setShowMessage(true)
       return;
     }
+    setShowMessage(false)
     onChangeSearchWord(searchInput);
   };
 
@@ -74,9 +91,11 @@ const Search = (props: SearchProps) => {
     }
   };
 
+  //검색 초기화
   const handleResetSearch = useCallback(() => {
     setSearchInput("");
     onChangeSearchWord("");
+    setShowMessage(false)
   }, []);
 
   return (
@@ -96,6 +115,7 @@ const Search = (props: SearchProps) => {
           <StyledSearchButton onClick={handleSearchTitle} />
         </SearchInputContainer>
       </SearchContainer>
+      {showMessage && <SearchMessage>검색어를 입력해주세요</SearchMessage>}
     </>
   );
 };
