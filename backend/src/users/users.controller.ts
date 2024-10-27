@@ -43,6 +43,21 @@ export class UsersController {
     return user.readOnlyData;
   }
 
+  @ApiResponse({ status: 200, description: '성공' })
+  @ApiOperation({ summary: '닉네임 중복 검사' })
+  @ApiBearerAuth('bearer')
+  @UseGuards(JwtAuthGuard)
+  @Get('check/nickname/:nickname')
+  async nickNameValidation(
+    @CurrentUser() user: User,
+    @Param('nickname') nickname: string,
+  ) {
+    if (!nickname) {
+      throw new BadRequestException('nickname is empty');
+    }
+    return await this.usersService.nickNameValidation(user, nickname);
+  }
+
   @ApiResponse({ status: 200, description: '성공', type: ReadOnlyUserDto })
   @ApiOperation({ summary: 'id로 유저정보 가져오기' })
   @ApiBearerAuth('bearer')
