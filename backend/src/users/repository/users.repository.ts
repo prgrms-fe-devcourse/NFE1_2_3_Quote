@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { User } from '../schemas/user.schema';
 import { Model, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
@@ -49,6 +49,10 @@ export class UsersRepository {
   }
 
   async findByIdAndUpdateNickname(userId: string, nickname: string) {
+    const existingUser = await this.userModel.findOne({ nickname });
+    if (existingUser) {
+      throw new BadRequestException('이미 존재하는 닉네임입니다.');
+    }
     const user = await this.userModel.findById(userId);
     user.nickname = nickname;
     const newUser = await user.save();
