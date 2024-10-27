@@ -3,10 +3,9 @@ import BookMarkBefore from "@assets/icons/bookMark_before_select.svg?react";
 import BookMarkAfter from "@assets/icons/bookMark_after_select.svg?react";
 import { Post } from "@/types/Types";
 import { categoryColors } from "@/styles/Colors";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { postBookmark } from "../apis/bookmarkApi";
-import { useAuthStore } from "@/pages/LogInPage/store/authStore";
+import { useBookmarkMutation } from "../hooks/useBookmarkMutation";
 
 const PostCardContainer = styled.div`
   width: 270px;
@@ -32,15 +31,25 @@ const PostContentContainer = styled.div`
 `;
 
 const PostContent = styled.p`
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 7;
   height: 80%;
   font-size: 16px;
-  white-space: pre-wrap;
   margin: 0;
+  white-space: pre-wrap;
+  overflow: hidden;
+  line-height: 24px;
 `;
 
 const PostTitle = styled.p`
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
   font-size: 14px;
+  font-weight: bold;
   margin: 0;
+  overflow: hidden;
 `;
 
 const BottomContainer = styled.div`
@@ -84,45 +93,26 @@ interface PostCardProps {
 
 const PostCard = (props: PostCardProps) => {
   const { post, userId, isLogin, onClick } = props;
-  //북마크 표시
-  const [bookmark, setBookmark] = useState<boolean>(false);
-  const [bookmarkCount, setBookmarkCount] = useState<number>(
-    post.bookMarked.length,
-  );
-  useEffect(() => {
-    if(userId === 'none') {
-      return
-    }
-    const isBookmark = post.bookMarked
-      .map((user) => user.userId)
-      .includes(userId);
-    setBookmark(isBookmark);
-  }, [post.bookMarked]);
+  const navigate = useNavigate();
 
   //북마크 눌렀을 때
+  const { mutate: addBookmark } = useBookmarkMutation(userId);
   const handleCheckBookmark = useCallback(() => {
     if (!isLogin) {
       navigate("/login");
       return;
     }
-    postBookmark(post._id);
-    setBookmark(!bookmark);
-    if (bookmark) {
-      setBookmarkCount((prev) => prev - 1);
-    } else {
-      setBookmarkCount((prev) => prev + 1);
-    }
-  }, [bookmark]);
+    addBookmark(post._id);
+  }, [isLogin, post._id]);
 
   //작성자 닉네임 눌렀을 때 페이지 이동
-  const navigate = useNavigate();
   const handleSelectAuthor = useCallback(() => {
     if (!isLogin) {
       navigate("/login");
       return;
     }
-    navigate(`/user-page/${post.authorId}`);
-  }, []);
+    navigate(`/user-page/${post.authorId._id}`);
+  }, [isLogin, post.authorId]);
 
   return (
     <>
@@ -136,8 +126,12 @@ const PostCard = (props: PostCardProps) => {
         </PostContentContainer>
         <BottomContainer>
           <BookMark onClick={handleCheckBookmark}>
-            {bookmark ? <BookMarkAfter /> : <BookMarkBefore />}
-            {bookmarkCount}
+            {post.bookMarked.map((user) => user.userId).includes(userId) ? (
+              <BookMarkAfter />
+            ) : (
+              <BookMarkBefore />
+            )}
+            {post.bookMarked.length}
           </BookMark>
           <UserText onClick={handleSelectAuthor}>
             {post.authorId.nickname}
