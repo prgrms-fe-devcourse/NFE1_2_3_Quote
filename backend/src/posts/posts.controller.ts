@@ -114,8 +114,11 @@ export class PostsController {
   @ApiBearerAuth('bearer')
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  deleteUserById(@CurrentUser() user: User, @Param('id') id: string): void {
-    this.postsService.deletePostById(user, id);
+  async deleteUserById(
+    @CurrentUser() user: User,
+    @Param('id') id: string,
+  ): Promise<void> {
+    await this.postsService.deletePostById(user, id);
   }
 
   // 게시글에 좋아요 추가
