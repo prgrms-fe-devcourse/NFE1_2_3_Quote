@@ -79,7 +79,6 @@ export class PostsService {
       const post = await this.postRepository.updatePost(newPost, id, imageKey);
       return post;
     } else {
-      console.log(`이거 실행됨`);
       const newPost = {
         title: data.title,
         content: data.content,
