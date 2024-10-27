@@ -2,11 +2,12 @@ import styled from "styled-components";
 import DarkModeButton from "@assets/icons/darkMode_button.svg?react";
 import LightModeButton from "@assets/icons/lightMode_button.svg?react";
 import logo from "@assets/images/quoteLogo.png";
-import profile from "@assets/images/profile.png";
-import { useState } from "react";
+import defaultProfile from "@assets/images/profile.png";
+import { useState, useEffect } from "react";
 import { useAuthStore } from "@/pages/LogInPage/store/authStore";
 import { useNavigate } from "react-router-dom";
 import LogoutModal from "@/pages/LogInPage/components/LogoutModal";
+import { fetchUserProfile } from "@/pages/MyPages/apis/mypage";
 
 const HeaderContainer = styled.header`
   background-color: #f3f3f3;
@@ -71,9 +72,25 @@ const Header = () => {
     localStorage.getItem("darkMode") === "true",
   );
   const [logoutModal, setLogoutModal] = useState<boolean>(false);
+  const [profileImage, setProfileImage] = useState<string>(defaultProfile);
   // const [isLogin, setIsLogin] = useState<boolean>(true);
   const { isLogin } = useAuthStore();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const loadUserProfile = async () => {
+      if (isLogin) {
+        try {
+          const user = await fetchUserProfile();
+          setProfileImage(user.profileImage || defaultProfile);
+        } catch (error) {
+          console.error("Failed to fetch user profile:", error);
+        }
+      }
+    };
+
+    loadUserProfile();
+  }, [isLogin]);
 
   const showLogoutModal = () => {
     if (isLogin) {
@@ -108,10 +125,10 @@ const Header = () => {
             {isLogin ? "로그아웃" : "시작하기"}{" "}
           </LoginButton>
           {isLogin && (
-            <Profile>
+            <Profile onClick={handleProfileClick}>
               <img
-                src={profile}
-                onClick={handleProfileClick}
+                src={profileImage}
+                alt='Profile'
               />
             </Profile>
           )}
