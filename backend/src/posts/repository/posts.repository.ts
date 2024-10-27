@@ -47,6 +47,12 @@ export class PostsRepository {
       .populate('authorId', 'nickname profileImage')
       .exec();
   }
+  //id로 포스트 가져오기
+  async getPostByIdNoPopulate(
+    postId: string | Types.ObjectId,
+  ): Promise<PostResponseDto> {
+    return await this.postModel.findById(postId);
+  }
 
   //특정 카테고리 포스트 가져오기
   async getPostByCategory(category: string): Promise<PostPreviewResponseDto[]> {

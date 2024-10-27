@@ -67,9 +67,17 @@ interface DeleteModalProps {
 }
 
 const DeleteModal = ({ onClose, onConfirm }: DeleteModalProps) => {
-  const handleConfirm = () => {
-    onConfirm();
-    onClose();
+
+  const handleConfirm = async () => {
+    try {
+      await onConfirm();
+      console.log("탈퇴 성공");
+
+      onClose();
+    } catch (error) {
+      console.error("탈퇴에 실패했습니다:", error);
+      alert("탈퇴에 실패했습니다. 다시 시도해 주세요.");
+    }
   };
 
   return (

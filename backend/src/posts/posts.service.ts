@@ -90,9 +90,16 @@ export class PostsService {
   }
 
   async deletePostById(user: User, postId: string) {
-    const post = await this.postRepository.getPostById(postId);
+    //postId로 포스트 찾기 (populate없이)
+    const post = await this.postRepository.getPostByIdNoPopulate(postId);
+
+    //포스트가 있는지 확인
     if (!post) {
-      throw new BadRequestException('There is no post');
+      throw new BadRequestException('해당 게시글이 존재하지 않습니다.');
+    }
+    //포스트 작성자와 현재 유저가 같은지 확인
+    if (post.authorId.toString() !== user.id) {
+      throw new UnauthorizedException('권한이 없습니다.');
     }
 
     await this.postRepository.deletePostById(user, postId);
