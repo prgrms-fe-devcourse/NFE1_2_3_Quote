@@ -7,7 +7,6 @@ import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useBookmarkMutation } from "../hooks/useBookmarkMutation";
 
-
 const PostCardContainer = styled.div`
   width: 270px;
   height: 300px;
@@ -32,15 +31,25 @@ const PostContentContainer = styled.div`
 `;
 
 const PostContent = styled.p`
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 7;
   height: 80%;
   font-size: 16px;
-  white-space: pre-wrap;
   margin: 0;
+  white-space: pre-wrap;
+  overflow: hidden;
+  line-height: 24px;
 `;
 
 const PostTitle = styled.p`
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
   font-size: 14px;
+  font-weight: bold;
   margin: 0;
+  overflow: hidden;
 `;
 
 const BottomContainer = styled.div`
