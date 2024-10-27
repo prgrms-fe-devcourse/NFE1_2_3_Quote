@@ -1,5 +1,10 @@
-import { useState, useRef, ChangeEvent } from "react";
+import { useState, useRef, ChangeEvent, useEffect } from "react";
 import styled from "styled-components";
+import {
+  uploadProfileImage,
+  updateNickname,
+  fetchUserProfile,
+} from "../apis/mypage";
 import PROFILE from "@assets/images/profile.png";
 import ProfileImgLightMode from "@assets/icons/profile_img_lightMode.svg?react";
 import ProfileImgDarkMode from "@assets/icons/profile_img_darkMode.svg?react";
@@ -186,44 +191,53 @@ interface ProfileEditModalProps {
   onClose: () => void;
   showSuccessMessage: () => void;
   mode?: boolean;
+  onUpdateProfile: (updatedImage: string, updatedNickname: string) => void;
 }
 
 const ProfileEditModal = ({
   onClose,
   showSuccessMessage,
   mode = false,
+  onUpdateProfile,
 }: ProfileEditModalProps) => {
   const [imgSrc, setImgSrc] = useState(PROFILE);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [nickname, setNickname] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const loadUserData = async () => {
+      try {
+        const profile = await fetchUserProfile();
+        setNickname(profile.nickname);
+        setImgSrc(profile.profileImage || PROFILE);
+      } catch (error) {
+        console.error("Failed to load user profile:", error);
+      }
+    };
+
+    loadUserData();
+  }, []);
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file && (file.type === "image/png" || file.type === "image/jpeg")) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        if (reader.result) {
-          setImgSrc(reader.result as string);
-
-          if (fileInputRef.current) {
-            fileInputRef.current.value = "";
-          }
-        }
-      };
-      reader.readAsDataURL(file);
-    } else {
-      alert("PNG 또는 JPEG 파일만 업로드할 수 있습니다.");
+    if (!file || !["image/png", "image/jpeg"].includes(file.type)) {
+      return alert("PNG 또는 JPEG 파일만 업로드할 수 있습니다.");
     }
+
+    setSelectedFile(file);
+    const reader = new FileReader();
+    reader.onload = () => setPreviewImage(reader.result as string);
+    reader.readAsDataURL(file);
   };
 
   const handleResetProfile = () => {
+    setPreviewImage(null);
+    setSelectedFile(null);
     setImgSrc(PROFILE);
-  };
-
-  const openFilePicker = () => {
-    fileInputRef.current?.click();
   };
 
   const handleNicknameChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -231,14 +245,27 @@ const ProfileEditModal = ({
     if (error) setError(null);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (nickname.trim().length === 0) {
       setError("1글자 이상 입력해주세요.");
+      return;
     } else if (nickname.length > 8) {
       setError("닉네임은 8자 이내로 입력해주세요.");
-    } else {
-      onClose();
+      return;
+    }
+
+    try {
+      const newImageUrl = selectedFile
+        ? await uploadProfileImage(selectedFile)
+        : imgSrc;
+
+      await updateNickname(nickname);
+      onUpdateProfile(newImageUrl, nickname);
       showSuccessMessage();
+      onClose();
+      window.location.reload();
+    } catch {
+      setError("프로필 수정에 실패했습니다.");
     }
   };
 
@@ -249,7 +276,7 @@ const ProfileEditModal = ({
         <ProfileImageWrapper>
           <ProfileImage>
             <StyledImg
-              src={imgSrc}
+              src={previewImage || imgSrc}
               alt='Profile'
             />
           </ProfileImage>
@@ -259,7 +286,7 @@ const ProfileEditModal = ({
             ref={fileInputRef}
             onChange={handleFileChange}
           />
-          <CameraIconWrapper onClick={openFilePicker}>
+          <CameraIconWrapper onClick={() => fileInputRef.current?.click()}>
             {mode ? <ProfileImgDarkMode /> : <ProfileImgLightMode />}
           </CameraIconWrapper>
         </ProfileImageWrapper>
@@ -272,7 +299,6 @@ const ProfileEditModal = ({
             placeholder='닉네임 입력'
             value={nickname}
             onChange={handleNicknameChange}
-            ref={inputRef}
             autoFocus
           />
           <NicknameCounter>{nickname.length}/8</NicknameCounter>
