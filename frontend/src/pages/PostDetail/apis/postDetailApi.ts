@@ -73,3 +73,7 @@ export const getPostInfo = async (postId: string) => {
 export const deletePost = (postId: string) => {
   return api.delete(`/posts/${postId}`);
 };
+
+export const bookMarked = (postId: string) => {
+  return api.post(`/posts/${postId}/like`);
+};

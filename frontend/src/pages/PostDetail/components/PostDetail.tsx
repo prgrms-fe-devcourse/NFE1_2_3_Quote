@@ -7,8 +7,12 @@ import QuoteEndIcon from "@assets/icons/quote_end.svg?react";
 import styled from "styled-components";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { getLoggedInUser, getPostInfo } from "../apis/postDetailApi";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  bookMarked,
+  getLoggedInUser,
+  getPostInfo,
+} from "../apis/postDetailApi";
 import PostDeletePopUp from "./PostDeletePopUp";
 
 const DetailContainer = styled.div`
@@ -194,15 +198,29 @@ const PostDetail = () => {
   };
 
   // 북마크
-  const [isActive, setIsActive] = useState(false);
+  const queryClient = useQueryClient();
+  const { mutate } = useMutation({
+    mutationFn: bookMarked,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["postInfo"] });
+    },
+    onError(error) {
+      console.log(error);
+    },
+  });
+
+  const isActive =
+    loggedInUser &&
+    postInfo &&
+    postInfo?.bookMarked.some((item) => item.userId === loggedInUser.id);
 
   const handleBookMarked = () => {
-    setIsActive(!isActive);
+    mutate(postId);
   };
 
   return (
     <DetailContainer>
-      <GotoBackButton>
+      <GotoBackButton onClick={() => navigate(-1)}>
         <GoToBackBtn />
       </GotoBackButton>
       <TopContainer>
@@ -218,7 +236,9 @@ const PostDetail = () => {
         )}
         {showList && (
           <ModifyMenu>
-            <ModifyItem onClick={() => navigate("/")}>수정</ModifyItem>
+            <ModifyItem onClick={() => navigate("/post/:postId/modify")}>
+              수정
+            </ModifyItem>
             <ModifyItem onClick={handlePostDeletePopUp}>삭제</ModifyItem>
           </ModifyMenu>
         )}
