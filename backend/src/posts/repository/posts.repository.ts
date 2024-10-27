@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 
 import { Model, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
@@ -7,7 +7,10 @@ import { PostSaveDao } from '../dto/post.save.dao';
 import { Comments } from 'src/comments/schemas/comments.schema';
 import { User } from 'src/users/schemas/user.schema';
 import { PostRequestDto } from '../dto/post.request.dto';
-import { PostPreviewResponseDto } from '../dto/post.response.dto';
+import {
+  PostPreviewResponseDto,
+  PostResponseDto,
+} from '../dto/post.response.dto';
 
 @Injectable()
 export class PostsRepository {
@@ -38,11 +41,17 @@ export class PostsRepository {
   }
 
   //id로 포스트 가져오기
-  async getPostById(postId: string | Types.ObjectId) {
+  async getPostById(postId: string | Types.ObjectId): Promise<PostResponseDto> {
     return await this.postModel
       .findById(postId)
       .populate('authorId', 'nickname profileImage')
       .exec();
+  }
+  //id로 포스트 가져오기
+  async getPostByIdNoPopulate(
+    postId: string | Types.ObjectId,
+  ): Promise<PostResponseDto> {
+    return await this.postModel.findById(postId);
   }
 
   //특정 카테고리 포스트 가져오기
@@ -120,8 +129,12 @@ export class PostsRepository {
 
   //포스트 삭제하기
   async deletePostById(user: User, postId: string) {
-    //포스트 검색
     const post = await this.postModel.findById(postId);
+    //포스트 작성자와 현재 유저가 같은지 확인
+    if (post.authorId.toString() !== user.id) {
+      throw new UnauthorizedException('권한이 없습니다.');
+    }
+
     // 좋아요 누른 사용자 ID로 사용자 검색
     const likedUsers = await this.usersModel.find({
       _id: { $in: post.bookMarked.map((bookMark) => bookMark.userId) },

@@ -3,6 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 import { Document, SchemaOptions } from 'mongoose';
 import { Types } from 'mongoose';
+import { User } from 'src/users/schemas/user.schema';
 const options: SchemaOptions = {
   timestamps: true,
 };
@@ -95,7 +96,7 @@ export class Post extends Document {
   })
   @Prop({
     type: [Types.ObjectId],
-    ref: 'users',
+    ref: 'User',
     required: true,
     default: [],
   })
@@ -103,5 +104,12 @@ export class Post extends Document {
 }
 
 export const _PostSchema = SchemaFactory.createForClass(Post);
+// // PostSchema에 가상 필드 추가
+// _PostSchema.virtual('author', {
+//   ref: 'User',
+//   localField: 'authorId',
+//   foreignField: '_id',
+//   justOne: true,
+// });
 
 export const PostSchema = _PostSchema;
