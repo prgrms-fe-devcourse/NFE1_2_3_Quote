@@ -1,7 +1,6 @@
 import LoginPage from "@/pages/LogInPage/LoginPage";
 import MainPage from "@/pages/MainPage/MainPage";
 import MyPage from "@/pages/MyPages/MyPage";
-import NotFoundPage from "@/pages/NotFoundPage/NotFoundPage";
 import CreatePost from "@/pages/PostCreate/CreatePost";
 import PostDetailPage from "@/pages/PostDetail/PostDetailPage";
 import PostModifyPage from "@/pages/PostModify/PostModifyPage";
@@ -51,10 +50,6 @@ const router = createBrowserRouter([
   {
     path: "/user-page/:userId",
     element: <UserPage />,
-  },
-  {
-    path: "/error",
-    element: <NotFoundPage />,
   },
 ]);
 
