@@ -1,15 +1,31 @@
 export const lightTheme = {
-  background: "#F3F3F3",
-  fontColor: "#303030",
-  header: "#F3F3F3",
-  main: "#474040",
-  validation: "#D72121",
+  colorMain: "#474040",
+  colorHeader: "#F3F3F3",
+  colorBackground: "#F3F3F3",
+  colorMainFont: "#303030",
+  colorSubFont : "#A7A7A7",
+  colorValidation: "#D72121",
+  colorSub : "#FFFFFF", //White
+  colorAll : "#F9F9F9",
+  colorBook : "#E9E6D2",
+  colorSong : "#7F7D6F",
+  colorScript : "#889A86",
+  colorInterview : "#9EB5BA",
+  colorOther : "#CB8E84",
 };
 
 export const darkTheme = {
-  background: "#1B1B1E",
-  fontColor: "#F3F3F3",
-  header: "#030303",
-  main: "#675959",
-  validation: "#E65C5C",
+  colorMain: "#675959",
+  colorHeader: "#030303",
+  colorBackground: "#1B1B1E",
+  colorMainFont: "#F3F3F3",
+  colorSubFont : "#A7A7A7",
+  colorValidation: "#E65C5C",
+  colorSub : "#303030", //DarkCharcoal
+  colorAll : "#EAEAEA",
+  colorBook : "#94917E",
+  colorSong : "#504E45",
+  colorScript : "#4F5B4E",
+  colorInterview : "#607174",
+  colorOther : "#7E5D58",
 };
