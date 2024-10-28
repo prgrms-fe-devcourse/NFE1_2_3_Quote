@@ -24,7 +24,7 @@ const Container = styled.div`
 
 const TopSection = styled.div`
   width: 100%;
-  height: 40%;
+  min-height: 300px;
   background-image: url(${MainImage});
   background-size: cover;
   background-repeat: no-repeat;
@@ -44,7 +44,6 @@ const CategoryContainer = styled.div`
 
 const PostSection = styled.div`
   width: 960px;
-  height: 50%;
   margin: 0 auto;
   display: flex;
   justify-content: center;
@@ -52,7 +51,7 @@ const PostSection = styled.div`
 
 const PostContainer = styled.div`
   width: 870px; //270px * 3 + 10px * 6
-  height: 100%;
+  height: auto;
   margin: 20px auto;
   display: flex;
   flex-wrap: wrap;
