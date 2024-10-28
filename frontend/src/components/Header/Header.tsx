@@ -53,6 +53,7 @@ const LoginButton = styled.button`
   border: 1px solid #474040;
   color: #474040;
   cursor: pointer;
+  user-select: none; /* 텍스트 선택 방지 */
 `;
 
 const Profile = styled.div`
@@ -62,6 +63,7 @@ const Profile = styled.div`
   border-radius: 20px;
   overflow: hidden;
   cursor: pointer;
+  user-select: none; /* 텍스트 선택 방지 */
 
   img {
     width: 100%;

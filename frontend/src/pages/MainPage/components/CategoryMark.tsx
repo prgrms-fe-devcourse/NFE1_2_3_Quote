@@ -1,12 +1,19 @@
 import styled from "styled-components";
 
-const CategoryContainer = styled.div<{ color: string; $active: boolean }>`
+interface CategoryContainerProps {
+  $category: string;
+  $active: boolean
+}
+
+
+const CategoryContainer = styled.div<CategoryContainerProps>`
   width: 120px;
   height: 60px;
   margin: 0 5px;
   display: flex;
   justify-content: center;
-  background-color: ${(props) => props.color};
+  background-color: ${({ theme, $category }) => theme[$category].bgColor};
+  color : ${({ theme }) => theme.colorFont};
   border-radius: 20px 20px 0 0;
   cursor: pointer;
   opacity: ${(props) => (props.$active ? "1" : "0.9")};
@@ -28,16 +35,15 @@ const CategoryText = styled.p`
 interface CategoryMarkProps {
   category: string;
   active: boolean;
-  color: string;
   onClick: () => void;
 }
 
 const CategoryMark = (props: CategoryMarkProps) => {
-  const { category, active, color, onClick } = props;
+  const { category, active, onClick } = props;
   return (
     <>
       <CategoryContainer
-        color={color}
+        $category={category}
         onClick={onClick}
         $active={active}
       >

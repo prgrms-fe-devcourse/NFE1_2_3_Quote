@@ -8,12 +8,12 @@ export const lightTheme : DefaultTheme = {
   colorSubFont : "#A7A7A7",
   colorValidation: "#D72121",
   colorSub : "#FFFFFF", //White
-  colorAll : "#F9F9F9",
-  colorBook : "#E9E6D2",
-  colorSong : "#7F7D6F",
-  colorScript : "#889A86",
-  colorInterview : "#9EB5BA",
-  colorOther : "#CB8E84",
+  전체: { bgColor: "#F9F9F9", fontColor: "#303030" },
+  도서: { bgColor: "#E9E6D2", fontColor: "#303030" },
+  노래: { bgColor: "#7F7D6F", fontColor: "#F9F9F9" },
+  대사: { bgColor: "#889A86", fontColor: "#F9F9F9" },
+  인터뷰: { bgColor: "#9EB5BA", fontColor: "#303030" },
+  기타: { bgColor: "#CB8E84", fontColor: "#303030" },
 };
 
 export const darkTheme = {
@@ -24,10 +24,10 @@ export const darkTheme = {
   colorSubFont : "#A7A7A7",
   colorValidation: "#E65C5C",
   colorSub : "#303030", //DarkCharcoal
-  colorAll : "#EAEAEA",
-  colorBook : "#94917E",
-  colorSong : "#504E45",
-  colorScript : "#4F5B4E",
-  colorInterview : "#607174",
-  colorOther : "#7E5D58",
+  전체: { bgColor: "#303030", fontColor: "#F3F3F3" },
+  도서: { bgColor: "#94917E", fontColor: "#F3F3F3" },
+  노래: { bgColor: "#504E45", fontColor: "#F3F3F3" },
+  대사: { bgColor: "#4F5B4E", fontColor: "#F3F3F3" },
+  인터뷰: { bgColor: "#607174", fontColor: "#F3F3F3" },
+  기타: { bgColor: "#7E5D58", fontColor: "#F3F3F3" },
 };

@@ -141,7 +141,6 @@ const MainPage = () => {
                 key={index}
                 category={category}
                 active={category === selectCategory}
-                color={categoryColors[category].bgColor}
                 onClick={() => {
                   handleSelectCategory(category);
                 }}

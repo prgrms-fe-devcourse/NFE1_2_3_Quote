@@ -7,7 +7,11 @@ import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useBookmarkMutation } from "../hooks/useBookmarkMutation";
 
-const PostCardContainer = styled.div`
+interface PostCardContainerProps {
+  $category: string;
+}
+
+const PostCardContainer = styled.div<PostCardContainerProps>`
   width: 270px;
   height: 300px;
   margin: 10px;
@@ -16,18 +20,18 @@ const PostCardContainer = styled.div`
   justify-content: space-between;
   border-radius: 20px;
   overflow: hidden;
-  background-color: ${(props) => props.color};
+  background-color: ${({ theme, $category }) => theme[$category].bgColor};
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.25);
   cursor: pointer;
 `;
 
-const PostContentContainer = styled.div`
+const PostContentContainer = styled.div<PostCardContainerProps>`
   padding: 20px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   height: calc(300px - 50px);
-  color: ${(props) => props.color};
+  color: ${({ theme, $category }) => theme[$category].fontColor};
 `;
 
 const PostContent = styled.p`
@@ -58,7 +62,7 @@ const BottomContainer = styled.div`
   display: flex;
   justify-content: space-between;
   padding: 0 1rem;
-  background-color: #f9f9f9;
+  background-color: ${({ theme }) => theme.colorSub};
   font-size: 14px;
 `;
 
@@ -116,9 +120,9 @@ const PostCard = (props: PostCardProps) => {
 
   return (
     <>
-      <PostCardContainer color={categoryColors[post.category].bgColor}>
+      <PostCardContainer $category={post.category}>
         <PostContentContainer
-          color={categoryColors[post.category].fontColor}
+          $category={post.category}
           onClick={onClick}
         >
           <PostContent>{post.quote}</PostContent>
