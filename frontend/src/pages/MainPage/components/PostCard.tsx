@@ -70,6 +70,7 @@ const BookMark = styled.div`
     width: 18px;
     height: 18px;
     cursor: pointer;
+    margin-right: 5px;
   }
 `;
 
