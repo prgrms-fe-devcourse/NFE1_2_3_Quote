@@ -1,3 +1,4 @@
+import { PostData } from "@/pages/PostCreate/apis/api";
 import axios from "axios";
 
 const BASE_URL = "http://43.200.164.241:8000";
@@ -16,13 +17,11 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-export interface PostData {
-  category: string;
-  title: string;
-  content: string;
-  quote: string;
+interface modifyForm {
+  data: PostData;
+  postId: string;
 }
 
-export const createPost = (data: PostData) => {
-  return api.post("/posts", data);
+export const modifyPost = (modifyForm: modifyForm) => {
+  return api.patch(`/posts/${modifyForm.postId}`, modifyForm.data);
 };

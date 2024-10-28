@@ -1,9 +1,18 @@
 import CancelPopUp from "@/pages/PostCreate/components/CancelPopUp";
-import CategorySelect from "@/pages/PostCreate/components/CategorySelect";
-import { useMutation } from "@tanstack/react-query";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { getPostInfo } from "@/pages/PostDetail/apis/postDetailApi";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import styled, { keyframes } from "styled-components";
+import { modifyPost } from "../apis/postModifyApi";
+
+const SelectedCategory = styled.p`
+  width: 90%;
+  margin-top: 50px;
+  padding-top: 20px;
+  font-size: 20px;
+  text-align: end;
+`;
 
 const TitleContainer = styled.div`
   width: 90%;
@@ -150,10 +159,25 @@ const CreateSuccess = styled.div`
 `;
 
 const PostModifyForm = () => {
-  const [category, setCategory] = useState("도서");
+  const { postId } = useParams() as { postId: string };
+  const { data: postInfo } = useQuery({
+    queryKey: ["postInfo"],
+    queryFn: () => getPostInfo(postId),
+  });
+
+  const [category, setCategory] = useState("");
   const [title, setTitle] = useState("");
   const [quote, setQuote] = useState("");
   const [content, setContent] = useState("");
+
+  useEffect(() => {
+    if (postInfo) {
+      setCategory(postInfo.category);
+      setTitle(postInfo.title);
+      setQuote(postInfo.quote);
+      setContent(postInfo.content);
+    }
+  }, [postInfo]);
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.value.length > 20) {
@@ -184,11 +208,11 @@ const PostModifyForm = () => {
   };
 
   const { mutate } = useMutation({
-    // mutationFn: createPost,
+    mutationFn: modifyPost,
     onSuccess: () => {
       setShowSuccessMsg(true);
       setTimeout(() => {
-        navigate("/");
+        navigate(`/post/${postId}`);
       }, 2000);
     },
     onError(error) {
@@ -221,20 +245,20 @@ const PostModifyForm = () => {
       }, 2000);
       return;
     }
-    // mutate({
-    //   title: title,
-    //   category: category,
-    //   content: content,
-    //   quote: quote,
-    // });
+    mutate({
+      data: {
+        title: title,
+        category: category,
+        content: content,
+        quote: quote,
+      },
+      postId,
+    });
   };
 
   return (
     <>
-      <CategorySelect
-        category={category}
-        setCategory={setCategory}
-      />
+      <SelectedCategory>{category}</SelectedCategory>
       <TitleContainer>
         <TitleInput
           placeholder={
@@ -283,18 +307,19 @@ const PostModifyForm = () => {
           type='button'
           onClick={handleCreatePost}
         >
-          발행
+          수정
         </PublishButton>
       </div>
       {showCancelPopUp && (
         <CancelPopUp
+          modify={true}
           showCancelPopUp={showCancelPopUp}
           setShowCancelPopUp={setShowCancelPopUp}
         />
       )}
       {showMsg && <CreateError>{errorMsg}</CreateError>}
       {showSuccessMsg && (
-        <CreateSuccess>글 작성이 완료되었습니다</CreateSuccess>
+        <CreateSuccess>글 수정이 완료되었습니다.</CreateSuccess>
       )}
     </>
   );

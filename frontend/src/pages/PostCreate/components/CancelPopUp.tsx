@@ -59,11 +59,13 @@ const PopUpConfirmButton = styled.p`
 `;
 
 interface CancelPopUpProps {
+  modify: boolean;
   showCancelPopUp: boolean;
   setShowCancelPopUp: (value: boolean) => void;
 }
 
 const CancelPopUp = ({
+  modify,
   showCancelPopUp,
   setShowCancelPopUp,
 }: CancelPopUpProps) => {
@@ -77,7 +79,11 @@ const CancelPopUp = ({
   return (
     <>
       <PopUpContainer>
-        <PopUpTitle>글 작성을 취소하시겠습니까?</PopUpTitle>
+        <PopUpTitle>
+          {modify
+            ? "글 수정을 취소하시겠습니까?"
+            : "글 작성을 취소하시겠습니까?"}
+        </PopUpTitle>
         <PopUpButtonContainer>
           <PopUpCancelButton onClick={handlePopUpCancel}>
             취소
