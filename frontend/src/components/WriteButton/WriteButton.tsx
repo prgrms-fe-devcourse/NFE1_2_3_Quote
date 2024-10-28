@@ -19,7 +19,7 @@ const StyledButton = styled.div`
 `;
 
 const WriteButton = () => {
-  const { themeMode } = useThemeStore();
+  const themeMode = useThemeStore((state) => state.themeMode);
   const navigate = useNavigate();
   const handleWriteButton = () => {
     navigate("/create-post");

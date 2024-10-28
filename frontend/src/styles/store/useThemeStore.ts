@@ -5,13 +5,19 @@ interface ThemeStore {
   toggleThemeMode: () => void;
 }
 
-const initialThemeMode = localStorage.getItem("themeMode") || "lightMode";
-if (!localStorage.getItem("themeMode")) {
-  localStorage.setItem("themeMode", initialThemeMode);
-}
+const getInitialThemeMode = (): string => {
+  if (!localStorage.getItem("themeMode")) {
+    localStorage.setItem("themeMode", "lightMode");
+    return "lightMode"
+  }
+
+  const initialThemeMode: string =
+    localStorage.getItem("themeMode") ?? "lightMode";
+  return initialThemeMode;
+};
 
 const useThemeStore = create<ThemeStore>((set) => ({
-  themeMode: initialThemeMode,
+  themeMode: getInitialThemeMode(),
   toggleThemeMode: () =>
     set((state) => {
       const newMode =

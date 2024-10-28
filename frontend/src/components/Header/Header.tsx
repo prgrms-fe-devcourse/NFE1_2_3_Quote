@@ -72,10 +72,8 @@ const Profile = styled.div`
 
 const Header = () => {
   const { themeMode, toggleThemeMode } = useThemeStore();
-
   const [logoutModal, setLogoutModal] = useState<boolean>(false);
   const [profileImage, setProfileImage] = useState<string>(defaultProfile);
-  // const [isLogin, setIsLogin] = useState<boolean>(true);
   const { isLogin } = useAuthStore();
   const navigate = useNavigate();
 
@@ -121,7 +119,11 @@ const Header = () => {
         />
         <ButtonContainer>
           <StyledModeButton onClick={toggleThemeMode}>
-            {themeMode === "lightMode" ? <DarkModeButton /> : <LightModeButton />}
+            {themeMode === "lightMode" ? (
+              <DarkModeButton />
+            ) : (
+              <LightModeButton />
+            )}
           </StyledModeButton>
           <LoginButton onClick={showLogoutModal}>
             {isLogin ? "로그아웃" : "시작하기"}{" "}
