@@ -33,6 +33,11 @@ const SearchInput = styled.input`
   background-color: #f3f3f3;
   opacity: 0.7;
   padding: 1rem;
+
+  &:focus {
+    outline-color:  #474040;
+  }
+  
 `;
 
 const StyledSearchButton = styled(SearchButton)`
