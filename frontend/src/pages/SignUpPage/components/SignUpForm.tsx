@@ -87,6 +87,14 @@ const EyeContainer = styled.div`
   align-items: center;
   top: 15px;
 `;
+const MaxLength = styled.div`
+  font-size: 14px;
+  height: 15px;
+  color: #757575;
+  position: absolute;
+  right: 13px;
+  top: 15px;
+`;
 const fadeOut = keyframes`
   0% { opacity: 1; }
   100% { opacity: 0; }
@@ -135,6 +143,7 @@ const SignUpForm = () => {
   const [alert, setAlert] = useState("");
   const [showPwd, setShowPwd] = useState<boolean>(false);
   const [errMsg, setErrorMsg] = useState<ErrorMessage>({});
+  const [nicknameLength, setNicknameLength] = useState<string>("");
 
   const showAlert = () => {
     setAlert("회원가입이 완료되었습니다.");
@@ -151,13 +160,19 @@ const SignUpForm = () => {
 
   //input값 반영
   const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
-    const { name, value } = e.target;
+    let { name, value } = e.target;
+
+    //닉네임이면 글자수 체크
+    if (name === "nickname" && value.length > 8) {
+      value = value.substring(0, 8);
+    }
+
     setInfo({ ...info, [name]: value });
   };
 
-  //닉네임 입력 형식이 유효한지 확인
+  //닉네임 입력 형식이 유효한지 확인 - 공백 확인
   const isValidNickname = (nickname: string) => {
-    const nicknameRegex = /^[^\s]{1,8}$/;
+    const nicknameRegex = /^(?!.*\s)[\S]{1,8}$/;
     return nicknameRegex.test(nickname);
   };
 
@@ -240,15 +255,17 @@ const SignUpForm = () => {
         </Header>
 
         <form onSubmit={onSubmitHandler}>
-          <InputDiv>
+          <InputDiv style={{ position: "relative" }}>
             <InputStyle
               type='text'
               placeholder='닉네임 입력'
               name='nickname'
               value={info.nickname}
               onChange={handleChange}
+              maxLength={8}
               required
             />
+            <MaxLength>{info.nickname.length}/8</MaxLength>
             {errMsg.nicknameErr && (
               <ErrorMessage>{errMsg.nicknameErr}</ErrorMessage>
             )}
