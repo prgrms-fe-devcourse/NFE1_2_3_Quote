@@ -1,0 +1,104 @@
+import MainLayout from "@/layouts/MainLayout";
+import styled from "styled-components";
+import logo from "@assets/images/quoteLogo.png";
+import { Link } from "react-router-dom";
+import KakaoIcon from "@assets/icons/kakaoIcon.svg?react";
+import EmailIcon from "@assets/icons/signUp_email.svg?react";
+
+const BtnCommonStyle = styled.button`
+  width: 400px;
+  height: 48px;
+  border-radius: 10px;
+  border-style: none;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 10px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+`;
+const Container = styled.div`
+  width: 100%;
+  display: flex;
+  height: 100vh;
+  flex-direction: column;
+  align-items: center;
+`;
+const Header = styled.div`
+  margin: 60px 0;
+`;
+const Logo = styled.img`
+  width: 250px;
+`;
+const NormalSignUpBtn = styled(BtnCommonStyle)`
+  background-color: #474040;
+  color: #f3f3f3;
+  margin-bottom: 12px;
+`;
+const KakaoSignUpBtn = styled(BtnCommonStyle)`
+  background-color: #fee500;
+  margin-bottom: 27px;
+`;
+const MoveToLogin = styled.div`
+  font-size: 12px;
+  font-weight: bold;
+  margin-bottom: 65px;
+`;
+const CopyRight = styled.span`
+  font-size: 10px;
+  font-weight: bold;
+  color: #474040;
+`;
+
+const REST_API_KEY = ".env파일 안 앱 키";
+const REDIRECT_URI = `http://localhost:8000/auth/kakao`;
+const kakaoURL = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}`;
+
+const SignUpRoutePage = () => {
+  const moveToKakaoLogin = () => {
+    window.location.href = kakaoURL;
+  };
+
+  return (
+    <MainLayout>
+      <Container>
+        <Header>
+          <Logo src={logo} />
+        </Header>
+
+        <Link
+          to='/signup-normal'
+          style={{ textDecoration: "none" }}
+        >
+          <NormalSignUpBtn>
+            <EmailIcon style={{ width: "16px", height: "16px" }} />
+            <span>이메일로 가입하기</span>
+          </NormalSignUpBtn>
+        </Link>
+
+        <KakaoSignUpBtn onClick={moveToKakaoLogin}>
+          <KakaoIcon style={{ width: "18px", height: "18px" }} />
+          <span>카카오 계정으로 시작하기</span>
+        </KakaoSignUpBtn>
+
+        <MoveToLogin>
+          <span style={{ color: "#a7a7a7" }}>
+            이미 계정이 있으신가요?&nbsp;
+          </span>
+          <Link
+            to='/login'
+            style={{ textDecoration: "none" }}
+          >
+            <span style={{ color: "#474040", cursor: "pointer" }}>로그인</span>
+          </Link>
+        </MoveToLogin>
+
+        <CopyRight>Copyright © TEAM333333 All Rights Reserved.</CopyRight>
+      </Container>
+    </MainLayout>
+  );
+};
+
+export default SignUpRoutePage;
