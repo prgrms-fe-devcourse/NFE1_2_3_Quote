@@ -8,6 +8,7 @@ import { useAuthStore } from "@/pages/LogInPage/store/authStore";
 import { useNavigate } from "react-router-dom";
 import LogoutModal from "@/pages/LogInPage/components/LogoutModal";
 import { fetchUserProfile } from "@/pages/MyPages/apis/mypage";
+import useThemeStore from "@/styles/store/useThemeStore";
 
 const HeaderContainer = styled.header`
   background-color: #f3f3f3;
@@ -68,9 +69,8 @@ const Profile = styled.div`
 `;
 
 const Header = () => {
-  const [mode, setMode] = useState<boolean>(
-    localStorage.getItem("darkMode") === "true",
-  );
+  const { themeMode, toggleThemeMode } = useThemeStore();
+
   const [logoutModal, setLogoutModal] = useState<boolean>(false);
   const [profileImage, setProfileImage] = useState<string>(defaultProfile);
   // const [isLogin, setIsLogin] = useState<boolean>(true);
@@ -118,8 +118,8 @@ const Header = () => {
           onClick={handleLogoClick}
         />
         <ButtonContainer>
-          <StyledModeButton onClick={() => setMode(!mode)}>
-            {mode ? <LightModeButton /> : <DarkModeButton />}
+          <StyledModeButton onClick={toggleThemeMode}>
+            {themeMode === "lightMode" ? <DarkModeButton /> : <LightModeButton />}
           </StyledModeButton>
           <LoginButton onClick={showLogoutModal}>
             {isLogin ? "로그아웃" : "시작하기"}{" "}
