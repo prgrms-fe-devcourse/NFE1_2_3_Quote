@@ -132,7 +132,7 @@ const QuoteContainer = styled.div`
 const Quote = styled.p`
   font-size: 18px;
   line-height: 30px;
-  margin: 18px;
+  margin: 18px 30px;
   max-width: 450px;
   white-space: pre-wrap;
 `;
