@@ -39,6 +39,11 @@ const SearchInput = styled.input`
   &::placeholder {
     color : ${({ theme }) => theme.colorMainFont};
   }
+
+  &:focus {
+    outline-color:  #474040;
+  }
+  
 `;
 
 const StyledSearchButton = styled(SearchButton)`
