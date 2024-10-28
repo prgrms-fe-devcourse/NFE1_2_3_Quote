@@ -2,7 +2,6 @@ import styled, { keyframes } from "styled-components";
 import SearchButton from "@assets/icons/search_button.svg?react";
 import { useCallback, useState } from "react";
 
-
 const SearchContainer = styled.div`
   width: 500px;
   display: flex;
@@ -32,22 +31,21 @@ const SearchInput = styled.input`
   border-radius: 25px;
   border: 1px solid ${({ theme }) => theme.colorMainFont};
   background-color: ${({ theme }) => theme.colorBackground};
+  color: ${({ theme }) => theme.colorMainFont};
   opacity: 0.7;
   padding: 1rem;
-  color : ${({ theme }) => theme.colorMainFont};
 
   &::placeholder {
-    color : ${({ theme }) => theme.colorMainFont};
+    color: ${({ theme }) => theme.colorMainFont};
   }
 
   &:focus {
-    outline-color:  #474040;
+    outline-color: ${({ theme }) => theme.colorMain};
   }
-  
 `;
 
 const StyledSearchButton = styled(SearchButton)`
-  color : ${({ theme }) => theme.colorMainFont};
+  color: ${({ theme }) => theme.colorMainFont};
   width: 36px;
   height: 36px;
   position: absolute;
@@ -90,10 +88,10 @@ const Search = (props: SearchProps) => {
   //검색
   const handleSearchTitle = () => {
     if (!searchInput) {
-      setShowMessage(true)
+      setShowMessage(true);
       return;
     }
-    setShowMessage(false)
+    setShowMessage(false);
     onChangeSearchWord(searchInput);
   };
 
@@ -107,7 +105,7 @@ const Search = (props: SearchProps) => {
   const handleResetSearch = useCallback(() => {
     setSearchInput("");
     onChangeSearchWord("");
-    setShowMessage(false)
+    setShowMessage(false);
   }, []);
 
   return (

@@ -19,11 +19,12 @@ const HeaderContainer = styled.header`
   display: flex;
   justify-content: space-between;
   padding: 0 1rem;
-  border-bottom: 1px solid #DADADA;
+  border-bottom: 1px solid #dadada;
   position: fixed;
   left: 0;
   top: 0;
   z-index: 1;
+  user-select: none; /* 텍스트 선택 방지 */
 `;
 
 const ButtonContainer = styled.div`
@@ -56,7 +57,6 @@ const LoginButton = styled.button`
   color: ${({ theme }) => theme.colorMainFont};
   background: none;
   cursor: pointer;
-  user-select: none; /* 텍스트 선택 방지 */
 `;
 
 const Profile = styled.div`
@@ -66,7 +66,6 @@ const Profile = styled.div`
   border-radius: 20px;
   overflow: hidden;
   cursor: pointer;
-  user-select: none; /* 텍스트 선택 방지 */
 
   img {
     width: 100%;

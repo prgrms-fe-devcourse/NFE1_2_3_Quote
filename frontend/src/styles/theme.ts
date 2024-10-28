@@ -1,14 +1,14 @@
 import { DefaultTheme } from "styled-components";
 
-export const lightTheme : DefaultTheme = {
+export const lightTheme: DefaultTheme = {
   mode: "lightMode",
   colorMain: "#474040",
   colorHeader: "#F3F3F3",
   colorBackground: "#F3F3F3",
   colorMainFont: "#303030",
-  colorSubFont : "#A7A7A7",
+  colorSubFont: "#A7A7A7",
   colorValidation: "#D72121",
-  colorSub : "#FFFFFF", //White
+  colorSub: "#FFFFFF", //White
   전체: { bgColor: "#F9F9F9", fontColor: "#303030" },
   도서: { bgColor: "#E9E6D2", fontColor: "#303030" },
   노래: { bgColor: "#7F7D6F", fontColor: "#F9F9F9" },
@@ -23,9 +23,9 @@ export const darkTheme = {
   colorHeader: "#030303",
   colorBackground: "#1B1B1E",
   colorMainFont: "#F3F3F3",
-  colorSubFont : "#A7A7A7",
+  colorSubFont: "#A7A7A7",
   colorValidation: "#E65C5C",
-  colorSub : "#303030", //DarkCharcoal
+  colorSub: "#303030", //DarkCharcoal
   전체: { bgColor: "#303030", fontColor: "#F3F3F3" },
   도서: { bgColor: "#94917E", fontColor: "#F3F3F3" },
   노래: { bgColor: "#504E45", fontColor: "#F3F3F3" },

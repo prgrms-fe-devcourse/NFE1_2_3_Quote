@@ -7,7 +7,6 @@ import CategoryMark from "./components/CategoryMark";
 import { useCallback, useEffect, useState } from "react";
 import PostCard from "./components/PostCard";
 import { Post } from "@/types/Types";
-import { categoryColors } from "@/styles/Colors";
 import { useGetCategoryPostData } from "./hooks/useGetPostData";
 import { useNavigate } from "react-router-dom";
 import { getUserData } from "./apis/userApi";

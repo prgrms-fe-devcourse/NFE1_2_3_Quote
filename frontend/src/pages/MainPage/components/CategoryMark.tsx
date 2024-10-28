@@ -2,9 +2,8 @@ import styled from "styled-components";
 
 interface CategoryContainerProps {
   $category: string;
-  $active: boolean
+  $active: boolean;
 }
-
 
 const CategoryContainer = styled.div<CategoryContainerProps>`
   width: 120px;
@@ -13,7 +12,6 @@ const CategoryContainer = styled.div<CategoryContainerProps>`
   display: flex;
   justify-content: center;
   background-color: ${({ theme, $category }) => theme[$category].bgColor};
-  color : ${({ theme }) => theme.colorFont};
   border-radius: 20px 20px 0 0;
   cursor: pointer;
   opacity: ${(props) => (props.$active ? "1" : "0.9")};

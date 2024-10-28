@@ -2,7 +2,7 @@ import styled from "styled-components";
 import BookMarkBefore from "@assets/icons/bookMark_before_select.svg?react";
 import BookMarkAfter from "@assets/icons/bookMark_after_select.svg?react";
 import { Post } from "@/types/Types";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useBookmarkMutation } from "../hooks/useBookmarkMutation";
 
@@ -20,6 +20,7 @@ const PostCardContainer = styled.div<PostCardContainerProps>`
   border-radius: 20px;
   overflow: hidden;
   background-color: ${({ theme, $category }) => theme[$category].bgColor};
+  color: ${({ theme, $category }) => theme[$category].fontColor};
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.25);
   cursor: pointer;
 `;
@@ -30,7 +31,6 @@ const PostContentContainer = styled.div<PostCardContainerProps>`
   flex-direction: column;
   justify-content: space-between;
   height: calc(300px - 50px);
-  color: ${({ theme, $category }) => theme[$category].fontColor};
 `;
 
 const PostContent = styled.p`
@@ -78,14 +78,15 @@ const BookMark = styled.div`
   }
 `;
 
-const UserText = styled.p`
+const UserText = styled.p<{ $noUser: boolean }>`
   width: auto;
   display: flex;
   justify-content: end;
   align-items: center;
 
   &:hover {
-    text-decoration: underline;
+    //탈퇴한 회원이 아닐 때만 적용
+    ${({ $noUser }) => !$noUser && "text-decoration: underline;"}
   }
 `;
 
@@ -111,11 +112,18 @@ const PostCard = (props: PostCardProps) => {
   }, [isLogin, post._id]);
 
   //작성자 닉네임 눌렀을 때 페이지 이동
+  const [noUser, setNoUser] = useState<boolean>(!post.authorId); //탈퇴한 회원
   const handleSelectAuthor = useCallback(() => {
     if (!isLogin) {
       navigate("/login");
       return;
     }
+
+    //탈퇴한 회원일 때
+    if (noUser) {
+      return;
+    }
+
     navigate(`/user-page/${post.authorId._id}`);
   }, [isLogin, post.authorId]);
 
@@ -138,7 +146,10 @@ const PostCard = (props: PostCardProps) => {
             )}
             {post.bookMarked.length}
           </BookMark>
-          <UserText onClick={handleSelectAuthor}>
+          <UserText
+            onClick={handleSelectAuthor}
+            $noUser={noUser}
+          >
             {post.authorId?.nickname || "탈퇴한 회원"}
           </UserText>
         </BottomContainer>
