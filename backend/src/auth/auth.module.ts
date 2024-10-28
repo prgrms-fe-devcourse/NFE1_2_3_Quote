@@ -6,6 +6,7 @@ import { JwtModule } from '@nestjs/jwt/dist/jwt.module';
 import { JwtStrategy } from './jwt/jwt.strategy';
 import { UsersModule } from 'src/users/users.module';
 import { ConfigModule } from '@nestjs/config';
+import { KakaoStrategy } from './oauth/kakao/kakao.strategy';
 
 @Module({
   imports: [
@@ -19,7 +20,7 @@ import { ConfigModule } from '@nestjs/config';
     //이건 jwt를 만들어주는 모듈
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy],
+  providers: [AuthService, JwtStrategy, KakaoStrategy],
   exports: [AuthService],
 })
 export class AuthModule {}
