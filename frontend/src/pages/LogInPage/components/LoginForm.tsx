@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { useLogin } from "../hooks/useLogin";
 import PwdHideEye from "@assets/icons/pwd_hideEye.svg?react";
 import PwdShowEye from "@assets/icons/pwd_showEye.svg?react";
+import KakaoBtn from "@/pages/SignUpPage/components/KakaoBtn";
 
 const Container = styled.div`
   width: 100%;
@@ -63,7 +64,7 @@ const LoginBtn = styled.button`
   border-style: none;
   font-size: 14px;
   font-weight: bold;
-  margin: 20px 0 27px 0;
+  margin: 20px 0 0 0;
   cursor: pointer;
   padding: 10px 0;
 `;
@@ -86,6 +87,13 @@ const EyeContainer = styled.div`
   display: flex;
   align-items: center;
   top: 15px;
+`;
+const BtnDivider = styled.hr`
+  width: 400px;
+  border: 0;
+  height: 0;
+  border-top: 0.8px solid #474040;
+  margin: 12px 0;
 `;
 
 interface LoginData {
@@ -201,6 +209,8 @@ const LoginForm = () => {
 
           <LoginBtn type='submit'>로그인</LoginBtn>
         </form>
+        <BtnDivider />
+        <KakaoBtn btnText={"카카오 계정으로 로그인하기"} />
 
         <MoveToSignUp>
           <span style={{ color: "#a7a7a7" }}>
