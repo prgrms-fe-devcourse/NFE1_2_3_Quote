@@ -139,7 +139,7 @@ const PostCard = (props: PostCardProps) => {
             {post.bookMarked.length}
           </BookMark>
           <UserText onClick={handleSelectAuthor}>
-            {post.authorId.nickname}
+            {post.authorId?.nickname || "탈퇴한 회원"}
           </UserText>
         </BottomContainer>
       </PostCardContainer>
