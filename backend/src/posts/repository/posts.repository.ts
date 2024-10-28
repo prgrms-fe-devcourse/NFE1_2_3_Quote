@@ -175,7 +175,7 @@ export class PostsRepository {
     } else {
       post.bookMarked.push({ userId: new Types.ObjectId(userId) });
       //유저의 좋아요한 게시글 배열에 해당 게시글 추가
-      user.bookMarkedPosts.push(new Types.ObjectId(postId));
+      user.bookMarkedPosts.unshift(new Types.ObjectId(postId));
     }
     //포스트 저장하기
     await post.save();

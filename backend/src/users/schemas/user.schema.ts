@@ -29,7 +29,7 @@ export class User extends Document {
     required: true,
   })
   @Prop({ required: true, unique: true })
-  @IsEmail()
+  @IsString()
   @IsNotEmpty()
   email: string;
 
@@ -48,7 +48,7 @@ export class User extends Document {
     description: '대문자나 소문자, 숫자, 특수문자를 포함한 8자 이상의 비밀번호',
     required: true,
   })
-  @Prop({ required: true })
+  @Prop({ required: false })
   @IsString()
   @IsNotEmpty()
   // @MinLength(8)
