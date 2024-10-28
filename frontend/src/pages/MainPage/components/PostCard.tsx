@@ -2,12 +2,15 @@ import styled from "styled-components";
 import BookMarkBefore from "@assets/icons/bookMark_before_select.svg?react";
 import BookMarkAfter from "@assets/icons/bookMark_after_select.svg?react";
 import { Post } from "@/types/Types";
-import { categoryColors } from "@/styles/Colors";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useBookmarkMutation } from "../hooks/useBookmarkMutation";
 
-const PostCardContainer = styled.div`
+interface PostCardContainerProps {
+  $category: string;
+}
+
+const PostCardContainer = styled.div<PostCardContainerProps>`
   width: 270px;
   height: 300px;
   margin: 10px;
@@ -16,18 +19,18 @@ const PostCardContainer = styled.div`
   justify-content: space-between;
   border-radius: 20px;
   overflow: hidden;
-  background-color: ${(props) => props.color};
+  background-color: ${({ theme, $category }) => theme[$category].bgColor};
+  color: ${({ theme, $category }) => theme[$category].fontColor};
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.25);
   cursor: pointer;
 `;
 
-const PostContentContainer = styled.div`
+const PostContentContainer = styled.div<PostCardContainerProps>`
   padding: 20px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   height: calc(300px - 50px);
-  color: ${(props) => props.color};
 `;
 
 const PostContent = styled.p`
@@ -58,7 +61,7 @@ const BottomContainer = styled.div`
   display: flex;
   justify-content: space-between;
   padding: 0 1rem;
-  background-color: #f9f9f9;
+  background-color: ${({ theme }) => theme.colorSub};
   font-size: 14px;
 `;
 
@@ -67,6 +70,7 @@ const BookMark = styled.div`
   display: flex;
   align-items: center;
   svg {
+    color: ${({ theme }) => theme.colorFont};
     width: 18px;
     height: 18px;
     cursor: pointer;
@@ -74,14 +78,15 @@ const BookMark = styled.div`
   }
 `;
 
-const UserText = styled.p`
+const UserText = styled.p<{ $noUser: boolean }>`
   width: auto;
   display: flex;
   justify-content: end;
   align-items: center;
 
   &:hover {
-    text-decoration: underline;
+    //탈퇴한 회원이 아닐 때만 적용
+    ${({ $noUser }) => !$noUser && "text-decoration: underline;"}
   }
 `;
 
@@ -107,19 +112,26 @@ const PostCard = (props: PostCardProps) => {
   }, [isLogin, post._id]);
 
   //작성자 닉네임 눌렀을 때 페이지 이동
+  const [noUser, setNoUser] = useState<boolean>(!post.authorId); //탈퇴한 회원
   const handleSelectAuthor = useCallback(() => {
     if (!isLogin) {
       navigate("/login");
       return;
     }
+
+    //탈퇴한 회원일 때
+    if (noUser) {
+      return;
+    }
+
     navigate(`/user-page/${post.authorId._id}`);
   }, [isLogin, post.authorId]);
 
   return (
     <>
-      <PostCardContainer color={categoryColors[post.category].bgColor}>
+      <PostCardContainer $category={post.category}>
         <PostContentContainer
-          color={categoryColors[post.category].fontColor}
+          $category={post.category}
           onClick={onClick}
         >
           <PostContent>{post.quote}</PostContent>
@@ -134,8 +146,11 @@ const PostCard = (props: PostCardProps) => {
             )}
             {post.bookMarked.length}
           </BookMark>
-          <UserText onClick={handleSelectAuthor}>
-            {post.authorId.nickname}
+          <UserText
+            onClick={handleSelectAuthor}
+            $noUser={noUser}
+          >
+            {post.authorId?.nickname || "탈퇴한 회원"}
           </UserText>
         </BottomContainer>
       </PostCardContainer>
