@@ -187,6 +187,11 @@ const PostDetail = () => {
   const navigate = useNavigate();
   const [showPopUp, setShowPopUp] = useState(false);
 
+  // 뒤로가기
+  const handleGoToBack = () => {
+    navigate(-1);
+  };
+
   // 포스트 삭제 확인 팝업
   const handlePostDeletePopUp = () => {
     setShowPopUp(true);
@@ -194,7 +199,11 @@ const PostDetail = () => {
 
   // 프로필 누르면 해당 유저 프로필로 이동
   const handleProfileClick = () => {
-    navigate(`/user-page/${postInfo?.authorId._id}`);
+    if (postInfo?.authorId._id === loggedInUser?.id) {
+      navigate("/mypage");
+    } else {
+      navigate(`/user-page/${postInfo?.authorId._id}`);
+    }
   };
 
   // 북마크
@@ -220,7 +229,7 @@ const PostDetail = () => {
 
   return (
     <DetailContainer>
-      <GotoBackButton onClick={() => navigate(-1)}>
+      <GotoBackButton onClick={handleGoToBack}>
         <GoToBackBtn />
       </GotoBackButton>
       <TopContainer>
@@ -236,7 +245,7 @@ const PostDetail = () => {
         )}
         {showList && (
           <ModifyMenu>
-            <ModifyItem onClick={() => navigate("/post/:postId/modify")}>
+            <ModifyItem onClick={() => navigate(`/post/${postId}/modify`)}>
               수정
             </ModifyItem>
             <ModifyItem onClick={handlePostDeletePopUp}>삭제</ModifyItem>

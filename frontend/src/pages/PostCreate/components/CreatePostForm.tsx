@@ -189,7 +189,7 @@ const CreatePostForm = () => {
     onSuccess: () => {
       setShowSuccessMsg(true);
       setTimeout(() => {
-        navigate("/");
+        navigate(-1);
       }, 2000);
     },
     onError(error) {
@@ -289,13 +289,14 @@ const CreatePostForm = () => {
       </div>
       {showCancelPopUp && (
         <CancelPopUp
+          modify={false}
           showCancelPopUp={showCancelPopUp}
           setShowCancelPopUp={setShowCancelPopUp}
         />
       )}
       {showMsg && <CreateError>{errorMsg}</CreateError>}
       {showSuccessMsg && (
-        <CreateSuccess>글 작성이 완료되었습니다</CreateSuccess>
+        <CreateSuccess>글 작성이 완료되었습니다.</CreateSuccess>
       )}
     </>
   );
