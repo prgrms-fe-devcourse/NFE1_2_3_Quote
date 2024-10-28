@@ -17,6 +17,7 @@ const ResetSearchButton = styled.button`
   text-align: end;
   margin: 0.5rem 0;
   cursor: pointer;
+  user-select: none; /* 텍스트 선택 방지 */
 `;
 
 const SearchInputContainer = styled.div`
@@ -29,13 +30,19 @@ const SearchInput = styled.input`
   width: 500px;
   height: 50px;
   border-radius: 25px;
-  border: none;
-  background-color: #f3f3f3;
+  border: 1px solid ${({ theme }) => theme.colorMainFont};
+  background-color: ${({ theme }) => theme.colorBackground};
   opacity: 0.7;
   padding: 1rem;
+  color : ${({ theme }) => theme.colorMainFont};
+
+  &::placeholder {
+    color : ${({ theme }) => theme.colorMainFont};
+  }
 `;
 
 const StyledSearchButton = styled(SearchButton)`
+  color : ${({ theme }) => theme.colorMainFont};
   width: 36px;
   height: 36px;
   position: absolute;

@@ -126,7 +126,6 @@ const MainPage = () => {
   });
 
   const postData = sortedPostData || [];
-
   return (
     <MainLayout>
       <Container>
