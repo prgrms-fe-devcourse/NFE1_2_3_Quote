@@ -1,10 +1,9 @@
 import CancelPopUp from "@/pages/PostCreate/components/CancelPopUp";
-import { getPostInfo } from "@/pages/PostDetail/apis/postDetailApi";
-import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import styled, { keyframes } from "styled-components";
-import { modifyPost } from "../apis/postModifyApi";
+import useModifyPost from "../hooks/useModifyPost";
+import useGetPostInfo from "@/pages/PostDetail/hooks/useGetPostInfo";
 
 const SelectedCategory = styled.p`
   width: 90%;
@@ -160,10 +159,7 @@ const CreateSuccess = styled.div`
 
 const PostModifyForm = () => {
   const { postId } = useParams() as { postId: string };
-  const { data: postInfo } = useQuery({
-    queryKey: ["postInfo"],
-    queryFn: () => getPostInfo(postId),
-  });
+  const { postInfo } = useGetPostInfo(postId);
 
   const [category, setCategory] = useState("");
   const [title, setTitle] = useState("");
@@ -201,24 +197,12 @@ const PostModifyForm = () => {
   const [showMsg, setShowMsg] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [showSuccessMsg, setShowSuccessMsg] = useState(false);
-  const navigate = useNavigate();
 
   const handleCancel = () => {
     setShowCancelPopUp(!showCancelPopUp);
   };
 
-  const { mutate } = useMutation({
-    mutationFn: modifyPost,
-    onSuccess: () => {
-      setShowSuccessMsg(true);
-      setTimeout(() => {
-        navigate(`/post/${postId}`);
-      }, 2000);
-    },
-    onError(error) {
-      console.log(error);
-    },
-  });
+  const { mutate } = useModifyPost(setShowSuccessMsg, postId);
 
   const handleCreatePost = () => {
     if (!title.trim()) {
