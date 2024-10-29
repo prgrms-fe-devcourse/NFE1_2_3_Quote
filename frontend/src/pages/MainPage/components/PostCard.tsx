@@ -147,6 +147,7 @@ const PostCard = (props: PostCardProps) => {
             )}
             {post.bookMarked.length}
           </BookMark>
+
           <UserText
             onClick={handleSelectAuthor}
             $noUser={noUser}

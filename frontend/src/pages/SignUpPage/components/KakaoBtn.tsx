@@ -1,6 +1,7 @@
 import styled from "styled-components";
-import { kakaoURL } from "../apis/signUp";
 import KakaoIcon from "@assets/icons/kakaoIcon.svg?react";
+import { redirect } from "react-router-dom";
+import { REDIRECT_URI } from "../apis/signUp";
 
 const BtnCommonStyle = styled.button`
   width: 400px;
@@ -26,13 +27,18 @@ type PropType = {
 };
 
 const KakaoBtn = (props: PropType) => {
-  const moveToKakaoLogin = () => {
-    window.location.href = kakaoURL;
+  const Kakao = window.Kakao;
+
+  const loginKakao = () => {
+    console.log("login!!");
+    Kakao.Auth.authorize({
+      redirectUri: REDIRECT_URI,
+    });
   };
 
   return (
     <div>
-      <KakaoSignUpBtn onClick={moveToKakaoLogin}>
+      <KakaoSignUpBtn onClick={loginKakao}>
         <KakaoIcon style={{ width: "18px", height: "18px" }} />
         <span>{props.btnText}</span>
       </KakaoSignUpBtn>

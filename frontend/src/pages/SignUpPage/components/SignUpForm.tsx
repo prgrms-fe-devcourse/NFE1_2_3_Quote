@@ -1,5 +1,5 @@
 import MainLayout from "@/layouts/MainLayout";
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import styled, { keyframes } from "styled-components";
 import logo from "@assets/images/quoteLogo.png";
 import { Link, useNavigate } from "react-router-dom";
@@ -143,7 +143,6 @@ const SignUpForm = () => {
   const [alert, setAlert] = useState("");
   const [showPwd, setShowPwd] = useState<boolean>(false);
   const [errMsg, setErrorMsg] = useState<ErrorMessage>({});
-  const [nicknameLength, setNicknameLength] = useState<string>("");
 
   const showAlert = () => {
     setAlert("회원가입이 완료되었습니다.");

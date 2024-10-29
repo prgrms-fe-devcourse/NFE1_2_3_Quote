@@ -4,7 +4,6 @@ import MyPage from "@/pages/MyPages/MyPage";
 import CreatePost from "@/pages/PostCreate/CreatePost";
 import PostDetailPage from "@/pages/PostDetail/PostDetailPage";
 import PostModifyPage from "@/pages/PostModify/PostModifyPage";
-import Redirect from "@/pages/SignUpPage/components/Redirect";
 import SignUpForm from "@/pages/SignUpPage/components/SignUpForm";
 import SignUpPage from "@/pages/SignUpPage/SignUpPage";
 import UserPage from "@/pages/UserPages/UserPage";
@@ -26,10 +25,6 @@ const router = createBrowserRouter([
   {
     path: "/signup-normal",
     element: <SignUpForm />,
-  },
-  {
-    path: "/auth/kakao",
-    element: <Redirect />,
   },
   {
     path: "/create-post",

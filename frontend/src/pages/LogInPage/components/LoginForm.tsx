@@ -210,6 +210,7 @@ const LoginForm = () => {
           <LoginBtn type='submit'>로그인</LoginBtn>
         </form>
         <BtnDivider />
+
         <KakaoBtn btnText={"카카오 계정으로 로그인하기"} />
 
         <MoveToSignUp>
