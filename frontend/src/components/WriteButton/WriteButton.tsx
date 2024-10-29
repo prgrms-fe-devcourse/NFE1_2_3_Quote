@@ -1,7 +1,6 @@
-import styled from "styled-components";
+import styled, { useTheme } from "styled-components";
 import WriteButtonDarkMode from "@assets/icons/write_button_darkMode.svg?react";
 import WriteButtonLightMode from "@assets/icons/write_button_lightMode.svg?react";
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const StyledButton = styled.div`
@@ -18,7 +17,7 @@ const StyledButton = styled.div`
 `;
 
 const WriteButton = () => {
-  const [mode, setMode] = useState<boolean>(false);
+  const theme = useTheme();
   const navigate = useNavigate();
   const handleWriteButton = () => {
     navigate("/create-post");
@@ -26,7 +25,11 @@ const WriteButton = () => {
   return (
     <>
       <StyledButton onClick={handleWriteButton}>
-        {mode ? <WriteButtonDarkMode /> : <WriteButtonLightMode />}
+        {theme.mode === "lightMode" ? (
+          <WriteButtonLightMode />
+        ) : (
+          <WriteButtonDarkMode />
+        )}
       </StyledButton>
     </>
   );

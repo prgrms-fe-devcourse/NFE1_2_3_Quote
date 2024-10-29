@@ -51,6 +51,18 @@ export class UsersService {
     }
     return user.readOnlyData;
   }
+  async nickNameValidation(user: User, changeName: string) {
+    const nickname = changeName;
+    const isUserNickNameExist =
+      await this.userRepository.existsByNickname(nickname);
+    if (isUserNickNameExist && user.nickname === nickname) {
+      throw new BadRequestException('this is your nickname');
+    }
+    if (isUserNickNameExist) {
+      throw new BadRequestException('nickname already taken');
+    }
+    return { message: 'nickname available' };
+  }
 
   async updateUserById(user: User, body: { nickname: string }) {
     const { nickname } = body;

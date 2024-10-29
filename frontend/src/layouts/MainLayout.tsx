@@ -23,7 +23,8 @@ const MainLayout = ({ children }: MainLayoutProps) => {
   const location = useLocation();
 
   const hideHeader =
-    location.pathname === "/login" || location.pathname === "/signup";
+    location.pathname.includes("/login") ||
+    location.pathname.includes("/signup");
 
   return (
     <Layout>

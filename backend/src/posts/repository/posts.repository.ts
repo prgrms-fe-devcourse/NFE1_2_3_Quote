@@ -130,11 +130,6 @@ export class PostsRepository {
   //포스트 삭제하기
   async deletePostById(user: User, postId: string) {
     const post = await this.postModel.findById(postId);
-    //포스트 작성자와 현재 유저가 같은지 확인
-    if (post.authorId.toString() !== user.id) {
-      throw new UnauthorizedException('권한이 없습니다.');
-    }
-
     // 좋아요 누른 사용자 ID로 사용자 검색
     const likedUsers = await this.usersModel.find({
       _id: { $in: post.bookMarked.map((bookMark) => bookMark.userId) },
@@ -180,7 +175,7 @@ export class PostsRepository {
     } else {
       post.bookMarked.push({ userId: new Types.ObjectId(userId) });
       //유저의 좋아요한 게시글 배열에 해당 게시글 추가
-      user.bookMarkedPosts.push(new Types.ObjectId(postId));
+      user.bookMarkedPosts.unshift(new Types.ObjectId(postId));
     }
     //포스트 저장하기
     await post.save();

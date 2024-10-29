@@ -21,7 +21,8 @@ const GlobalStyle = createGlobalStyle`
     body {
         margin: 0;
         height: 100%;
-        background-color: #f3f3f3;
+        background-color: ${({ theme }) => theme.colorBackground};
+        color : ${({ theme }) => theme.colorMainFont};
     }
 `;
 
