@@ -2,7 +2,6 @@ import { getToken } from "@/pages/LogInPage/store/authStore";
 import axios, { AxiosInstance } from "axios";
 
 const URL = "http://43.200.164.241:8000";
-// const TOKEN = import.meta.env.VITE_TOKEN;
 
 // 사용자 axiosClient
 export const userAxiosClient: AxiosInstance = axios.create({
