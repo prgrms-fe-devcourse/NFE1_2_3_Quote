@@ -1,14 +1,7 @@
-import { useState, useRef, ChangeEvent, useEffect } from "react";
 import styled from "styled-components";
-import {
-  uploadProfileImage,
-  updateNickname,
-  fetchUserProfile,
-} from "../apis/mypage";
-import PROFILE from "@assets/images/profile.png";
 import ProfileImgLightMode from "@assets/icons/profile_img_lightMode.svg?react";
 import ProfileImgDarkMode from "@assets/icons/profile_img_darkMode.svg?react";
-import ModifyUserNameButton from "@assets/icons/modify_userName_button.svg?react";
+import { useProfileEdit } from "../hooks/useProfileEdit";
 
 // Styled Components
 
@@ -106,7 +99,7 @@ const Label = styled.span`
 const InputWrapper = styled.div`
   position: relative;
   width: 100%;
-  margin: 20px 0;
+  margin: 10px 0;
   cursor: text;
 `;
 
@@ -129,23 +122,30 @@ const Input = styled.input`
 const NicknameCounter = styled.span`
   position: absolute;
   top: 50%;
-  right: 40px;
+  right: 80px;
   transform: translateY(-50%);
   font-size: 12px;
   color: #a7a7a7;
 `;
 
-const ModifyButtonWrapper = styled.div`
+const ModifyButtonWrapper = styled.button`
   position: absolute;
   top: 50%;
   right: 5px;
   transform: translateY(-50%);
-  width: 24px;
-  height: 24px;
+  padding: 5px 10px;
+  background-color: #ffffff;
+  color: #474040;
+  border: 1px solid #474040;
+  border-radius: 30px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.3s ease-in-out;
 
-  svg {
-    width: 100%;
-    height: 100%;
+  &:hover {
+    background-color: #474040;
+    color: #ffffff;
+    transform: translateY(-50%) scale(1.05);
   }
 `;
 
@@ -156,6 +156,14 @@ const ErrorMessageWrapper = styled.div`
 
 const ErrorMessage = styled.span`
   color: #d72121;
+  font-size: 12px;
+  display: block;
+  text-align: left;
+  margin-left: 12px;
+`;
+
+const SuccessMessage = styled.span`
+  color: #28a745;
   font-size: 12px;
   display: block;
   text-align: left;
@@ -189,85 +197,29 @@ const SaveButton = styled(Button)`
 
 interface ProfileEditModalProps {
   onClose: () => void;
-  showSuccessMessage: () => void;
   mode?: boolean;
   onUpdateProfile: (updatedImage: string, updatedNickname: string) => void;
 }
 
 const ProfileEditModal = ({
   onClose,
-  showSuccessMessage,
   mode = false,
   onUpdateProfile,
 }: ProfileEditModalProps) => {
-  const [imgSrc, setImgSrc] = useState(PROFILE);
-  const [previewImage, setPreviewImage] = useState<string | null>(null);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [nickname, setNickname] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    const loadUserData = async () => {
-      try {
-        const profile = await fetchUserProfile();
-        setNickname(profile.nickname);
-        setImgSrc(profile.profileImage || PROFILE);
-      } catch (error) {
-        console.error("Failed to load user profile:", error);
-      }
-    };
-
-    loadUserData();
-  }, []);
-
-  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file || !["image/png", "image/jpeg"].includes(file.type)) {
-      return alert("PNG 또는 JPEG 파일만 업로드할 수 있습니다.");
-    }
-
-    setSelectedFile(file);
-    const reader = new FileReader();
-    reader.onload = () => setPreviewImage(reader.result as string);
-    reader.readAsDataURL(file);
-  };
-
-  const handleResetProfile = () => {
-    setPreviewImage(null);
-    setSelectedFile(null);
-    setImgSrc(PROFILE);
-  };
-
-  const handleNicknameChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setNickname(event.target.value);
-    if (error) setError(null);
-  };
-
-  const handleSave = async () => {
-    if (nickname.trim().length === 0) {
-      setError("1글자 이상 입력해주세요.");
-      return;
-    } else if (nickname.length > 8) {
-      setError("닉네임은 8자 이내로 입력해주세요.");
-      return;
-    }
-
-    try {
-      const newImageUrl = selectedFile
-        ? await uploadProfileImage(selectedFile)
-        : imgSrc;
-
-      await updateNickname(nickname);
-      onUpdateProfile(newImageUrl, nickname);
-      showSuccessMessage();
-      onClose();
-      window.location.reload();
-    } catch {
-      setError("프로필 수정에 실패했습니다.");
-    }
-  };
+  const {
+    imgSrc,
+    previewImage,
+    nickname,
+    success,
+    error,
+    handleFileChange,
+    handleResetProfile,
+    handleNicknameChange,
+    handleNicknameCheck,
+    handleSave,
+    handleCancel,
+    fileInputRef,
+  } = useProfileEdit(onUpdateProfile, onClose);
 
   return (
     <ModalOverlay>
@@ -276,7 +228,9 @@ const ProfileEditModal = ({
         <ProfileImageWrapper>
           <ProfileImage>
             <StyledImg
-              src={previewImage || imgSrc}
+              src={
+                previewImage || `${imgSrc}?timestamp=${new Date().getTime()}`
+              }
               alt='Profile'
             />
           </ProfileImage>
@@ -298,19 +252,24 @@ const ProfileEditModal = ({
             type='text'
             placeholder='닉네임 입력'
             value={nickname}
-            onChange={handleNicknameChange}
+            onChange={(e) => {
+              if (e.target.value.length <= 8) {
+                handleNicknameChange(e);
+              }
+            }}
             autoFocus
           />
           <NicknameCounter>{nickname.length}/8</NicknameCounter>
-          <ModifyButtonWrapper>
-            <ModifyUserNameButton />
+          <ModifyButtonWrapper onClick={handleNicknameCheck}>
+            중복확인
           </ModifyButtonWrapper>
         </InputWrapper>
         <ErrorMessageWrapper>
           {error && <ErrorMessage>{error}</ErrorMessage>}
+          {success && <SuccessMessage>{success}</SuccessMessage>}
         </ErrorMessageWrapper>
         <ButtonContainer>
-          <CancelButton onClick={onClose}>취소</CancelButton>
+          <CancelButton onClick={handleCancel}>취소</CancelButton>
           <SaveButton onClick={handleSave}>수정</SaveButton>
         </ButtonContainer>
       </ModalContainer>
