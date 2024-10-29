@@ -1,5 +1,5 @@
 import MainLayout from "@/layouts/MainLayout";
-import styled, { useTheme } from "styled-components";
+import styled from "styled-components";
 import darkModeLogo from "@assets/images/quoteLogo_darkMode.png";
 import lightModeLogo from "@assets/images/quoteLogo_lightMode.png";
 import { Link } from "react-router-dom";
@@ -44,6 +44,11 @@ const MoveToLogin = styled.div`
   font-weight: bold;
   margin-bottom: 65px;
 `;
+const LoginText = styled.span`
+  color: ${({ theme }) =>
+    theme.mode === "lightTheme" ? theme.colorMain : theme.colorMainFont};
+  cursor: "pointer";
+`;
 const CopyRight = styled.span`
   font-size: 10px;
   font-weight: bold;
@@ -58,11 +63,13 @@ const SignUpRoutePage = () => {
     <MainLayout>
       <Container>
         <Header>
-          {themeMode === "lightMode" ? (
-            <Logo src={lightModeLogo} />
-          ) : (
-            <Logo src={darkModeLogo} />
-          )}
+          <Link to='/'>
+            {themeMode === "lightMode" ? (
+              <Logo src={lightModeLogo} />
+            ) : (
+              <Logo src={darkModeLogo} />
+            )}
+          </Link>
         </Header>
 
         <Link
@@ -85,7 +92,7 @@ const SignUpRoutePage = () => {
             to='/login'
             style={{ textDecoration: "none" }}
           >
-            <span style={{ color: "#474040", cursor: "pointer" }}>로그인</span>
+            <LoginText>로그인</LoginText>
           </Link>
         </MoveToLogin>
 

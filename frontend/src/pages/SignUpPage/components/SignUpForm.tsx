@@ -1,11 +1,13 @@
 import MainLayout from "@/layouts/MainLayout";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import styled, { keyframes } from "styled-components";
-import logo from "@assets/images/quoteLogo.png";
+import darkModeLogo from "@assets/images/quoteLogo_darkMode.png";
+import lightModeLogo from "@assets/images/quoteLogo_lightMode.png";
 import { Link, useNavigate } from "react-router-dom";
 import { useSignUp } from "../hooks/useSignUp";
 import PwdHideEye from "@assets/icons/pwd_hideEye.svg?react";
 import PwdShowEye from "@assets/icons/pwd_showEye.svg?react";
+import useThemeStore from "@/styles/store/useThemeStore";
 
 const Container = styled.div`
   width: 100%;
@@ -29,11 +31,16 @@ const InputStyle = styled.input`
   font-size: 14px;
   outline-style: none;
   border-radius: 10px;
-  border: 0.9px solid black;
+  border: 0.9px solid
+    ${({ theme }) => (theme.mode === "lightMode" ? "black" : theme.colorButton)};
   padding: 14px 35px 14px 16px;
   &:-webkit-autofill {
-    -webkit-box-shadow: 0 0 0 30px #fff inset;
-    -webkit-text-fill-color: #000;
+    -webkit-box-shadow: 0 0 0 30px
+      ${({ theme }) =>
+        theme.mode === "lightMode" ? "white" : theme.colorBackground}
+      inset;
+    -webkit-text-fill-color: ${({ theme }) =>
+      theme.mode === "lightMode" ? "black" : theme.colorButton};
   }
   &:-webkit-autofill,
   &:-webkit-autofill:hover,
@@ -48,9 +55,15 @@ const InputStyle = styled.input`
   &::placeholder {
     font-family: "NanumSquareRegular";
   }
+  background-color: ${({ theme }) =>
+    theme.mode === "lightMode" ? "white" : theme.colorBackground};
+  caret-color: ${({ theme }) =>
+    theme.mode === "lightMode" ? "black" : theme.colorButton};
+  color: ${({ theme }) =>
+    theme.mode === "lightMode" ? "black" : theme.colorButton};
 `;
 const ErrorMessage = styled.div`
-  color: #d72121;
+  color: ${({ theme }) => theme.colorValidation};
   font-size: 12px;
   margin: 6px 0 0 10px;
 `;
@@ -58,7 +71,7 @@ const SignUpBtn = styled.button`
   width: 400px;
   height: 48px;
   border-radius: 10px;
-  background-color: #474040;
+  background-color: ${({ theme }) => theme.colorMain};
   color: #f3f3f3;
   border-style: none;
   font-size: 14px;
@@ -72,10 +85,16 @@ const MoveToLogin = styled.div`
   font-weight: bold;
   margin-bottom: 65px;
 `;
+const LoginText = styled.span`
+  color: ${({ theme }) =>
+    theme.mode === "lightTheme" ? theme.colorMain : theme.colorMainFont};
+  cursor: "pointer";
+`;
 const CopyRight = styled.span`
   font-size: 10px;
   font-weight: bold;
-  color: #474040;
+  color: ${({ theme }) =>
+    theme.mode === "lightTheme" ? theme.colorMain : theme.colorSubFont};
 `;
 const EyeContainer = styled.div`
   width: 22px;
@@ -133,6 +152,7 @@ export interface ErrorMessage {
 }
 
 const SignUpForm = () => {
+  const { themeMode, toggleThemeMode } = useThemeStore();
   const navigate = useNavigate();
   const [info, setInfo] = useState<SignUpData>({
     nickname: "",
@@ -250,7 +270,13 @@ const SignUpForm = () => {
     <MainLayout>
       <Container>
         <Header>
-          <Logo src={logo} />
+          <Link to='/'>
+            {themeMode === "lightMode" ? (
+              <Logo src={lightModeLogo} />
+            ) : (
+              <Logo src={darkModeLogo} />
+            )}
+          </Link>
         </Header>
 
         <form onSubmit={onSubmitHandler}>
@@ -328,7 +354,7 @@ const SignUpForm = () => {
             to='/login'
             style={{ textDecoration: "none" }}
           >
-            <span style={{ color: "#474040", cursor: "pointer" }}>로그인</span>
+            <LoginText>로그인</LoginText>
           </Link>
         </MoveToLogin>
 
