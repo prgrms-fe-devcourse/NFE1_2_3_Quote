@@ -103,10 +103,10 @@ export const useProfileEdit = (
     Error,
     { newImageUrl: string; updatedNickname: string }
   >({
-    mutationFn: async ({ newImageUrl, updatedNickname }) => {
+    mutationFn: async ({ updatedNickname }) => {
       if (selectedFile) {
         await uploadProfileImage(selectedFile);
-      } else {
+      } else if (!imgSrc || imgSrc === PROFILE) {
         const response = await fetch(PROFILE);
         const blob = await response.blob();
         const defaultImageFile = new File([blob], "profile.png", {
@@ -121,7 +121,7 @@ export const useProfileEdit = (
       }
 
       return {
-        newImageUrl: `${newImageUrl}?timestamp=${new Date().getTime()}`,
+        newImageUrl: previewImage || imgSrc || PROFILE,
         updatedNickname,
       };
     },

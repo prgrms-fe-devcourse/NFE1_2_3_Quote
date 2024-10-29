@@ -28,27 +28,29 @@ export const useMyPage = () => {
   const menuRef = useRef<HTMLDivElement>(null);
   const settingsButtonRef = useRef<HTMLDivElement>(null);
 
-  const { data: userProfile, isLoading: profileLoading } = useQuery<
-    UserMe,
-    Error
-  >({
+  const {
+    data: userProfile,
+    isLoading: profileLoading,
+    refetch: refetchUserProfile,
+  } = useQuery<UserMe, Error>({
     queryKey: ["userProfile"],
     queryFn: fetchUserProfile,
   });
 
-  const { data: myPosts = [], isLoading: postsLoading } = useQuery<
-    Post[],
-    Error
-  >({
+  const {
+    data: myPosts = [],
+    isLoading: postsLoading,
+  } = useQuery<Post[], Error>({
     queryKey: ["myPosts", userProfile?.id],
     queryFn: () => fetchMyPosts(userProfile!),
     enabled: !!userProfile,
+    refetchInterval: 500,
   });
 
-  const { data: bookmarkedPosts = [], isLoading: bookmarksLoading } = useQuery<
-    Post[],
-    Error
-  >({
+  const {
+    data: bookmarkedPosts = [],
+    isLoading: bookmarksLoading,
+  } = useQuery<Post[], Error>({
     queryKey: ["bookmarkedPosts", userProfile?.id],
     queryFn: () => fetchBookmarkedPosts(userProfile!),
     enabled: !!userProfile,
@@ -126,7 +128,7 @@ export const useMyPage = () => {
       nickname: updatedNickname,
     }));
     localStorage.setItem("profileEditSuccess", "true");
-    window.location.reload();
+    refetchUserProfile();
   };
 
   const handleAddBookmark = (post: Post) => {
@@ -137,8 +139,6 @@ export const useMyPage = () => {
       p._id === post._id ? { ...p, isBookmarked: true } : p,
     );
     setMyPostsState(updatedMyPosts);
-
-    queryClient.setQueryData(["bookmarkedPosts"], updatedBookmarks);
   };
 
   const handleRemoveBookmark = (postId: string) => {
@@ -159,9 +159,11 @@ export const useMyPage = () => {
         : p,
     );
     setMyPostsState(updatedMyPosts);
-
-    queryClient.setQueryData(["bookmarkedPosts"], updatedBookmarks);
   };
+
+  const handleSelectPost = useCallback((postId: string) => {
+    navigate(`/post/${postId}`);
+  }, []);
 
   return {
     userProfile,
@@ -185,5 +187,6 @@ export const useMyPage = () => {
     handleAddBookmark,
     handleRemoveBookmark,
     toggleMenu,
+    handleSelectPost,
   };
 };

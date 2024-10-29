@@ -1,5 +1,4 @@
 import { memo } from "react";
-import { useNavigate } from "react-router-dom";
 import styled, { keyframes } from "styled-components";
 import { useMyPage } from "./hooks/useMyPage";
 import ProfileEditModal from "./components/ProfileEditModal";
@@ -174,11 +173,10 @@ const MyPage = memo(() => {
     handleAddBookmark,
     handleRemoveBookmark,
     toggleMenu,
+    handleSelectPost,
     menuRef,
     settingsButtonRef,
   } = useMyPage();
-
-  const navigate = useNavigate();
 
   if (loading) return <MessageContainer>로딩 중...</MessageContainer>;
 
@@ -191,7 +189,7 @@ const MyPage = memo(() => {
             post={post}
             userId={userProfile?.id || ""}
             isBookmarked={bookmarkedPosts.some((p) => p._id === post._id)}
-            onClick={() => navigate(`/posts/${post._id}`)}
+            onClick={() => handleSelectPost(post._id)}
             onAddBookmark={handleAddBookmark}
             onRemoveBookmark={handleRemoveBookmark}
           />
