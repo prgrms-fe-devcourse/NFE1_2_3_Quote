@@ -2,10 +2,10 @@ import styled from "styled-components";
 import BookMarkBefore from "@assets/icons/bookMark_before_select.svg?react";
 import BookMarkAfter from "@assets/icons/bookMark_after_select.svg?react";
 import { Post } from "@/types/Types";
+import { useState, useCallback } from "react";
 import { categoryColors } from "@/styles/Colors";
-import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { postBookmark } from "../apis/bookmarkApi";
+import { useBookmark } from "../hooks/useBookmark";
 
 const PostCardContainer = styled.div`
   width: 190px;
@@ -24,7 +24,7 @@ const PostCardContainer = styled.div`
 
   &:hover {
     transform: translateY(-3px) scale(1.03);
-    box-shadow: 0 12px 16px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3);
   }
 `;
 
@@ -77,10 +77,11 @@ const BookMark = styled.div`
     width: 16px;
     height: 16px;
     cursor: pointer;
+    margin-right: 5px;
   }
 `;
 
-const UserText = styled.p`
+const UserText = styled.p<{ $noUser: boolean }>`
   width: 8rem;
   display: flex;
   justify-content: end;
@@ -88,84 +89,70 @@ const UserText = styled.p`
   cursor: pointer;
 
   &:hover {
-    text-decoration: underline;
+    ${({ $noUser }) => !$noUser && "text-decoration: underline;"}
   }
 `;
 
 interface PostCardProps {
   post: Post;
   userId: string;
+  isBookmarked: boolean;
   onClick: () => void;
-  onAddBookmark?: (post: Post) => void;
-  onRemoveBookmark?: (postId: string) => void;
+  onAddBookmark: (post: Post) => void;
+  onRemoveBookmark: (postId: string) => void;
 }
 
 const PostCard = ({
   post,
   userId,
+  isBookmarked: initialIsBookmarked,
   onClick,
-  onRemoveBookmark,
   onAddBookmark,
+  onRemoveBookmark,
 }: PostCardProps) => {
-  const [bookmark, setBookmark] = useState<boolean>(false);
-  const [bookmarkCount, setBookmarkCount] = useState<number>(
-    post.bookMarked?.length || 0,
-  );
-
-  useEffect(() => {
-    if (post.bookMarked) {
-      const isBookmark = post.bookMarked.some((user) => user.userId === userId);
-      setBookmark(isBookmark);
-    }
-  }, [post.bookMarked, userId]);
-
-  const handleCheckBookmark = useCallback(async () => {
-    try {
-      await postBookmark(post._id);
-
-      setBookmark((prev) => !prev);
-      setBookmarkCount((prev) => (bookmark ? prev - 1 : prev + 1));
-
-      if (bookmark) {
-        onRemoveBookmark?.(post._id);
-      } else {
-        onAddBookmark?.(post);
-      }
-    } catch (error) {
-      console.error("Bookmark error:", error);
-    }
-  }, [bookmark, post._id, onRemoveBookmark, onAddBookmark]);
+  const { bookmarkCount, toggleBookmark, isBookmarked } = useBookmark({
+    post,
+    isBookmarked: initialIsBookmarked,
+    onAddBookmark,
+    onRemoveBookmark,
+  });
 
   const navigate = useNavigate();
+  const [noUser, setNoUser] = useState<boolean>(!post.authorId);
+
   const handleSelectAuthor = useCallback(() => {
-    if (post.authorId._id === userId) {
-      navigate("/mypage");
-    } else {
-      navigate(`/user-page/${post.authorId._id}`);
+    if (noUser) {
+      return;
     }
-  }, [navigate, post.authorId._id, userId]);
+    const path =
+      post.authorId._id === userId
+        ? "/mypage"
+        : `/user-page/${post.authorId._id}`;
+    navigate(path);
+  }, [post.authorId, userId, navigate]);
 
   return (
-    <>
-      <PostCardContainer color={categoryColors[post.category].bgColor}>
-        <PostContentContainer
-          color={categoryColors[post.category].fontColor}
-          onClick={onClick}
+    <PostCardContainer color={categoryColors[post.category].bgColor}>
+      <PostContentContainer
+        color={categoryColors[post.category].fontColor}
+        onClick={onClick}
+      >
+        <PostContent>{post.quote}</PostContent>
+        <PostTitle>{post.title}</PostTitle>
+      </PostContentContainer>
+      <BottomContainer>
+        <BookMark onClick={toggleBookmark}>
+          {isBookmarked ? <BookMarkAfter /> : <BookMarkBefore />}
+          {bookmarkCount}
+        </BookMark>
+        <UserText
+          onClick={handleSelectAuthor}
+          $noUser={noUser}
         >
-          <PostContent>{post.quote}</PostContent>
-          <PostTitle>{post.title}</PostTitle>
-        </PostContentContainer>
-        <BottomContainer>
-          <BookMark onClick={handleCheckBookmark}>
-            {bookmark ? <BookMarkAfter /> : <BookMarkBefore />}
-            {bookmarkCount}
-          </BookMark>
-          <UserText onClick={handleSelectAuthor}>
-            {post.authorId.nickname}
-          </UserText>
-        </BottomContainer>
-      </PostCardContainer>
-    </>
+          {post.authorId?.nickname || "탈퇴한 회원"}
+        </UserText>
+      </BottomContainer>
+    </PostCardContainer>
   );
 };
 
