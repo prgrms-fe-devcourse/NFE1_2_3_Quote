@@ -6,7 +6,7 @@ const Container = styled.div`
   width: 100%;
   height: 100%;
   position: relative;
-  background-color: #f3f3f3;
+  background-color: ${({ theme }) => theme.colorBackground};
   display: flex;
   flex-direction: column;
   align-items: center;

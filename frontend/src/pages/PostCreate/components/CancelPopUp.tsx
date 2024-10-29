@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { useTheme } from "styled-components";
 
 const PopUpContainer = styled.div`
   width: 400px;
@@ -10,7 +11,7 @@ const PopUpContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: #fff;
+  background-color: ${({ theme }) => theme.colorCancelPopUp};
   border-radius: 20px;
   box-shadow: 0px 0px 6px #dfdfdf;
 `;
@@ -28,13 +29,13 @@ const PopUpButtonContainer = styled.div`
 const PopUpCancelButton = styled.p`
   width: 120px;
   height: 40px;
-  background-color: #fff;
+  background-color: ${({ theme }) => theme.colorCancelPopUp};
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 14px;
-  color: #474040;
-  border: 1px solid #474040;
+  color: ${({ theme }) => theme.colorCancelPopUPBtnFont};
+  border: 1px solid ${({ theme }) => theme.colorCancelPopUPBtnFont};
   border-radius: 30px;
   margin: 14px 7px;
   &:hover {
@@ -48,7 +49,7 @@ const PopUpConfirmButton = styled.p`
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #474040;
+  background-color: ${({ theme }) => theme.colorMain};
   font-size: 14px;
   color: #ffffff;
   border-radius: 30px;
@@ -69,6 +70,7 @@ const CancelPopUp = ({
   showCancelPopUp,
   setShowCancelPopUp,
 }: CancelPopUpProps) => {
+  const theme = useTheme();
   const handlePopUpCancel = () => {
     setShowCancelPopUp(!showCancelPopUp);
   };
@@ -78,7 +80,11 @@ const CancelPopUp = ({
   };
   return (
     <>
-      <PopUpContainer>
+      <PopUpContainer
+        style={{
+          boxShadow: theme.mode == "lightMode" ? "0px 0px 6px #dfdfdf" : "none",
+        }}
+      >
         <PopUpTitle>
           {modify
             ? "글 수정을 취소하시겠습니까?"
