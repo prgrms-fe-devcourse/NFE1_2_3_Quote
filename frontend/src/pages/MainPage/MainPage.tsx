@@ -1,16 +1,16 @@
-import WriteButton from "@/components/WriteButton/WriteButton";
-import MainLayout from "@/layouts/MainLayout";
-import MainImage from "@assets/images/mainImage.png";
 import styled from "styled-components";
-import Search from "./components/Search";
-import CategoryMark from "./components/CategoryMark";
-import { useCallback, useEffect, useState } from "react";
-import PostCard from "./components/PostCard";
 import { Post } from "@/types/Types";
 import { useGetCategoryPostData } from "./hooks/useGetPostData";
 import { useNavigate } from "react-router-dom";
 import { getUserData } from "./apis/userApi";
 import { useAuthStore } from "../LogInPage/store/authStore";
+import { useCallback, useEffect, useState } from "react";
+import Search from "./components/Search";
+import CategoryMark from "./components/CategoryMark";
+import PostCard from "./components/PostCard";
+import WriteButton from "@/components/WriteButton/WriteButton";
+import MainLayout from "@/layouts/MainLayout";
+import MainImage from "@assets/images/mainImage.png";
 
 const Container = styled.div`
   width: 100%;

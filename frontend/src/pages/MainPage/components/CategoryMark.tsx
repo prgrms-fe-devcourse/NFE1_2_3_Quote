@@ -1,5 +1,7 @@
 import styled from "styled-components";
 
+// Styled Components
+
 interface CategoryContainerProps {
   $category: string;
   $active: boolean;
@@ -14,9 +16,11 @@ const CategoryContainer = styled.div<CategoryContainerProps>`
   background-color: ${({ theme, $category }) => theme[$category].bgColor};
   border-radius: 20px 20px 0 0;
   cursor: pointer;
-  opacity: ${(props) => (props.$active ? "1" : "0.9")};
 
+  //카테고리 선택 되었을 때
+  opacity: ${(props) => (props.$active ? "1" : "0.9")};
   transform: ${(props) => (props.$active ? "translate(0, -20px)" : "none")};
+
   &:hover {
     ${(props) =>
       !props.$active &&
@@ -29,6 +33,8 @@ const CategoryContainer = styled.div<CategoryContainerProps>`
 const CategoryText = styled.p`
   margin-top: 0.5rem;
 `;
+
+//Category Mark
 
 interface CategoryMarkProps {
   category: string;

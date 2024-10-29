@@ -1,6 +1,8 @@
 import styled, { keyframes } from "styled-components";
-import SearchButton from "@assets/icons/search_button.svg?react";
 import { useCallback, useState } from "react";
+import SearchButton from "@assets/icons/search_button.svg?react";
+
+// Styled Components
 
 const SearchContainer = styled.div`
   width: 500px;
@@ -76,6 +78,8 @@ const SearchMessage = styled.div`
   animation: ${fadeOut} 2s ease-in-out 1s forwards;
 `;
 
+// Search
+
 interface SearchProps {
   searchWord: string;
   onChangeSearchWord: (searchWord: string) => void;
@@ -85,6 +89,7 @@ const Search = (props: SearchProps) => {
   const { searchWord, onChangeSearchWord } = props;
   const [searchInput, setSearchInput] = useState<string>(searchWord);
   const [showMessage, setShowMessage] = useState(false);
+
   //검색
   const handleSearchTitle = () => {
     if (!searchInput) {

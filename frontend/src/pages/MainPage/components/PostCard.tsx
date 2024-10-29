@@ -1,10 +1,12 @@
 import styled from "styled-components";
-import BookMarkBefore from "@assets/icons/bookMark_before_select.svg?react";
-import BookMarkAfter from "@assets/icons/bookMark_after_select.svg?react";
 import { Post } from "@/types/Types";
 import { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useBookmarkMutation } from "../hooks/useBookmarkMutation";
+import BookMarkBefore from "@assets/icons/bookMark_before_select.svg?react";
+import BookMarkAfter from "@assets/icons/bookMark_after_select.svg?react";
+
+// Styled Components
 
 interface PostCardContainerProps {
   $category: string;
@@ -62,7 +64,7 @@ const BottomContainer = styled.div`
   justify-content: space-between;
   padding: 0 1rem;
   background-color: ${({ theme }) => theme.colorSub};
-  color : ${({ theme }) => theme.colorMainFont};
+  color: ${({ theme }) => theme.colorMainFont};
   font-size: 14px;
 `;
 
@@ -91,6 +93,8 @@ const UserText = styled.p<{ $noUser: boolean }>`
   }
 `;
 
+// PostCard
+
 interface PostCardProps {
   post: Post;
   userId: string;
@@ -113,7 +117,7 @@ const PostCard = (props: PostCardProps) => {
   }, [isLogin, post._id]);
 
   //작성자 닉네임 눌렀을 때 페이지 이동
-  const [noUser, setNoUser] = useState<boolean>(!post.authorId); //탈퇴한 회원
+  const [noUser] = useState<boolean>(!post.authorId); //탈퇴한 회원
   const handleSelectAuthor = useCallback(() => {
     if (!isLogin) {
       navigate("/login");
