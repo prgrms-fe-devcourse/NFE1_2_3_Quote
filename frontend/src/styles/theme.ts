@@ -3,6 +3,7 @@ import { DefaultTheme } from "styled-components";
 export const lightTheme: DefaultTheme = {
   mode: "lightMode",
   colorMain: "#474040",
+  colorButton: "#474040",
   colorHeader: "#F3F3F3",
   colorBackground: "#F3F3F3",
   colorMainFont: "#303030",
@@ -20,6 +21,7 @@ export const lightTheme: DefaultTheme = {
 export const darkTheme = {
   mode: "darkMode",
   colorMain: "#675959",
+  colorButton: "#F3F3F3",
   colorHeader: "#030303",
   colorBackground: "#1B1B1E",
   colorMainFont: "#F3F3F3",
