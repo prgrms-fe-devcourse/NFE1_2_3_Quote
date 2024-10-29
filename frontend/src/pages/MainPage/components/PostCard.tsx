@@ -25,6 +25,11 @@ const PostCardContainer = styled.div<PostCardContainerProps>`
   color: ${({ theme, $category }) => theme[$category].fontColor};
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.25);
   cursor: pointer;
+
+  &:hover {
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 4px 12px ${({ theme }) => theme.colorShadow};
+  }
 `;
 
 const PostContentContainer = styled.div<PostCardContainerProps>`
