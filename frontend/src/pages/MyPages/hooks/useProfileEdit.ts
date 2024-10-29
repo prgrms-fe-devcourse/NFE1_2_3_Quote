@@ -64,6 +64,16 @@ export const useProfileEdit = (
 
   const handleNicknameChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
+
+    const hasWhitespace = /\s/.test(value);
+    const isValidLength = value.length <= 8;
+
+    if (hasWhitespace || !isValidLength) {
+      setError("닉네임은 공백 없이 8자 이내로 입력해주세요.");
+      setSuccess(null);
+      return;
+    }
+
     setNickname(value);
     setCheckedNickname(null);
     setError(null);
@@ -142,11 +152,7 @@ export const useProfileEdit = (
       setError("닉네임 중복 검사를 완료해주세요.");
       return;
     }
-    if (nickname.length > 8) {
-      setSuccess(null);
-      setError("닉네임은 8자 이내로 입력해주세요.");
-      return;
-    }
+
     const newImageUrl = previewImage || imgSrc;
 
     updateProfileMutation.mutate({
