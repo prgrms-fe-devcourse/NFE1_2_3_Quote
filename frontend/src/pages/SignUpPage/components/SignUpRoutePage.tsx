@@ -47,7 +47,8 @@ const MoveToLogin = styled.div`
 const CopyRight = styled.span`
   font-size: 10px;
   font-weight: bold;
-  color: #474040;
+  color: ${({ theme }) =>
+    theme.mode === "lightTheme" ? theme.colorMain : theme.colorSubFont};
 `;
 
 const SignUpRoutePage = () => {

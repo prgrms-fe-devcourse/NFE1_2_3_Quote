@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import KakaoIcon from "@assets/icons/kakaoIcon.svg?react";
-import { redirect } from "react-router-dom";
 import { REDIRECT_URI } from "../apis/signUp";
 
 const BtnCommonStyle = styled.button`
