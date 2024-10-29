@@ -1,8 +1,6 @@
-import { useMutation } from "@tanstack/react-query";
 import styled, { keyframes } from "styled-components";
-import { deletePost } from "../apis/postDetailApi";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import useDeletePost from "../hooks/useDeletePost";
 
 const PopUpContainer = styled.div`
   width: 400px;
@@ -97,19 +95,8 @@ const PostDeletePopUp = ({
   postId,
 }: DeletePopUpProps) => {
   const [deleteSuccessMsg, setDeleteSuccessMsg] = useState(false);
-  const navigate = useNavigate();
-  const { mutate } = useMutation({
-    mutationFn: deletePost,
-    onSuccess: () => {
-      setDeleteSuccessMsg(true);
-      setTimeout(() => {
-        navigate("/");
-      }, 2000);
-    },
-    onError(error) {
-      console.log(error);
-    },
-  });
+
+  const { mutate } = useDeletePost(setDeleteSuccessMsg);
 
   const handleConfirmDelete = () => {
     mutate(postId);
