@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import SearchButton from "@assets/icons/search_button.svg?react";
 import AlertPopUp from "@/components/AlertPopUp/AlertPopUp";
 
@@ -73,7 +73,7 @@ interface SearchProps {
 const Search = (props: SearchProps) => {
   const { searchWord, onChangeSearchWord } = props;
   const [searchInput, setSearchInput] = useState<string>(searchWord);
-  const [showMessage, setShowMessage] = useState(false);
+  const [showMessage, setShowMessage] = useState<boolean>(false);
 
   //검색
   const handleSearchTitle = () => {
@@ -94,10 +94,10 @@ const Search = (props: SearchProps) => {
   };
 
   //검색 초기화
-  const handleResetSearch = useCallback(() => {
+  const handleResetSearch = () => {
     setSearchInput("");
     onChangeSearchWord("");
-  }, []);
+  };
 
   return (
     <>

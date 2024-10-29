@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Post } from "@/types/Types";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useBookmarkMutation } from "../hooks/useBookmarkMutation";
 import BookMarkBefore from "@assets/icons/bookMark_before_select.svg?react";
@@ -108,17 +108,17 @@ const PostCard = (props: PostCardProps) => {
 
   //북마크 눌렀을 때
   const { mutate: addBookmark } = useBookmarkMutation(userId);
-  const handleCheckBookmark = useCallback(() => {
+  const handleCheckBookmark = () => {
     if (!isLogin) {
       navigate("/login");
       return;
     }
     addBookmark(post._id);
-  }, [isLogin, post._id]);
+  };
 
   //작성자 닉네임 눌렀을 때 페이지 이동
   const [noUser] = useState<boolean>(!post.authorId); //탈퇴한 회원
-  const handleSelectAuthor = useCallback(() => {
+  const handleSelectAuthor = () => {
     if (!isLogin) {
       navigate("/login");
       return;
@@ -130,7 +130,7 @@ const PostCard = (props: PostCardProps) => {
     }
 
     navigate(`/user-page/${post.authorId._id}`);
-  }, [isLogin, post.authorId]);
+  };
 
   return (
     <>

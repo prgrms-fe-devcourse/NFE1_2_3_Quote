@@ -18,12 +18,12 @@ const CategoryContainer = styled.div<CategoryContainerProps>`
   cursor: pointer;
 
   //카테고리 선택 되었을 때
-  opacity: ${(props) => (props.$active ? "1" : "0.9")};
-  transform: ${(props) => (props.$active ? "translate(0, -20px)" : "none")};
+  opacity: ${($active) => ($active ? "1" : "0.9")};
+  transform: ${($active) => ($active ? "translate(0, -20px)" : "none")};
 
   &:hover {
-    ${(props) =>
-      !props.$active &&
+    ${($active) =>
+      !$active &&
       `opacity: 1;
     transform: translate(0, -10px);
     `}

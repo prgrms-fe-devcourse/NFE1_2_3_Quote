@@ -12,6 +12,8 @@ import WriteButton from "@/components/WriteButton/WriteButton";
 import MainLayout from "@/layouts/MainLayout";
 import MainImage from "@assets/images/mainImage.png";
 
+// Styled Components
+
 const Container = styled.div`
   width: 100%;
   height: 100vh;
@@ -61,7 +63,9 @@ const NoPostText = styled.p`
   font-size: 18px;
 `;
 
-//상수로 빼기
+// Main Page
+
+//카테고리
 const CATEGORY_LIST: string[] = [
   "전체",
   "도서",
@@ -79,9 +83,9 @@ const MainPage = () => {
   const { isLogin } = useAuthStore();
 
   //카테고리 선택
-  const handleSelectCategory = useCallback((category: string) => {
+  const handleSelectCategory = (category: string) => {
     setSelectCategory(category);
-  }, []);
+  };
 
   //포스트 선택 시
   const handleSelectPost = useCallback(
@@ -90,17 +94,16 @@ const MainPage = () => {
         navigate("/login");
         return;
       }
-      console.log(postId);
       navigate(`/post/${postId}`);
     },
     [isLogin],
   );
 
   //userId 받아오기
-  const getUserId = useCallback(async () => {
+  const getUserId = async () => {
     const user = await getUserData();
     setUserId(user.id);
-  }, []);
+  };
 
   useEffect(() => {
     if (isLogin) {
@@ -124,6 +127,7 @@ const MainPage = () => {
   });
 
   const postData = sortedPostData || [];
+
   return (
     <MainLayout>
       <Container>
