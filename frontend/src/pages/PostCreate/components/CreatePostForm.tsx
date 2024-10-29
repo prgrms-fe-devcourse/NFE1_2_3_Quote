@@ -129,7 +129,6 @@ const CreateError = styled.div`
   font-size: 16px;
   font-weight: bold;
   background-color: ${({ theme }) => theme.colorSub};
-  box-shadow: 0px 0px 6px #dfdfdf;
   border-radius: 10px;
   animation: ${fadeOut} 2s ease-in-out 1s forwards;
 `;
@@ -147,7 +146,6 @@ const CreateSuccess = styled.div`
   font-size: 16px;
   font-weight: bold;
   background-color: ${({ theme }) => theme.colorSub};
-  box-shadow: 0px 0px 6px #dfdfdf;
   border-radius: 10px;
   animation: ${fadeOut} 2s ease-in-out 1s forwards;
 `;
