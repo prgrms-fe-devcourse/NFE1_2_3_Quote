@@ -3,6 +3,7 @@ import styled, { keyframes } from "styled-components";
 import CancelPopUp from "./CancelPopUp";
 import CategorySelect from "./CategorySelect";
 import useCreatePost from "../hooks/useCreatePost";
+import { useTheme } from "styled-components";
 
 const TitleContainer = styled.div`
   width: 90%;
@@ -17,9 +18,10 @@ const TitleInput = styled.input`
   width: 100%;
   padding: 20px;
   font-size: 26px;
+  color: ${({ theme }) => theme.colorMainFont};
   border: none;
   border-bottom: 1px solid #797979;
-  background-color: #f3f3f3;
+  background-color: ${({ theme }) => theme.colorBackground};
 `;
 const TitleText = styled.p`
   font-size: 17px;
@@ -45,10 +47,11 @@ const QuoteSentence = styled.textarea`
   height: 100%;
   padding: 20px;
   font-size: 18px;
+  color: ${({ theme }) => theme.colorMainFont};
   resize: none;
   border: none;
   border-bottom: 1px solid #797979;
-  background-color: #f3f3f3;
+  background-color: ${({ theme }) => theme.colorBackground};
 `;
 const QuoteText = styled.p`
   font-size: 17px;
@@ -74,10 +77,11 @@ const ContentInput = styled.textarea`
   height: 100%;
   padding: 20px;
   font-size: 18px;
+  color: ${({ theme }) => theme.colorMainFont};
   resize: none;
   border: none;
   border-bottom: 1px solid #797979;
-  background-color: #f3f3f3;
+  background-color: ${({ theme }) => theme.colorBackground};
 `;
 
 const CancelButton = styled.button`
@@ -85,10 +89,10 @@ const CancelButton = styled.button`
   height: 45px;
   margin: 40px 10px;
   font-size: 16px;
-  color: #474040;
-  background-color: #f3f3f3;
+  color: ${({ theme }) => theme.colorButton};
+  background-color: ${({ theme }) => theme.colorBackground};
   border-radius: 30px;
-  border: 1px solid #474040;
+  border: 1px solid ${({ theme }) => theme.colorButton};
   &:hover {
     cursor: pointer;
   }
@@ -99,7 +103,7 @@ const PublishButton = styled.button`
   margin: 40px 10px;
   font-size: 16px;
   color: #f3f3f3;
-  background-color: #474040;
+  background-color: ${({ theme }) => theme.colorMain};
   border: none;
   border-radius: 30px;
   &:hover {
@@ -121,11 +125,10 @@ const CreateError = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #d72121;
+  color: ${({ theme }) => theme.colorValidation};
   font-size: 16px;
   font-weight: bold;
-  background-color: #fff;
-  box-shadow: 0px 0px 6px #dfdfdf;
+  background-color: ${({ theme }) => theme.colorSub};
   border-radius: 10px;
   animation: ${fadeOut} 2s ease-in-out 1s forwards;
 `;
@@ -139,16 +142,16 @@ const CreateSuccess = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #393939;
+  color: ${({ theme }) => theme.colorMainFont};
   font-size: 16px;
   font-weight: bold;
-  background-color: #fff;
-  box-shadow: 0px 0px 6px #dfdfdf;
+  background-color: ${({ theme }) => theme.colorSub};
   border-radius: 10px;
   animation: ${fadeOut} 2s ease-in-out 1s forwards;
 `;
 
 const CreatePostForm = () => {
+  const theme = useTheme();
   const [category, setCategory] = useState("도서");
   const [title, setTitle] = useState("");
   const [quote, setQuote] = useState("");
@@ -280,9 +283,25 @@ const CreatePostForm = () => {
           setShowCancelPopUp={setShowCancelPopUp}
         />
       )}
-      {showMsg && <CreateError>{errorMsg}</CreateError>}
+      {showMsg && (
+        <CreateError
+          style={{
+            boxShadow:
+              theme.mode == "lightMode" ? "0px 0px 6px #dfdfdf" : "none",
+          }}
+        >
+          {errorMsg}
+        </CreateError>
+      )}
       {showSuccessMsg && (
-        <CreateSuccess>글 작성이 완료되었습니다.</CreateSuccess>
+        <CreateSuccess
+          style={{
+            boxShadow:
+              theme.mode == "lightMode" ? "0px 0px 6px #dfdfdf" : "none",
+          }}
+        >
+          글 작성이 완료되었습니다.
+        </CreateSuccess>
       )}
     </>
   );
