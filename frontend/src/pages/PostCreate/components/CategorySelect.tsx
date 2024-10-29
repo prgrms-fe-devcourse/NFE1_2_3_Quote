@@ -28,7 +28,7 @@ const CategorySelectButton = styled.button`
 const DropBoxButton = styled(DropBoxBtn)`
   font-size: 24px;
   margin-left: 4px;
-  color: ${({ theme }) => theme.MainFont};
+  color: ${({ theme }) => theme.colorMainFont};
   &:hover {
     cursor: pointer;
   }

@@ -1,6 +1,7 @@
 import styled, { keyframes } from "styled-components";
 import { useState } from "react";
 import useDeletePost from "../hooks/useDeletePost";
+import { useTheme } from "styled-components";
 
 const PopUpContainer = styled.div`
   width: 400px;
@@ -12,9 +13,8 @@ const PopUpContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: #fff;
+  background-color: ${({ theme }) => theme.colorCancelPopUp};
   border-radius: 20px;
-  box-shadow: 0px 0px 6px #dfdfdf;
 `;
 
 const PopUpTitle = styled.p`
@@ -30,13 +30,13 @@ const PopUpButtonContainer = styled.div`
 const PopUpCancelButton = styled.p`
   width: 120px;
   height: 40px;
-  background-color: #fff;
+  background-color: ${({ theme }) => theme.colorCancelPopUp};
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 14px;
-  color: #474040;
-  border: 1px solid #474040;
+  color: ${({ theme }) => theme.colorCancelPopUPBtnFont};
+  border: 1px solid ${({ theme }) => theme.colorCancelPopUPBtnFont};
   border-radius: 30px;
   margin: 14px 7px;
   &:hover {
@@ -50,7 +50,7 @@ const PopUpConfirmButton = styled.p`
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #474040;
+  background-color: ${({ theme }) => theme.colorMain};
   font-size: 14px;
   color: #ffffff;
   border-radius: 30px;
@@ -74,10 +74,10 @@ const SuccessMessage = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #393939;
+  color: ${({ theme }) => theme.colorMainFont};
   font-size: 16px;
   font-weight: bold;
-  background-color: #fff;
+  background-color: ${({ theme }) => theme.colorSub};
   box-shadow: 0px 0px 6px #dfdfdf;
   border-radius: 10px;
   animation: ${fadeOut} 2s ease-in-out 1s forwards;
@@ -94,6 +94,7 @@ const PostDeletePopUp = ({
   setShowPopUp,
   postId,
 }: DeletePopUpProps) => {
+  const theme = useTheme();
   const [deleteSuccessMsg, setDeleteSuccessMsg] = useState(false);
 
   const { mutate } = useDeletePost(setDeleteSuccessMsg);
@@ -104,7 +105,11 @@ const PostDeletePopUp = ({
 
   return (
     <>
-      <PopUpContainer>
+      <PopUpContainer
+        style={{
+          boxShadow: theme.mode == "lightMode" ? "0px 0px 6px #dfdfdf" : "none",
+        }}
+      >
         <PopUpTitle>글을 삭제하시겠습니까?</PopUpTitle>
         <PopUpButtonContainer>
           <PopUpCancelButton onClick={() => setShowPopUp(!showPopUp)}>
@@ -115,7 +120,14 @@ const PostDeletePopUp = ({
           </PopUpConfirmButton>
         </PopUpButtonContainer>
         {deleteSuccessMsg && (
-          <SuccessMessage>글이 삭제되었습니다.</SuccessMessage>
+          <SuccessMessage
+            style={{
+              boxShadow:
+                theme.mode == "lightMode" ? "0px 0px 6px #dfdfdf" : "none",
+            }}
+          >
+            글이 삭제되었습니다.
+          </SuccessMessage>
         )}
       </PopUpContainer>
     </>

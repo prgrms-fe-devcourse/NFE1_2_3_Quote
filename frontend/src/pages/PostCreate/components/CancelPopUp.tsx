@@ -13,7 +13,6 @@ const PopUpContainer = styled.div`
   align-items: center;
   background-color: ${({ theme }) => theme.colorCancelPopUp};
   border-radius: 20px;
-  box-shadow: 0px 0px 6px #dfdfdf;
 `;
 
 const PopUpTitle = styled.p`

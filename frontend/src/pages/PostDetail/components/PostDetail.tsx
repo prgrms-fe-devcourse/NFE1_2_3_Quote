@@ -11,6 +11,7 @@ import PostDeletePopUp from "./PostDeletePopUp";
 import useGetLoggedInUser from "../hooks/useGetLoggedInUser";
 import useGetPostInfo from "../hooks/useGetPostInfo";
 import useBookmark from "../hooks/useBookmark";
+import { useTheme } from "styled-components";
 
 const DetailContainer = styled.div`
   width: 760px;
@@ -47,6 +48,7 @@ const ModifyBtn = styled.button`
   padding: 0px;
   background: none;
   font-size: 20px;
+  color: ${({ theme }) => theme.colorMainFont};
   margin: 14px 14px 6px 14px;
   &:hover {
     cursor: pointer;
@@ -59,7 +61,7 @@ const ModifyMenu = styled.ul`
   height: 82px;
   right: 0px;
   top: 55px;
-  background-color: #fff;
+  background-color: ${({ theme }) => theme.colorCategoryList};
   list-style: none;
   margin: 0px;
   padding: 0px;
@@ -78,7 +80,7 @@ const ModifyItem = styled.li`
     border-top: 1px solid #e3e3e3;
   }
   &:hover {
-    background-color: #e3e3e3;
+    background-color: ${({ theme }) => theme.colorCategoryListHover};
     cursor: pointer;
   }
 `;
@@ -155,6 +157,7 @@ const BookmarkBtn = styled.button`
   background: none;
   font-size: 25px;
   margin-top: 25px;
+  color: ${({ theme }) => theme.colorMainFont};
 `;
 const BookmarkCount = styled.p`
   font-size: 14px;
@@ -163,6 +166,7 @@ const BookmarkCount = styled.p`
 `;
 
 const PostDetail = () => {
+  const theme = useTheme();
   // 현재 로그인한 유저 정보 가져오기
   const { loggedInUser } = useGetLoggedInUser();
 
@@ -231,7 +235,12 @@ const PostDetail = () => {
           </ModifyBtn>
         )}
         {showList && (
-          <ModifyMenu>
+          <ModifyMenu
+            style={{
+              boxShadow:
+                theme.mode == "lightMode" ? "0px 0px 6px #dfdfdf" : "none",
+            }}
+          >
             <ModifyItem onClick={() => navigate(`/post/${postId}/modify`)}>
               수정
             </ModifyItem>
