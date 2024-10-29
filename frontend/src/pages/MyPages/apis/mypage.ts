@@ -1,5 +1,6 @@
 import { authAxiosClient } from "@/pages/SignUpPage/apis/signUp";
 import { UserMe, Post } from "@/types/Types";
+import axios from "axios";
 
 // 공통 헤더 설정 함수
 const getAuthHeaders = () => ({
@@ -42,6 +43,28 @@ export async function updateNickname(nickname: string): Promise<void> {
     { headers: getAuthHeaders() },
   );
   validateResponse(response, "닉네임 변경에 실패했습니다.");
+}
+
+// 닉네임 중복 검사 함수
+export async function checkNicknameAvailability(nickname: string): Promise<void> {
+  try {
+    const response = await authAxiosClient.get(
+      `/users/check/nickname/${nickname}`,
+      { headers: getAuthHeaders() }
+    );
+
+    if (response.status === 200) {
+    } else {
+      throw new Error("닉네임 중복 검사에 실패했습니다.");
+    }
+  } catch (error: any) {
+    if (axios.isAxiosError(error) && error.response?.status === 400) {
+      throw new Error("이미 사용중인 닉네임입니다.");
+    } else {
+      console.error("API 요청 실패:", error);
+      throw new Error("닉네임 중복 검사 중 오류가 발생했습니다.");
+    }
+  }
 }
 
 // 회원탈퇴 함수

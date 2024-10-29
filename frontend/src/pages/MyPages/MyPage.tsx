@@ -1,21 +1,15 @@
+import { memo } from "react";
 import { useNavigate } from "react-router-dom";
-import { useState, useRef, useEffect, useCallback, memo } from "react";
 import styled, { keyframes } from "styled-components";
-import {
-  fetchUserProfile,
-  deleteUserAccount,
-  fetchMyPosts,
-  fetchBookmarkedPosts,
-} from "./apis/mypage";
-import { UserMe, Post } from "@/types/Types";
-import ProfileModifyButton from "@assets/icons/profile_modify_button.svg?react";
-import profile from "@assets/images/profile.png";
-import MainLayout from "@/layouts/MainLayout";
-import WriteButton from "@/components/WriteButton/WriteButton";
-import ProfileEditModal from "@/pages/MyPages/components/ProfileEditModal";
-import DeleteModal from "@/pages/MyPages/components/DeleteModal";
+import { useMyPage } from "./hooks/useMyPage";
+import ProfileEditModal from "./components/ProfileEditModal";
+import DeleteModal from "./components/DeleteModal";
 import PostCard from "./components/PostCard";
-import { useAuthStore } from "@/pages/LogInPage/store/authStore";
+import profile from "@assets/images/profile.png";
+import WriteButton from "@/components/WriteButton/WriteButton";
+import MainLayout from "@/layouts/MainLayout";
+import ProfileModifyButton from "@assets/icons/profile_modify_button.svg?react";
+import { Post } from "@/types/Types";
 
 // Styled Components
 
@@ -160,74 +154,33 @@ const MenuItem = styled.button`
 `;
 
 const MyPage = memo(() => {
-  const [userProfile, setUserProfile] = useState<UserMe | null>(null);
-  const [myPosts, setMyPosts] = useState<Post[]>([]);
-  const [bookmarkedPosts, setBookmarkedPosts] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState("posts");
-  const [menuVisible, setMenuVisible] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [showEditSuccess, setShowEditSuccess] = useState(false);
-  const [showDeleteSuccess, setShowDeleteSuccess] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const {
+    userProfile,
+    myPosts,
+    bookmarkedPosts,
+    loading,
+    activeTab,
+    setActiveTab,
+    menuVisible,
+    setMenuVisible,
+    isModalOpen,
+    setIsModalOpen,
+    showEditSuccess,
+    showDeleteSuccess,
+    isDeleteModalOpen,
+    setIsDeleteModalOpen,
+    handleDeleteAccount,
+    handleUpdateProfile,
+    handleAddBookmark,
+    handleRemoveBookmark,
+    toggleMenu,
+    menuRef,
+    settingsButtonRef,
+  } = useMyPage();
+
   const navigate = useNavigate();
-  const { storeLogout } = useAuthStore();
 
-  const menuRef = useRef<HTMLDivElement>(null);
-  const settingsButtonRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const loadProfileAndPosts = async () => {
-      try {
-        const profile = await fetchUserProfile();
-        setUserProfile(profile);
-
-        const myPosts = await fetchMyPosts(profile);
-        setMyPosts(myPosts);
-
-        const bookmarkedPosts = await fetchBookmarkedPosts(profile);
-        setBookmarkedPosts(bookmarkedPosts);
-      } catch (error) {
-        console.error("Failed to load profile or posts:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadProfileAndPosts();
-  }, []);
-
-  const toggleMenu = useCallback(() => {
-    setMenuVisible((prev) => !prev);
-  }, []);
-
-  const handleClickOutside = useCallback((event: MouseEvent) => {
-    if (
-      menuRef.current &&
-      !menuRef.current.contains(event.target as Node) &&
-      !settingsButtonRef.current?.contains(event.target as Node)
-    ) {
-      setMenuVisible(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [handleClickOutside]);
-
-  const getPosts = () =>
-    activeTab === "posts" ? renderPosts(myPosts) : renderPosts(bookmarkedPosts);
-
-  const handleAddBookmark = (post: Post) => {
-    setBookmarkedPosts((prev) => [...prev, post]);
-  };
-
-  const handleRemoveBookmark = (postId: string) => {
-    setBookmarkedPosts((prev) => prev.filter((post) => post._id !== postId));
-  };
+  if (loading) return <MessageContainer>로딩 중...</MessageContainer>;
 
   const renderPosts = (posts: Post[]) =>
     posts.length ? (
@@ -237,6 +190,7 @@ const MyPage = memo(() => {
             key={post._id}
             post={post}
             userId={userProfile?.id || ""}
+            isBookmarked={bookmarkedPosts.some((p) => p._id === post._id)}
             onClick={() => navigate(`/posts/${post._id}`)}
             onAddBookmark={handleAddBookmark}
             onRemoveBookmark={handleRemoveBookmark}
@@ -251,56 +205,6 @@ const MyPage = memo(() => {
       </MessageContainer>
     );
 
-  const handleDeleteAccount = async () => {
-    try {
-      await deleteUserAccount();
-      localStorage.removeItem("token");
-      setShowDeleteSuccess(true);
-
-      setTimeout(() => {
-        setShowDeleteSuccess(false);
-        navigate("/");
-        storeLogout();
-      }, 3000);
-    } catch (error) {
-      console.error("탈퇴 실패:", error);
-      alert("탈퇴에 실패했습니다. 다시 시도해 주세요.");
-    }
-  };
-
-  const handleProfileEditClick = useCallback(() => {
-    setMenuVisible(false);
-    setIsModalOpen(true);
-  }, []);
-
-  const handleDeleteClick = useCallback(() => {
-    setMenuVisible(false);
-    setIsDeleteModalOpen(true);
-  }, []);
-
-  const showEditSuccessMessage = useCallback(() => {
-    setShowEditSuccess(true);
-
-    setTimeout(() => {
-      setShowEditSuccess(false);
-    }, 3000);
-  }, []);
-
-  const handleUpdateProfile = (
-    updatedImage: string,
-    updatedNickname: string,
-  ) => {
-    setUserProfile((prevProfile) => ({
-      ...prevProfile!,
-      profileImage: `${updatedImage}?timestamp=${new Date().getTime()}`,
-      nickname: updatedNickname,
-    }));
-
-    window.location.reload();
-  };
-
-  if (loading) return <MessageContainer>로딩 중...</MessageContainer>;
-
   return (
     <MainLayout>
       <Container>
@@ -310,8 +214,22 @@ const MyPage = memo(() => {
           </SettingsButtonWrapper>
           {menuVisible && (
             <Menu ref={menuRef}>
-              <MenuItem onClick={handleProfileEditClick}>프로필 수정</MenuItem>
-              <MenuItem onClick={handleDeleteClick}>회원탈퇴</MenuItem>
+              <MenuItem
+                onClick={() => {
+                  setIsModalOpen(true);
+                  setMenuVisible(false);
+                }}
+              >
+                프로필 수정
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  setIsDeleteModalOpen(true);
+                  setMenuVisible(false);
+                }}
+              >
+                회원탈퇴
+              </MenuItem>
             </Menu>
           )}
           <ProfileImage
@@ -335,12 +253,11 @@ const MyPage = memo(() => {
             북마크
           </TabButton>
         </ContentSection>
-        <>{getPosts()}</>
+        {renderPosts(activeTab === "posts" ? myPosts : bookmarkedPosts)}
 
         {isModalOpen && (
           <ProfileEditModal
             onClose={() => setIsModalOpen(false)}
-            showSuccessMessage={showEditSuccessMessage}
             onUpdateProfile={handleUpdateProfile}
           />
         )}
