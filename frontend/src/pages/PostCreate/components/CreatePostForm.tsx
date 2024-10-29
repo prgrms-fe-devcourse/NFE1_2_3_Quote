@@ -2,9 +2,7 @@ import { useState } from "react";
 import styled, { keyframes } from "styled-components";
 import CancelPopUp from "./CancelPopUp";
 import CategorySelect from "./CategorySelect";
-import { useMutation } from "@tanstack/react-query";
-import { createPost } from "../apis/api";
-import { useNavigate } from "react-router-dom";
+import useCreatePost from "../hooks/useCreatePost";
 
 const TitleContainer = styled.div`
   width: 90%;
@@ -178,24 +176,12 @@ const CreatePostForm = () => {
   const [showMsg, setShowMsg] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [showSuccessMsg, setShowSuccessMsg] = useState(false);
-  const navigate = useNavigate();
 
   const handleCancel = () => {
     setShowCancelPopUp(!showCancelPopUp);
   };
 
-  const { mutate } = useMutation({
-    mutationFn: createPost,
-    onSuccess: () => {
-      setShowSuccessMsg(true);
-      setTimeout(() => {
-        navigate(-1);
-      }, 2000);
-    },
-    onError(error) {
-      console.log(error);
-    },
-  });
+  const { mutate } = useCreatePost(setShowSuccessMsg);
 
   const handleCreatePost = () => {
     if (!title.trim()) {
