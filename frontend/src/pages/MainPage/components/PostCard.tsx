@@ -62,6 +62,7 @@ const BottomContainer = styled.div`
   justify-content: space-between;
   padding: 0 1rem;
   background-color: ${({ theme }) => theme.colorSub};
+  color : ${({ theme }) => theme.colorMainFont};
   font-size: 14px;
 `;
 
