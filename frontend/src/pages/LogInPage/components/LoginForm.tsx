@@ -108,7 +108,9 @@ const BtnDivider = styled.hr`
   width: 400px;
   border: 0;
   height: 0;
-  border-top: 0.8px solid #474040;
+  border-top: 0.8px solid
+    ${({ theme }) =>
+      theme.mode === "lightTheme" ? theme.colorMain : theme.colorSubFont};
   margin: 12px 0;
 `;
 
