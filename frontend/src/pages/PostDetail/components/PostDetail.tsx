@@ -181,7 +181,7 @@ const PostDetail = () => {
 
   // 현재 로그인한 사용자가 작성자인지 확인
   const isAuthor =
-    loggedInUser && postInfo && loggedInUser?.id === postInfo?.authorId._id;
+    loggedInUser && postInfo && loggedInUser?.id === postInfo?.authorId?._id;
 
   const [showList, setShowList] = useState(false);
   const navigate = useNavigate();
@@ -198,8 +198,13 @@ const PostDetail = () => {
   };
 
   // 프로필 누르면 해당 유저 프로필로 이동
+  const noUser = !postInfo?.authorId?._id;
+
   const handleProfileClick = () => {
-    if (postInfo?.authorId._id === loggedInUser?.id) {
+    if (noUser) {
+      return;
+    }
+    if (postInfo?.authorId?._id === loggedInUser?.id) {
       navigate("/mypage");
     } else {
       navigate(`/user-page/${postInfo?.authorId._id}`);
@@ -254,11 +259,14 @@ const PostDetail = () => {
       </TopContainer>
       <AuthorProfile>
         <AuthorProfileImg
-          src={postInfo?.authorId.profileImage}
+          src={
+            postInfo?.authorId?.profileImage ||
+            "https://img1.daumcdn.net/thumb/R1280x0/?fname=http://t1.daumcdn.net/brunch/service/user/7r5X/image/9djEiPBPMLu_IvCYyvRPwmZkM1g.jpg"
+          }
           alt='작성자 프로필사진'
           onClick={handleProfileClick}
         />
-        <AuthorName>{postInfo?.authorId.nickname}</AuthorName>
+        <AuthorName>{postInfo?.authorId?.nickname || "탈퇴한 회원"}</AuthorName>
       </AuthorProfile>
       <ContentContainer>
         <Title>{postInfo?.title}</Title>
