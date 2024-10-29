@@ -7,13 +7,10 @@ import QuoteEndIcon from "@assets/icons/quote_end.svg?react";
 import styled from "styled-components";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  bookMarked,
-  getLoggedInUser,
-  getPostInfo,
-} from "../apis/postDetailApi";
 import PostDeletePopUp from "./PostDeletePopUp";
+import useGetLoggedInUser from "../hooks/useGetLoggedInUser";
+import useGetPostInfo from "../hooks/useGetPostInfo";
+import useBookmark from "../hooks/useBookmark";
 
 const DetailContainer = styled.div`
   width: 760px;
@@ -167,17 +164,11 @@ const BookmarkCount = styled.p`
 
 const PostDetail = () => {
   // 현재 로그인한 유저 정보 가져오기
-  const { data: loggedInUser } = useQuery({
-    queryKey: ["LoggedInUser"],
-    queryFn: getLoggedInUser,
-  });
+  const { loggedInUser } = useGetLoggedInUser();
 
   // 포스트 정보 가져오기
   const { postId } = useParams() as { postId: string };
-  const { data: postInfo } = useQuery({
-    queryKey: ["postInfo"],
-    queryFn: () => getPostInfo(postId),
-  });
+  const { postInfo } = useGetPostInfo(postId);
 
   // 현재 로그인한 사용자가 작성자인지 확인
   const isAuthor =
@@ -212,16 +203,7 @@ const PostDetail = () => {
   };
 
   // 북마크
-  const queryClient = useQueryClient();
-  const { mutate } = useMutation({
-    mutationFn: bookMarked,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["postInfo"] });
-    },
-    onError(error) {
-      console.log(error);
-    },
-  });
+  const { mutate } = useBookmark();
 
   const isActive =
     loggedInUser &&
