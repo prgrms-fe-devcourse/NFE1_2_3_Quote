@@ -18,15 +18,14 @@ import { CurrentUser } from 'src/common/decorators/user.decorator';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Get('kakao/callback')
-  @UseGuards(KaKaoAuthGuard)
-  async kakaoSignUpOrSignIn(@CurrentUser() user) {
-    return await this.authService.kakaoSignUpOrSignIn(user);
+  @Get('kakao')
+  kakaoLogin() {
+    return this.authService.kakaoLogin();
   }
 
-  // @Get('kakao/signin/callback')
-  // @UseGuards(KaKaoAuthGuard)
-  // async kakaoSignIn(@Req() req, @Query('code') code: string) {
-  //   return this.authService.kakaoLogin(req.user);
-  // }
+  @Get('kakao/callback')
+  @UseGuards(KaKaoAuthGuard)
+  async kakaoCode(@CurrentUser() user) {
+    return await this.authService.kakaoSignUpOrSignIn(user);
+  }
 }

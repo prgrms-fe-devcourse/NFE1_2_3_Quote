@@ -33,13 +33,16 @@ export class AuthService {
     };
   }
 
+  async kakaoLogin() {
+    const CLIENT_ID = process.env.CLIENT_ID;
+    const CALLBACK_URL = process.env.CALLBACK_URL;
+    return `https://kauth.kakao.com/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${CALLBACK_URL}&response_type=code`;
+  }
   async kakaoSignUpOrSignIn(user: KakaoUserInfo) {
     const { kakaoId, nickname, profileImage } = user;
-
     const existUser = await this.userRepository.findUserByEmail(
       kakaoId.toString(),
     );
-
     if (!existUser) {
       const saltOrRounds = 10;
       const hashedPassword = await bcrypt.hash(
@@ -55,18 +58,9 @@ export class AuthService {
       console.log(newUser);
       return await this.userRepository.createUser(newUser);
     }
-
     return await this.signIn({
       email: kakaoId.toString(),
       password: kakaoId.toString(),
     });
   }
 }
-//code로 토큰 발급 요청하고
-//해당 토큰으로 유저 정보 요청하고
-//해당 유저가 db에 있는지 확인하고
-//없으면 db에 저장하고
-//있으면 jwt 토큰 발급
-//payload에 email대신 kakaoId를 넣어줄까.
-
-//탈퇴하면 다 날리기. 포스트, 북마크
