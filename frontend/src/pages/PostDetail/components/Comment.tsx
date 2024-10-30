@@ -1,9 +1,13 @@
 import styled from "styled-components";
+import { useEffect, useRef, useState } from "react";
+import { useDeleteCommentMutation } from "../hooks/usePostComment";
+import { Comment as CommentType } from "@/types/Types";
+import { useNavigate } from "react-router-dom";
 import ModifyButton from "@assets/icons/write_modify_button.svg?react";
-import { useState } from "react";
 import PostCommentPopUp from "./PostCommentPopUp";
 import AlertPopUp from "@/components/AlertPopUp/AlertPopUp";
-import { useDeleteCommentMutation } from "../hooks/usePostComment";
+
+// Styled Components
 
 const StyledComment = styled.div`
   width: 760px;
@@ -22,6 +26,7 @@ const Profile = styled.img`
   width: 50px;
   height: 50px;
   border-radius: 90px;
+  cursor: pointer;
 `;
 
 const TextContainer = styled.div`
@@ -32,7 +37,9 @@ const TextContainer = styled.div`
 
 const UserName = styled.p`
   font-size: 14px;
+  font-weight: bold;
   margin: 5px 0 10px 0;
+  cursor: pointer;
 `;
 
 const Contents = styled.p`
@@ -89,49 +96,71 @@ const ModifyItem = styled.li`
   }
 `;
 
+// Comment
+
 interface CommentProps {
   isUser: boolean;
-  postId: string;
-  commentId: string;
-  author: { [key: string]: string };
-  contents: string;
-  createdAt: string;
+  comment: CommentType;
   onSetShowDeleteMessage: (value: boolean) => void;
 }
 
 const Comment = (props: CommentProps) => {
-  const {
-    isUser,
-    postId,
-    commentId,
-    author,
-    contents,
-    createdAt,
-    onSetShowDeleteMessage,
-  } = props;
+  const { isUser, comment, onSetShowDeleteMessage } = props;
   const [showList, setShowList] = useState(false);
   const [showPopUp, setShowPopUp] = useState(false);
   const [showCommentMessage, setShowCommentMessage] = useState(false);
+  const noUser = !comment.authorId;
 
   const { mutate: deleteComment } = useDeleteCommentMutation();
 
+  // 댓글 작성자 페이지 이동
+  const navigate = useNavigate();
+  const handleUserPage = () => {
+    if (noUser) {
+      return;
+    }
+    if (isUser) {
+      navigate(`/mypage`);
+      return;
+    }
+    navigate(`/user-page/${comment.authorId._id}`);
+  };
+
+  // 수정 및 삭제 메뉴
   const handleModifyList = () => {
     setShowList(!showList);
   };
 
+  // 댓글 수정 팝업
   const handleModifyComment = () => {
     setShowList(!showList);
     setShowPopUp(true);
   };
 
+  // 댓글 삭제
   const handleDeleteComment = () => {
     setShowList(!showList);
     onSetShowDeleteMessage(true);
-    deleteComment({ commentId: commentId });
+    deleteComment({ commentId: comment._id });
     setTimeout(() => {
       onSetShowDeleteMessage(false);
     }, 2000);
   };
+
+  const listRef = useRef<HTMLUListElement | null>(null);
+  useEffect(() => {
+    const handleOutsideClose = (e: { target: any }) => {
+      if (
+        showList &&
+        listRef.current &&
+        !listRef.current.contains(e.target as Node)
+      ) {
+        setShowList(false);
+      }
+    };
+    document.addEventListener("mousedown", handleOutsideClose);
+    return () => document.removeEventListener("mousedown", handleOutsideClose);
+  }, [showList]);
 
   return (
     <>
@@ -139,14 +168,17 @@ const Comment = (props: CommentProps) => {
         <ProfileContainer>
           <Profile
             src={
-              author.profileImage ||
+              comment.authorId.profileImage ||
               "https://img1.daumcdn.net/thumb/R1280x0/?fname=http://t1.daumcdn.net/brunch/service/user/7r5X/image/9djEiPBPMLu_IvCYyvRPwmZkM1g.jpg"
             }
+            onClick={handleUserPage}
           />
         </ProfileContainer>
         <TextContainer>
-          <UserName>{author.nickname || "탈퇴한 회원"}</UserName>
-          <Contents>{contents}</Contents>
+          <UserName onClick={handleUserPage}>
+            {comment.authorId.nickname || "탈퇴한 회원"}
+          </UserName>
+          <Contents>{comment.contents}</Contents>
         </TextContainer>
         <RightContainer>
           {isUser ? (
@@ -154,11 +186,10 @@ const Comment = (props: CommentProps) => {
           ) : (
             <div style={{ width: "24px" }} />
           )}
-
-          <DateContainer>{createdAt.slice(0, 10)}</DateContainer>
+          <DateContainer>{comment.createdAt.slice(0, 10)}</DateContainer>
         </RightContainer>
         {showList && (
-          <ModifyMenu>
+          <ModifyMenu ref={listRef}>
             <ModifyItem onClick={handleModifyComment}>수정</ModifyItem>
             <ModifyItem onClick={handleDeleteComment}>삭제</ModifyItem>
           </ModifyMenu>
@@ -166,9 +197,9 @@ const Comment = (props: CommentProps) => {
       </StyledComment>
       {showPopUp && (
         <PostCommentPopUp
-          postId={postId}
-          contents={contents}
-          commentId={commentId}
+          postId={comment.postId}
+          contents={comment.contents}
+          commentId={comment._id}
           showPopUp={showPopUp}
           onSetShowPopUp={setShowPopUp}
           onSetShowCommentMessage={setShowCommentMessage}

@@ -1,8 +1,6 @@
 import { userAxiosClient } from "@/pages/MainPage/apis/userApi";
 import { Comment } from "@/types/Types";
-import axios from "axios";
-
-const URL = "http://43.200.164.241:8000";
+import axios, { AxiosResponse } from "axios";
 
 export const getPostComment = async (postId: string): Promise<Comment[]> => {
   try {
@@ -23,7 +21,7 @@ export const postComment = async (
 ): Promise<Comment> => {
   try {
     const response = await userAxiosClient.post(`/comments/${postId}`, data);
-    return response.data.data;
+    return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
       throw new Error(`서버 통신 실패`);
@@ -52,7 +50,7 @@ export const patchComment = async (
   }
 };
 
-export const deleteComment = async (commentId: string): Promise<Comment> => {
+export const deleteComment = async (commentId: string): Promise<AxiosResponse> => {
   try {
     const response = await userAxiosClient.delete(`/comments/${commentId}`);
     return response.data.data;

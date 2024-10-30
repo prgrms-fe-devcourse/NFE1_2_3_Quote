@@ -1,14 +1,32 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deleteComment, patchComment, postComment } from "../apis/postCommentApi";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Comment } from "@/types/Types";
+import { AxiosResponse } from "axios";
+import {
+  deleteComment,
+  getPostComment,
+  patchComment,
+  postComment,
+} from "../apis/postCommentApi";
+
+type PostCommentType = { postId: string; contents: string };
+type ModifyCommentType = { commentId: string; contents: string };
+type DeleteCommentType = { commentId: string };
+
+export const useGetComment = (postId: string) => {
+  const { data, isLoading, isError } = useQuery<Comment[]>({
+    queryKey: ["comment"],
+    queryFn: () => getPostComment(postId),
+  });
+
+  return { data, isLoading, isError };
+};
 
 export const useCommentMutation = () => {
   const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: ({ postId, contents }: { postId: string; contents: string }) =>
-      postComment(postId, { contents }),
+  return useMutation<Comment, Error, PostCommentType>({
+    mutationFn: ({ postId, contents }) => postComment(postId, { contents }),
     onSuccess: () => {
-      console.log("성공");
       queryClient.invalidateQueries({ queryKey: ["comment"] });
     },
     onError(error) {
@@ -20,16 +38,10 @@ export const useCommentMutation = () => {
 export const useModifyCommentMutation = () => {
   const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: ({
-      commentId,
-      contents,
-    }: {
-      commentId: string;
-      contents: string;
-    }) => patchComment(commentId, { contents }),
+  return useMutation<Comment, Error, ModifyCommentType>({
+    mutationFn: ({ commentId, contents }) =>
+      patchComment(commentId, { contents }),
     onSuccess: () => {
-      console.log("수정 성공");
       queryClient.invalidateQueries({ queryKey: ["comment"] });
     },
     onError: (error) => {
@@ -41,11 +53,9 @@ export const useModifyCommentMutation = () => {
 export const useDeleteCommentMutation = () => {
   const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: ({ commentId }: { commentId: string }) =>
-      deleteComment(commentId),
+  return useMutation<AxiosResponse, Error, DeleteCommentType>({
+    mutationFn: ({ commentId }) => deleteComment(commentId),
     onSuccess: () => {
-      console.log("삭제 성공");
       queryClient.invalidateQueries({ queryKey: ["comment"] });
     },
     onError: (error) => {
