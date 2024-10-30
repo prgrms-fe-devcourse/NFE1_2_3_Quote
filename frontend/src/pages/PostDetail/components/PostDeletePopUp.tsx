@@ -1,7 +1,8 @@
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
 import { useState } from "react";
 import useDeletePost from "../hooks/useDeletePost";
 import { useTheme } from "styled-components";
+import AlertPopUp from "@/components/AlertPopUp/AlertPopUp";
 
 const PopUpContainer = styled.div`
   width: 400px;
@@ -27,7 +28,7 @@ const PopUpButtonContainer = styled.div`
   justify-content: center;
 `;
 
-const PopUpCancelButton = styled.p`
+const PopUpCancelButton = styled.button`
   width: 120px;
   height: 40px;
   background-color: ${({ theme }) => theme.colorCancelPopUp};
@@ -44,7 +45,7 @@ const PopUpCancelButton = styled.p`
   }
 `;
 
-const PopUpConfirmButton = styled.p`
+const PopUpConfirmButton = styled.button`
   width: 120px;
   height: 40px;
   display: flex;
@@ -53,34 +54,12 @@ const PopUpConfirmButton = styled.p`
   background-color: ${({ theme }) => theme.colorMain};
   font-size: 14px;
   color: #ffffff;
+  border: none;
   border-radius: 30px;
   margin: 14px 7px;
   &:hover {
     cursor: pointer;
   }
-`;
-
-const fadeOut = keyframes`
-  0% { opacity: 1; }
-  100% { opacity: 0; }
-`;
-
-const SuccessMessage = styled.div`
-  position: fixed;
-  top: 70px;
-  width: 260px;
-  height: 45px;
-  padding: 8px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: ${({ theme }) => theme.colorMainFont};
-  font-size: 16px;
-  font-weight: bold;
-  background-color: ${({ theme }) => theme.colorSub};
-  box-shadow: 0px 0px 6px #dfdfdf;
-  border-radius: 10px;
-  animation: ${fadeOut} 2s ease-in-out 1s forwards;
 `;
 
 interface DeletePopUpProps {
@@ -98,8 +77,10 @@ const PostDeletePopUp = ({
   const [deleteSuccessMsg, setDeleteSuccessMsg] = useState(false);
 
   const { mutate } = useDeletePost(setDeleteSuccessMsg);
+  const [btnDisabled, setBtnDisabled] = useState(false);
 
   const handleConfirmDelete = () => {
+    setBtnDisabled(true);
     mutate(postId);
   };
 
@@ -115,20 +96,14 @@ const PostDeletePopUp = ({
           <PopUpCancelButton onClick={() => setShowPopUp(!showPopUp)}>
             취소
           </PopUpCancelButton>
-          <PopUpConfirmButton onClick={handleConfirmDelete}>
+          <PopUpConfirmButton
+            onClick={handleConfirmDelete}
+            disabled={btnDisabled}
+          >
             확인
           </PopUpConfirmButton>
         </PopUpButtonContainer>
-        {deleteSuccessMsg && (
-          <SuccessMessage
-            style={{
-              boxShadow:
-                theme.mode == "lightMode" ? "0px 0px 6px #dfdfdf" : "none",
-            }}
-          >
-            글이 삭제되었습니다.
-          </SuccessMessage>
-        )}
+        {deleteSuccessMsg && <AlertPopUp>글이 삭제되었습니다.</AlertPopUp>}
       </PopUpContainer>
     </>
   );

@@ -145,8 +145,10 @@ const CreatePostForm = () => {
   };
 
   const { mutate } = useCreatePost(setShowSuccessMsg);
+  const [btnDisabled, setBtnDisabled] = useState(false);
 
   const handleCreatePost = () => {
+    setBtnDisabled(true);
     if (!title.trim()) {
       setShowMsg(true);
       setErrorMsg("제목을 입력해주세요.");
@@ -232,6 +234,7 @@ const CreatePostForm = () => {
         <PublishButton
           type='button'
           onClick={handleCreatePost}
+          disabled={btnDisabled}
         >
           발행
         </PublishButton>
