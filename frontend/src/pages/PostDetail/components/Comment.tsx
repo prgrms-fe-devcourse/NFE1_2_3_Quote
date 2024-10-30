@@ -2,6 +2,8 @@ import styled from "styled-components";
 import ModifyButton from "@assets/icons/write_modify_button.svg?react";
 import { useState } from "react";
 import PostCommentPopUp from "./PostCommentPopUp";
+import AlertPopUp from "@/components/AlertPopUp/AlertPopUp";
+import { useDeleteCommentMutation } from "../hooks/usePostComment";
 
 const StyledComment = styled.div`
   width: 760px;
@@ -90,26 +92,46 @@ const ModifyItem = styled.li`
 interface CommentProps {
   isUser: boolean;
   postId: string;
-  author: string;
+  commentId: string;
+  author: { [key: string]: string };
   contents: string;
   createdAt: string;
+  onSetShowDeleteMessage: (value: boolean) => void;
 }
 
 const Comment = (props: CommentProps) => {
-  const { isUser, postId, author, contents, createdAt } = props;
+  const {
+    isUser,
+    postId,
+    commentId,
+    author,
+    contents,
+    createdAt,
+    onSetShowDeleteMessage,
+  } = props;
   const [showList, setShowList] = useState(false);
   const [showPopUp, setShowPopUp] = useState(false);
   const [showCommentMessage, setShowCommentMessage] = useState(false);
+
+  const { mutate: deleteComment } = useDeleteCommentMutation();
 
   const handleModifyList = () => {
     setShowList(!showList);
   };
 
   const handleModifyComment = () => {
+    setShowList(!showList);
     setShowPopUp(true);
   };
 
-  const handleDeleteComment = () => {};
+  const handleDeleteComment = () => {
+    setShowList(!showList);
+    onSetShowDeleteMessage(true);
+    deleteComment({ commentId: commentId });
+    setTimeout(() => {
+      onSetShowDeleteMessage(false);
+    }, 2000);
+  };
 
   return (
     <>
@@ -146,11 +168,13 @@ const Comment = (props: CommentProps) => {
         <PostCommentPopUp
           postId={postId}
           contents={contents}
+          commentId={commentId}
           showPopUp={showPopUp}
           onSetShowPopUp={setShowPopUp}
           onSetShowCommentMessage={setShowCommentMessage}
         />
       )}
+      {showCommentMessage && <AlertPopUp>댓글이 수정되었습니다.</AlertPopUp>}
     </>
   );
 };

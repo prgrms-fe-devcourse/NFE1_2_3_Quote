@@ -35,13 +35,16 @@ const NoCommentText = styled.p`
 `;
 
 const PostComment = () => {
-  const { data, isLoading, isError } = useGetComment();
   const [userId, setUserId] = useState<string>("");
   const { isLogin } = useAuthStore();
   const [showPopUp, setShowPopUp] = useState(false);
   const [showCommentMessage, setShowCommentMessage] = useState(false);
+  const [showDeleteMessage, setShowDeleteMessage] = useState(false);
   const { postId } = useParams() as { postId: string };
-  const commentData = data?.filter((comment) => comment.info === postId) || [];
+  const { data, isLoading, isError } = useGetComment(postId);
+  const commentData = data || [];
+
+  console.log(commentData);
 
   const handleCommentPopUp = () => {
     setShowPopUp(true);
@@ -79,12 +82,14 @@ const PostComment = () => {
         ) : commentData?.length > 0 ? (
           commentData.map((comment) => (
             <Comment
-              isUser={userId === comment.author}
-              postId = {comment.info}
+              isUser={userId === comment.authorId._id}
+              postId={comment.postId}
               key={comment._id}
-              author={comment.author}
+              commentId={comment._id}
+              author={comment.authorId}
               contents={comment.contents}
               createdAt={comment.createdAt}
+              onSetShowDeleteMessage={setShowDeleteMessage}
             />
           ))
         ) : (
@@ -93,6 +98,7 @@ const PostComment = () => {
         {}
       </CommentContainer>
       {showCommentMessage && <AlertPopUp>댓글이 작성되었습니다.</AlertPopUp>}
+      {showDeleteMessage && <AlertPopUp>댓글이 삭제되었습니다.</AlertPopUp>}
     </>
   );
 };

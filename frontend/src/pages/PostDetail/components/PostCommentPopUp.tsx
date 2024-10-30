@@ -2,11 +2,15 @@ import styled from "styled-components";
 import { useState } from "react";
 import { useTheme } from "styled-components";
 import AlertPopUp from "@/components/AlertPopUp/AlertPopUp";
-import { useCommentMutation } from "../hooks/usePostComment";
+import {
+  useCommentMutation,
+  useModifyCommentMutation,
+} from "../hooks/usePostComment";
 
 const PopUpContainer = styled.div`
   width: 400px;
   height: 250px;
+  z-index: 10;
   position: fixed;
   display: flex;
   top: 50%;
@@ -99,14 +103,22 @@ const CommentText = styled.p`
 
 interface PostCommentPopUpProps {
   postId: string;
-  contents? : string;
+  contents?: string;
+  commentId?: string;
   showPopUp: boolean;
   onSetShowPopUp: (value: boolean) => void;
   onSetShowCommentMessage: (value: boolean) => void;
 }
 
 const PostCommentPopUp = (props: PostCommentPopUpProps) => {
-  const { postId, contents, showPopUp, onSetShowPopUp, onSetShowCommentMessage } = props;
+  const {
+    postId,
+    contents,
+    commentId,
+    showPopUp,
+    onSetShowPopUp,
+    onSetShowCommentMessage,
+  } = props;
   const theme = useTheme();
 
   const [comment, setComment] = useState<string>(contents || "");
@@ -121,6 +133,7 @@ const PostCommentPopUp = (props: PostCommentPopUpProps) => {
   };
 
   const { mutate: addComment } = useCommentMutation();
+  const { mutate: modifyComment } = useModifyCommentMutation();
 
   //확인 버튼 누를 시
   const handleConfirmComment = () => {
@@ -131,7 +144,10 @@ const PostCommentPopUp = (props: PostCommentPopUpProps) => {
       }, 2000);
       return;
     }
-    addComment({ postId: postId, contents: comment });
+
+    commentId
+      ? modifyComment({ commentId: commentId, contents: comment })
+      : addComment({ postId: postId, contents: comment });
     onSetShowCommentMessage(true);
     onSetShowPopUp(!showPopUp);
     setTimeout(() => {
