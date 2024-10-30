@@ -1,8 +1,8 @@
-import { useMutation } from "@tanstack/react-query";
-import styled, { keyframes } from "styled-components";
-import { deletePost } from "../apis/postDetailApi";
+import styled from "styled-components";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import useDeletePost from "../hooks/useDeletePost";
+import { useTheme } from "styled-components";
+import AlertPopUp from "@/components/AlertPopUp/AlertPopUp";
 
 const PopUpContainer = styled.div`
   width: 400px;
@@ -14,9 +14,8 @@ const PopUpContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: #fff;
+  background-color: ${({ theme }) => theme.colorCancelPopUp};
   border-radius: 20px;
-  box-shadow: 0px 0px 6px #dfdfdf;
 `;
 
 const PopUpTitle = styled.p`
@@ -29,16 +28,16 @@ const PopUpButtonContainer = styled.div`
   justify-content: center;
 `;
 
-const PopUpCancelButton = styled.p`
+const PopUpCancelButton = styled.button`
   width: 120px;
   height: 40px;
-  background-color: #fff;
+  background-color: ${({ theme }) => theme.colorCancelPopUp};
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 14px;
-  color: #474040;
-  border: 1px solid #474040;
+  color: ${({ theme }) => theme.colorCancelPopUPBtnFont};
+  border: 1px solid ${({ theme }) => theme.colorCancelPopUPBtnFont};
   border-radius: 30px;
   margin: 14px 7px;
   &:hover {
@@ -46,43 +45,21 @@ const PopUpCancelButton = styled.p`
   }
 `;
 
-const PopUpConfirmButton = styled.p`
+const PopUpConfirmButton = styled.button`
   width: 120px;
   height: 40px;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #474040;
+  background-color: ${({ theme }) => theme.colorMain};
   font-size: 14px;
   color: #ffffff;
+  border: none;
   border-radius: 30px;
   margin: 14px 7px;
   &:hover {
     cursor: pointer;
   }
-`;
-
-const fadeOut = keyframes`
-  0% { opacity: 1; }
-  100% { opacity: 0; }
-`;
-
-const SuccessMessage = styled.div`
-  position: fixed;
-  top: 70px;
-  width: 260px;
-  height: 45px;
-  padding: 8px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #393939;
-  font-size: 16px;
-  font-weight: bold;
-  background-color: #fff;
-  box-shadow: 0px 0px 6px #dfdfdf;
-  border-radius: 10px;
-  animation: ${fadeOut} 2s ease-in-out 1s forwards;
 `;
 
 interface DeletePopUpProps {
@@ -96,40 +73,37 @@ const PostDeletePopUp = ({
   setShowPopUp,
   postId,
 }: DeletePopUpProps) => {
+  const theme = useTheme();
   const [deleteSuccessMsg, setDeleteSuccessMsg] = useState(false);
-  const navigate = useNavigate();
-  const { mutate } = useMutation({
-    mutationFn: deletePost,
-    onSuccess: () => {
-      setDeleteSuccessMsg(true);
-      setTimeout(() => {
-        navigate("/");
-      }, 2000);
-    },
-    onError(error) {
-      console.log(error);
-    },
-  });
+
+  const { mutate } = useDeletePost(setDeleteSuccessMsg);
+  const [btnDisabled, setBtnDisabled] = useState(false);
 
   const handleConfirmDelete = () => {
+    setBtnDisabled(true);
     mutate(postId);
   };
 
   return (
     <>
-      <PopUpContainer>
+      <PopUpContainer
+        style={{
+          boxShadow: theme.mode == "lightMode" ? "0px 0px 6px #dfdfdf" : "none",
+        }}
+      >
         <PopUpTitle>글을 삭제하시겠습니까?</PopUpTitle>
         <PopUpButtonContainer>
           <PopUpCancelButton onClick={() => setShowPopUp(!showPopUp)}>
             취소
           </PopUpCancelButton>
-          <PopUpConfirmButton onClick={handleConfirmDelete}>
+          <PopUpConfirmButton
+            onClick={handleConfirmDelete}
+            disabled={btnDisabled}
+          >
             확인
           </PopUpConfirmButton>
         </PopUpButtonContainer>
-        {deleteSuccessMsg && (
-          <SuccessMessage>글이 삭제되었습니다.</SuccessMessage>
-        )}
+        {deleteSuccessMsg && <AlertPopUp>글이 삭제되었습니다.</AlertPopUp>}
       </PopUpContainer>
     </>
   );

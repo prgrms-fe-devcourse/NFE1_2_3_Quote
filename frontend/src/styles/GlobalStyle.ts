@@ -24,6 +24,9 @@ const GlobalStyle = createGlobalStyle`
         background-color: ${({ theme }) => theme.colorBackground};
         color : ${({ theme }) => theme.colorMainFont};
     }
+    ::-webkit-scrollbar {
+        display: none;
+    };
 `;
 
 export default GlobalStyle;

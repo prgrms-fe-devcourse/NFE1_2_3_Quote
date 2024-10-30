@@ -1,10 +1,9 @@
 import { useState } from "react";
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
 import CancelPopUp from "./CancelPopUp";
 import CategorySelect from "./CategorySelect";
-import { useMutation } from "@tanstack/react-query";
-import { createPost } from "../apis/api";
-import { useNavigate } from "react-router-dom";
+import useCreatePost from "../hooks/useCreatePost";
+import AlertPopUp from "@/components/AlertPopUp/AlertPopUp";
 
 const TitleContainer = styled.div`
   width: 90%;
@@ -19,9 +18,10 @@ const TitleInput = styled.input`
   width: 100%;
   padding: 20px;
   font-size: 26px;
+  color: ${({ theme }) => theme.colorMainFont};
   border: none;
   border-bottom: 1px solid #797979;
-  background-color: #f3f3f3;
+  background-color: ${({ theme }) => theme.colorBackground};
 `;
 const TitleText = styled.p`
   font-size: 17px;
@@ -47,10 +47,11 @@ const QuoteSentence = styled.textarea`
   height: 100%;
   padding: 20px;
   font-size: 18px;
+  color: ${({ theme }) => theme.colorMainFont};
   resize: none;
   border: none;
   border-bottom: 1px solid #797979;
-  background-color: #f3f3f3;
+  background-color: ${({ theme }) => theme.colorBackground};
 `;
 const QuoteText = styled.p`
   font-size: 17px;
@@ -76,10 +77,11 @@ const ContentInput = styled.textarea`
   height: 100%;
   padding: 20px;
   font-size: 18px;
+  color: ${({ theme }) => theme.colorMainFont};
   resize: none;
   border: none;
   border-bottom: 1px solid #797979;
-  background-color: #f3f3f3;
+  background-color: ${({ theme }) => theme.colorBackground};
 `;
 
 const CancelButton = styled.button`
@@ -87,10 +89,10 @@ const CancelButton = styled.button`
   height: 45px;
   margin: 40px 10px;
   font-size: 16px;
-  color: #474040;
-  background-color: #f3f3f3;
+  color: ${({ theme }) => theme.colorButton};
+  background-color: ${({ theme }) => theme.colorBackground};
   border-radius: 30px;
-  border: 1px solid #474040;
+  border: 1px solid ${({ theme }) => theme.colorButton};
   &:hover {
     cursor: pointer;
   }
@@ -101,53 +103,12 @@ const PublishButton = styled.button`
   margin: 40px 10px;
   font-size: 16px;
   color: #f3f3f3;
-  background-color: #474040;
+  background-color: ${({ theme }) => theme.colorMain};
   border: none;
   border-radius: 30px;
   &:hover {
     cursor: pointer;
   }
-`;
-
-const fadeOut = keyframes`
-  0% { opacity: 1; }
-  100% { opacity: 0; }
-`;
-
-const CreateError = styled.div`
-  position: fixed;
-  top: 70px;
-  width: 260px;
-  height: 45px;
-  padding: 8px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #d72121;
-  font-size: 16px;
-  font-weight: bold;
-  background-color: #fff;
-  box-shadow: 0px 0px 6px #dfdfdf;
-  border-radius: 10px;
-  animation: ${fadeOut} 2s ease-in-out 1s forwards;
-`;
-
-const CreateSuccess = styled.div`
-  position: fixed;
-  top: 70px;
-  width: 260px;
-  height: 45px;
-  padding: 8px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #393939;
-  font-size: 16px;
-  font-weight: bold;
-  background-color: #fff;
-  box-shadow: 0px 0px 6px #dfdfdf;
-  border-radius: 10px;
-  animation: ${fadeOut} 2s ease-in-out 1s forwards;
 `;
 
 const CreatePostForm = () => {
@@ -178,26 +139,16 @@ const CreatePostForm = () => {
   const [showMsg, setShowMsg] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [showSuccessMsg, setShowSuccessMsg] = useState(false);
-  const navigate = useNavigate();
 
   const handleCancel = () => {
     setShowCancelPopUp(!showCancelPopUp);
   };
 
-  const { mutate } = useMutation({
-    mutationFn: createPost,
-    onSuccess: () => {
-      setShowSuccessMsg(true);
-      setTimeout(() => {
-        navigate(-1);
-      }, 2000);
-    },
-    onError(error) {
-      console.log(error);
-    },
-  });
+  const { mutate } = useCreatePost(setShowSuccessMsg);
+  const [btnDisabled, setBtnDisabled] = useState(false);
 
   const handleCreatePost = () => {
+    setBtnDisabled(true);
     if (!title.trim()) {
       setShowMsg(true);
       setErrorMsg("제목을 입력해주세요.");
@@ -283,6 +234,7 @@ const CreatePostForm = () => {
         <PublishButton
           type='button'
           onClick={handleCreatePost}
+          disabled={btnDisabled}
         >
           발행
         </PublishButton>
@@ -294,10 +246,8 @@ const CreatePostForm = () => {
           setShowCancelPopUp={setShowCancelPopUp}
         />
       )}
-      {showMsg && <CreateError>{errorMsg}</CreateError>}
-      {showSuccessMsg && (
-        <CreateSuccess>글 작성이 완료되었습니다.</CreateSuccess>
-      )}
+      {showMsg && <AlertPopUp error>{errorMsg}</AlertPopUp>}
+      {showSuccessMsg && <AlertPopUp>글 작성이 완료되었습니다.</AlertPopUp>}
     </>
   );
 };

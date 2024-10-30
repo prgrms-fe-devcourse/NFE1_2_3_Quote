@@ -6,14 +6,12 @@ import QuoteStartIcon from "@assets/icons/quote_start.svg?react";
 import QuoteEndIcon from "@assets/icons/quote_end.svg?react";
 import styled from "styled-components";
 import { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  bookMarked,
-  getLoggedInUser,
-  getPostInfo,
-} from "../apis/postDetailApi";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import PostDeletePopUp from "./PostDeletePopUp";
+import useGetLoggedInUser from "../hooks/useGetLoggedInUser";
+import useGetPostInfo from "../hooks/useGetPostInfo";
+import useBookmark from "../hooks/useBookmark";
+import { useTheme } from "styled-components";
 
 const DetailContainer = styled.div`
   width: 760px;
@@ -50,6 +48,7 @@ const ModifyBtn = styled.button`
   padding: 0px;
   background: none;
   font-size: 20px;
+  color: ${({ theme }) => theme.colorMainFont};
   margin: 14px 14px 6px 14px;
   &:hover {
     cursor: pointer;
@@ -62,7 +61,7 @@ const ModifyMenu = styled.ul`
   height: 82px;
   right: 0px;
   top: 55px;
-  background-color: #fff;
+  background-color: ${({ theme }) => theme.colorCategoryList};
   list-style: none;
   margin: 0px;
   padding: 0px;
@@ -81,7 +80,7 @@ const ModifyItem = styled.li`
     border-top: 1px solid #e3e3e3;
   }
   &:hover {
-    background-color: #e3e3e3;
+    background-color: ${({ theme }) => theme.colorCategoryListHover};
     cursor: pointer;
   }
 `;
@@ -132,7 +131,7 @@ const QuoteContainer = styled.div`
 const Quote = styled.p`
   font-size: 18px;
   line-height: 30px;
-  margin: 18px;
+  margin: 18px 30px;
   max-width: 450px;
   white-space: pre-wrap;
 `;
@@ -158,6 +157,7 @@ const BookmarkBtn = styled.button`
   background: none;
   font-size: 25px;
   margin-top: 25px;
+  color: ${({ theme }) => theme.colorMainFont};
 `;
 const BookmarkCount = styled.p`
   font-size: 14px;
@@ -166,30 +166,36 @@ const BookmarkCount = styled.p`
 `;
 
 const PostDetail = () => {
+  const theme = useTheme();
   // 현재 로그인한 유저 정보 가져오기
-  const { data: loggedInUser } = useQuery({
-    queryKey: ["LoggedInUser"],
-    queryFn: getLoggedInUser,
-  });
+  const { loggedInUser } = useGetLoggedInUser();
 
   // 포스트 정보 가져오기
   const { postId } = useParams() as { postId: string };
-  const { data: postInfo } = useQuery({
-    queryKey: ["postInfo"],
-    queryFn: () => getPostInfo(postId),
-  });
+  const { postInfo } = useGetPostInfo(postId);
 
   // 현재 로그인한 사용자가 작성자인지 확인
   const isAuthor =
-    loggedInUser && postInfo && loggedInUser?.id === postInfo?.authorId._id;
+    loggedInUser && postInfo && loggedInUser?.id === postInfo?.authorId?._id;
 
   const [showList, setShowList] = useState(false);
+  const location = useLocation();
+  const from = location.state.from;
+
   const navigate = useNavigate();
   const [showPopUp, setShowPopUp] = useState(false);
 
   // 뒤로가기
   const handleGoToBack = () => {
-    navigate(-1);
+    if (from === "main") {
+      navigate("/");
+    }
+    if (from === "myPage") {
+      navigate("/mypage");
+    }
+    if (from === "userPage") {
+      navigate(-1);
+    }
   };
 
   // 포스트 삭제 확인 팝업
@@ -198,8 +204,13 @@ const PostDetail = () => {
   };
 
   // 프로필 누르면 해당 유저 프로필로 이동
+  const noUser = !postInfo?.authorId?._id;
+
   const handleProfileClick = () => {
-    if (postInfo?.authorId._id === loggedInUser?.id) {
+    if (noUser) {
+      return;
+    }
+    if (postInfo?.authorId?._id === loggedInUser?.id) {
       navigate("/mypage");
     } else {
       navigate(`/user-page/${postInfo?.authorId._id}`);
@@ -207,16 +218,7 @@ const PostDetail = () => {
   };
 
   // 북마크
-  const queryClient = useQueryClient();
-  const { mutate } = useMutation({
-    mutationFn: bookMarked,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["postInfo"] });
-    },
-    onError(error) {
-      console.log(error);
-    },
-  });
+  const { mutate } = useBookmark();
 
   const isActive =
     loggedInUser &&
@@ -244,8 +246,19 @@ const PostDetail = () => {
           </ModifyBtn>
         )}
         {showList && (
-          <ModifyMenu>
-            <ModifyItem onClick={() => navigate(`/post/${postId}/modify`)}>
+          <ModifyMenu
+            style={{
+              boxShadow:
+                theme.mode == "lightMode" ? "0px 0px 6px #dfdfdf" : "none",
+            }}
+          >
+            <ModifyItem
+              onClick={() =>
+                navigate(`/post/${postId}/modify`, {
+                  state: { from: from },
+                })
+              }
+            >
               수정
             </ModifyItem>
             <ModifyItem onClick={handlePostDeletePopUp}>삭제</ModifyItem>
@@ -254,11 +267,14 @@ const PostDetail = () => {
       </TopContainer>
       <AuthorProfile>
         <AuthorProfileImg
-          src={postInfo?.authorId.profileImage}
+          src={
+            postInfo?.authorId?.profileImage ||
+            "https://img1.daumcdn.net/thumb/R1280x0/?fname=http://t1.daumcdn.net/brunch/service/user/7r5X/image/9djEiPBPMLu_IvCYyvRPwmZkM1g.jpg"
+          }
           alt='작성자 프로필사진'
           onClick={handleProfileClick}
         />
-        <AuthorName>{postInfo?.authorId.nickname}</AuthorName>
+        <AuthorName>{postInfo?.authorId?.nickname || "탈퇴한 회원"}</AuthorName>
       </AuthorProfile>
       <ContentContainer>
         <Title>{postInfo?.title}</Title>

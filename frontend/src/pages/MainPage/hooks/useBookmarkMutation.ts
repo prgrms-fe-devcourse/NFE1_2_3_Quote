@@ -32,7 +32,7 @@ export const useBookmarkMutation = (userId: string) => {
       return { previousPost };
     },
     // mutation 실패했을 때 호출
-    onError: (error, data, context) => {
+    onError: (_error, _data, context) => {
       if (context?.previousPost) {
         queryClient.setQueryData(["categoryPost"], context.previousPost);
       }

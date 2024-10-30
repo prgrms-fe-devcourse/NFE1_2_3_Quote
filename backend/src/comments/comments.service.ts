@@ -2,24 +2,16 @@ import { User } from 'src/users/schemas/user.schema';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { CommentsCreateDto } from './dto/comments.create.dto';
 import { CommentsRepository } from './repository/comments.repository';
-import { UsersRepository } from 'src/users/repository/users.repository';
-import { InjectModel } from '@nestjs/mongoose';
-import { Comments } from './schemas/comments.schema';
-import { Model } from 'mongoose';
-import e from 'express';
 import { PostsRepository } from 'src/posts/repository/posts.repository';
 
 @Injectable()
 export class CommentsService {
-  constructor(
-    @InjectModel(Comments.name) private commentsModel: Model<Comments>,
-    private readonly postsRepository: PostsRepository,
-  ) {}
+  constructor(private readonly commentsRepository: CommentsRepository) {}
 
-  async getAllComments() {
+  async getCommentsByPostId(id: string) {
     try {
-      const allComments = await this.commentsModel.find();
-      return allComments;
+      const comments = await this.commentsRepository.getCommentsByPostId(id);
+      return comments;
     } catch (error) {
       throw new BadRequestException(error.message);
     }
@@ -27,19 +19,45 @@ export class CommentsService {
 
   async createComment(user: User, id: string, comments: CommentsCreateDto) {
     try {
-      const post = await this.postsRepository.getPostById(id);
+      const newComments = await this.commentsRepository.createComment(
+        user,
+        id,
+        comments,
+      );
 
-      const { contents } = comments;
-
-      const newComment = new this.commentsModel({
-        author: user._id,
-        contents,
-        info: post.id,
-      });
-
-      await newComment.save();
-      return newComment;
+      return newComments;
     } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async updateComment(comments: CommentsCreateDto, user: User, id: string) {
+    try {
+      const updatedComment = await this.commentsRepository.updateComment(
+        comments,
+        user,
+        id,
+      );
+      return updatedComment;
+    } catch (error) {
+      if (error.message === 'This is not your comment') {
+        throw new BadRequestException('This is not your comment');
+      }
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async deleteComment(user: User, id: string) {
+    try {
+      const deletedComment = await this.commentsRepository.deleteComment(
+        id,
+        user,
+      );
+      return deletedComment;
+    } catch (error) {
+      if (error.message === 'This is not your comment') {
+        throw new BadRequestException('This is not your comment');
+      }
       throw new BadRequestException(error.message);
     }
   }
@@ -49,14 +67,4 @@ export class CommentsService {
   //       const targetPost = await this.commentsModel.findById(id);
   //     } catch (error) {}
   //   }
-
-  async plusLike(id: string) {
-    try {
-      const targetComment = await this.commentsModel.findById(id);
-      // targetComment.likes += 1;
-      await targetComment.save();
-    } catch (error) {
-      throw new BadRequestException(error.message);
-    }
-  }
 }

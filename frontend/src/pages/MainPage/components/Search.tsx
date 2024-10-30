@@ -1,6 +1,9 @@
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
+import { useState } from "react";
 import SearchButton from "@assets/icons/search_button.svg?react";
-import { useCallback, useState } from "react";
+import AlertPopUp from "@/components/AlertPopUp/AlertPopUp";
+
+// Styled Components
 
 const SearchContainer = styled.div`
   width: 500px;
@@ -9,14 +12,20 @@ const SearchContainer = styled.div`
 `;
 
 const ResetSearchButton = styled.button`
+  align-self: flex-end;
+  width: 5rem;
   font-size: 14px;
   color: #f3f3f3;
   border: none;
   background: none;
-  text-align: end;
+  text-align: center;
   margin: 0.5rem 0;
   cursor: pointer;
   user-select: none; /* 텍스트 선택 방지 */
+
+  &:focus {
+    outline: none;
+  }
 `;
 
 const SearchInputContainer = styled.div`
@@ -37,6 +46,7 @@ const SearchInput = styled.input`
 
   &::placeholder {
     color: ${({ theme }) => theme.colorMainFont};
+    user-select: none; /* 텍스트 선택 방지 */
   }
 
   &:focus {
@@ -53,28 +63,7 @@ const StyledSearchButton = styled(SearchButton)`
   cursor: pointer;
 `;
 
-const fadeOut = keyframes`
-  0% { opacity: 1; }
-  100% { opacity: 0; }
-`;
-
-const SearchMessage = styled.div`
-  position: fixed;
-  top: 70px;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: #fff;
-  color: #303030;
-  padding: 10px 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
-  font-size: 14px;
-  font-weight: bold;
-  z-index: 1100;
-  pointer-events: none;
-  opacity: 1;
-  animation: ${fadeOut} 2s ease-in-out 1s forwards;
-`;
+// Search
 
 interface SearchProps {
   searchWord: string;
@@ -84,14 +73,17 @@ interface SearchProps {
 const Search = (props: SearchProps) => {
   const { searchWord, onChangeSearchWord } = props;
   const [searchInput, setSearchInput] = useState<string>(searchWord);
-  const [showMessage, setShowMessage] = useState(false);
+  const [showMessage, setShowMessage] = useState<boolean>(false);
+
   //검색
   const handleSearchTitle = () => {
     if (!searchInput) {
       setShowMessage(true);
+      setTimeout(() => {
+        setShowMessage(false);
+      }, 2000);
       return;
     }
-    setShowMessage(false);
     onChangeSearchWord(searchInput);
   };
 
@@ -102,11 +94,10 @@ const Search = (props: SearchProps) => {
   };
 
   //검색 초기화
-  const handleResetSearch = useCallback(() => {
+  const handleResetSearch = () => {
     setSearchInput("");
     onChangeSearchWord("");
-    setShowMessage(false);
-  }, []);
+  };
 
   return (
     <>
@@ -125,7 +116,9 @@ const Search = (props: SearchProps) => {
           <StyledSearchButton onClick={handleSearchTitle} />
         </SearchInputContainer>
       </SearchContainer>
-      {showMessage && <SearchMessage>검색어를 입력해주세요</SearchMessage>}
+      {showMessage && (
+        <AlertPopUp error={true}>검색어를 입력해주세요</AlertPopUp>
+      )}
     </>
   );
 };
