@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import KakaoIcon from "@assets/icons/kakaoIcon.svg?react";
-import { REDIRECT_URI } from "../apis/signUp";
 
 const BtnCommonStyle = styled.button`
   width: 400px;
@@ -26,13 +25,23 @@ type PropType = {
 };
 
 const KakaoBtn = (props: PropType) => {
-  const Kakao = window.Kakao;
-
   const loginKakao = () => {
-    console.log("login!!");
-    Kakao.Auth.authorize({
-      redirectUri: REDIRECT_URI,
-    });
+    //window.location.href = kakaoURL;
+    fetch("http://localhost:8000/auth/kakao")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        //카카오 로그인 페이지 url
+        return response.json();
+      })
+      .then((data) => {
+        //redirect 이동
+        window.location.href = data.data;
+      })
+      .catch((error) => {
+        console.error("Kakao login failed:", error);
+      });
   };
 
   return (

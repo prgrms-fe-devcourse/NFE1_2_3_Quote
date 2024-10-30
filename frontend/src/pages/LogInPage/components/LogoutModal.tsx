@@ -15,12 +15,17 @@ const ModalOverlay = styled.div`
   z-index: 1000;
 `;
 const Modal = styled.div`
-  width: 400px;
-  padding: 30px 65px;
-  background: #ffffff;
+  width: 380px;
+  height: 200px;
+  padding: 35px 50px;
+  background: ${({ theme }) => theme.colorCancelPopUp};
   border-radius: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
 `;
 const ButtonContainer = styled.div`
   width: 265px;
@@ -31,15 +36,23 @@ const Button = styled.button`
   width: 125px;
   height: 30px;
   border-radius: 30px;
-  border: 1px solid #474040;
-  color: #474040;
   cursor: pointer;
   font-size: 14px;
 `;
+const CancelBtn = styled(Button)`
+  color: ${({ theme }) => theme.colorButton};
+  border: 1px solid ${({ theme }) => theme.colorButton};
+  background-color: transparent;
+`;
+const ConfirmBtn = styled(Button)`
+  background-color: ${({ theme }) => theme.colorMain};
+  color: ${({ theme }) =>
+    theme.mode === "lightMode" ? "#ffffff" : theme.colorMainFont};
+  border: none;
+`;
 const Message = styled.p`
-  color: #474040;
+  color: ${({ theme }) => theme.colorButton};
   font-size: 16px;
-  margin-bottom: 30px;
 `;
 
 type LogoutModal = {
@@ -57,8 +70,8 @@ const LogoutModal = ({ isModalOpen, onClose }: LogoutModal) => {
   }
 
   const userLogout = () => {
+    //로그인 상태(버튼이 로그아웃)일 때 로그아웃
     if (isLogin) {
-      //로그인 상태(버튼이 로그아웃)일 때 로그아웃
       storeLogout();
       console.log("Logout Success");
     }
@@ -77,13 +90,8 @@ const LogoutModal = ({ isModalOpen, onClose }: LogoutModal) => {
         <Message>로그아웃 하시겠습니까?</Message>
 
         <ButtonContainer>
-          <Button onClick={onClose}>취소</Button>
-          <Button
-            style={{ backgroundColor: "#474040", color: "#ffffff" }}
-            onClick={userLogout}
-          >
-            확인
-          </Button>
+          <CancelBtn onClick={onClose}>취소</CancelBtn>
+          <ConfirmBtn onClick={userLogout}>확인</ConfirmBtn>
         </ButtonContainer>
       </Modal>
     </ModalOverlay>
