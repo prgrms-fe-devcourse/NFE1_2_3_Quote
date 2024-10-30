@@ -1,9 +1,10 @@
 import CancelPopUp from "@/pages/PostCreate/components/CancelPopUp";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import styled, { keyframes, useTheme } from "styled-components";
+import styled from "styled-components";
 import useModifyPost from "../hooks/useModifyPost";
 import useGetPostInfo from "@/pages/PostDetail/hooks/useGetPostInfo";
+import AlertPopUp from "@/components/AlertPopUp/AlertPopUp";
 
 const SelectedCategory = styled.p`
   width: 90%;
@@ -119,47 +120,7 @@ const PublishButton = styled.button`
   }
 `;
 
-const fadeOut = keyframes`
-  0% { opacity: 1; }
-  100% { opacity: 0; }
-`;
-
-const CreateError = styled.div`
-  position: fixed;
-  top: 70px;
-  width: 260px;
-  height: 45px;
-  padding: 8px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: ${({ theme }) => theme.colorValidation};
-  font-size: 16px;
-  font-weight: bold;
-  background-color: ${({ theme }) => theme.colorSub};
-  border-radius: 10px;
-  animation: ${fadeOut} 2s ease-in-out 1s forwards;
-`;
-
-const CreateSuccess = styled.div`
-  position: fixed;
-  top: 70px;
-  width: 260px;
-  height: 45px;
-  padding: 8px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: ${({ theme }) => theme.colorMainFont};
-  font-size: 16px;
-  font-weight: bold;
-  background-color: ${({ theme }) => theme.colorSub};
-  border-radius: 10px;
-  animation: ${fadeOut} 2s ease-in-out 1s forwards;
-`;
-
 const PostModifyForm = () => {
-  const theme = useTheme();
   const { postId } = useParams() as { postId: string };
   const { postInfo } = useGetPostInfo(postId);
 
@@ -303,26 +264,8 @@ const PostModifyForm = () => {
           setShowCancelPopUp={setShowCancelPopUp}
         />
       )}
-      {showMsg && (
-        <CreateError
-          style={{
-            boxShadow:
-              theme.mode == "lightMode" ? "0px 0px 6px #dfdfdf" : "none",
-          }}
-        >
-          {errorMsg}
-        </CreateError>
-      )}
-      {showSuccessMsg && (
-        <CreateSuccess
-          style={{
-            boxShadow:
-              theme.mode == "lightMode" ? "0px 0px 6px #dfdfdf" : "none",
-          }}
-        >
-          글 수정이 완료되었습니다.
-        </CreateSuccess>
-      )}
+      {showMsg && <AlertPopUp error>{errorMsg}</AlertPopUp>}
+      {showSuccessMsg && <AlertPopUp>글 수정이 완료되었습니다.</AlertPopUp>}
     </>
   );
 };
