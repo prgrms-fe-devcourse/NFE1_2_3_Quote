@@ -4,12 +4,14 @@ import LightModeButton from "@assets/icons/lightMode_button.svg?react";
 import LightModeLogo from "@assets/images/quoteLogo_lightMode.png";
 import DarkModeLogo from "@assets/images/quoteLogo_darkMode.png";
 import defaultProfile from "@assets/images/profile.png";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useAuthStore } from "@/pages/LogInPage/store/authStore";
 import { useNavigate } from "react-router-dom";
 import LogoutModal from "@/pages/LogInPage/components/LogoutModal";
+import { useQuery } from "@tanstack/react-query";
 import { fetchUserProfile } from "@/pages/MyPages/apis/mypage";
 import useThemeStore from "@/styles/store/useThemeStore";
+import { UserMe } from "@/types/Types";
 
 const HeaderContainer = styled.header`
   background-color: ${({ theme }) => theme.colorHeader};
@@ -75,24 +77,17 @@ const Profile = styled.div`
 const Header = () => {
   const { themeMode, toggleThemeMode } = useThemeStore();
   const [logoutModal, setLogoutModal] = useState<boolean>(false);
-  const [profileImage, setProfileImage] = useState<string>(defaultProfile);
   const { isLogin } = useAuthStore();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const loadUserProfile = async () => {
-      if (isLogin) {
-        try {
-          const user = await fetchUserProfile();
-          setProfileImage(user.profileImage || defaultProfile);
-        } catch (error) {
-          console.error("Failed to fetch user profile:", error);
-        }
-      }
-    };
-
-    loadUserProfile();
-  }, [isLogin]);
+  const { data: userProfile, refetch: refetchUserProfile } = useQuery<
+    UserMe,
+    Error
+  >({
+    queryKey: ["userProfile"],
+    queryFn: fetchUserProfile,
+    enabled: isLogin,
+  });
 
   const showLogoutModal = () => {
     if (isLogin) {
@@ -110,6 +105,10 @@ const Header = () => {
 
   const handleProfileClick = () => {
     navigate("/mypage");
+  };
+
+  const handleUpdateProfileImage = () => {
+    refetchUserProfile();
   };
 
   return (
@@ -133,8 +132,9 @@ const Header = () => {
           {isLogin && (
             <Profile onClick={handleProfileClick}>
               <img
-                src={profileImage}
+                src={userProfile?.profileImage || defaultProfile}
                 alt='Profile'
+                onLoad={handleUpdateProfileImage}
               />
             </Profile>
           )}
