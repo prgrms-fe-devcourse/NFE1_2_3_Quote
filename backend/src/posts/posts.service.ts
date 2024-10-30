@@ -7,7 +7,7 @@ import { PostsRepository } from './repository/posts.repository';
 import { User } from 'src/users/schemas/user.schema';
 import { PostRequestDto } from './dto/post.request.dto';
 import { AwsService } from './aws.service';
-import * as path from 'path';
+
 @Injectable()
 export class PostsService {
   constructor(
