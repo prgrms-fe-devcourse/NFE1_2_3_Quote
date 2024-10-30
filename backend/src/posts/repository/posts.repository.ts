@@ -16,7 +16,6 @@ import {
 export class PostsRepository {
   constructor(
     @InjectModel(Post.name) private postModel: Model<Post>,
-    @InjectModel(Comments.name) private commentsModel: Model<Comments>,
     @InjectModel(User.name) private usersModel: Model<User>,
   ) {}
   //모든 포스트 가져오기
