@@ -1,10 +1,11 @@
 import MainLayout from "@/layouts/MainLayout";
 import styled from "styled-components";
-import logo from "@assets/images/quoteLogo.png";
+import darkModeLogo from "@assets/images/quoteLogo_darkMode.png";
+import lightModeLogo from "@assets/images/quoteLogo_lightMode.png";
 import { Link } from "react-router-dom";
 import EmailIcon from "@assets/icons/signUp_email.svg?react";
-import { kakaoURL } from "../apis/signUp";
 import KakaoBtn from "./KakaoBtn";
+import useThemeStore from "@/styles/store/useThemeStore";
 
 const BtnCommonStyle = styled.button`
   width: 400px;
@@ -34,7 +35,7 @@ const Logo = styled.img`
   width: 250px;
 `;
 const NormalSignUpBtn = styled(BtnCommonStyle)`
-  background-color: #474040;
+  background-color: ${({ theme }) => theme.colorMain};
   color: #f3f3f3;
   margin-bottom: 12px;
 `;
@@ -43,18 +44,32 @@ const MoveToLogin = styled.div`
   font-weight: bold;
   margin-bottom: 65px;
 `;
+const LoginText = styled.span`
+  color: ${({ theme }) =>
+    theme.mode === "lightTheme" ? theme.colorMain : theme.colorMainFont};
+  cursor: "pointer";
+`;
 const CopyRight = styled.span`
   font-size: 10px;
   font-weight: bold;
-  color: #474040;
+  color: ${({ theme }) =>
+    theme.mode === "lightTheme" ? theme.colorMain : theme.colorSubFont};
 `;
 
 const SignUpRoutePage = () => {
+  const { themeMode, toggleThemeMode } = useThemeStore();
+
   return (
     <MainLayout>
       <Container>
         <Header>
-          <Logo src={logo} />
+          <Link to='/'>
+            {themeMode === "lightMode" ? (
+              <Logo src={lightModeLogo} />
+            ) : (
+              <Logo src={darkModeLogo} />
+            )}
+          </Link>
         </Header>
 
         <Link
@@ -77,7 +92,7 @@ const SignUpRoutePage = () => {
             to='/login'
             style={{ textDecoration: "none" }}
           >
-            <span style={{ color: "#474040", cursor: "pointer" }}>로그인</span>
+            <LoginText>로그인</LoginText>
           </Link>
         </MoveToLogin>
 

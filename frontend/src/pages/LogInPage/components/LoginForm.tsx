@@ -1,12 +1,14 @@
 import MainLayout from "@/layouts/MainLayout";
 import { ChangeEvent, FormEvent, useState } from "react";
 import styled from "styled-components";
-import logo from "@assets/images/quoteLogo.png";
+import darkModeLogo from "@assets/images/quoteLogo_darkMode.png";
+import lightModeLogo from "@assets/images/quoteLogo_lightMode.png";
 import { Link } from "react-router-dom";
 import { useLogin } from "../hooks/useLogin";
 import PwdHideEye from "@assets/icons/pwd_hideEye.svg?react";
 import PwdShowEye from "@assets/icons/pwd_showEye.svg?react";
 import KakaoBtn from "@/pages/SignUpPage/components/KakaoBtn";
+import useThemeStore from "@/styles/store/useThemeStore";
 
 const Container = styled.div`
   width: 100%;
@@ -30,11 +32,13 @@ const InputStyle = styled.input`
   font-size: 14px;
   outline-style: none;
   border-radius: 10px;
-  border: 0.9px solid black;
+  border: 0.9px solid
+    ${({ theme }) => (theme.mode === "lightMode" ? "black" : theme.colorButton)};
   padding: 14px 35px 14px 16px;
   &:-webkit-autofill {
-    -webkit-box-shadow: 0 0 0 30px #fff inset;
-    -webkit-text-fill-color: #000;
+    -webkit-box-shadow: 0 0 0 30px ${({ theme }) => theme.colorBackground} inset;
+    -webkit-text-fill-color: ${({ theme }) =>
+      theme.mode === "lightMode" ? "black" : theme.colorButton};
   }
   &:-webkit-autofill,
   &:-webkit-autofill:hover,
@@ -49,9 +53,15 @@ const InputStyle = styled.input`
   &::placeholder {
     font-family: "NanumSquareRegular";
   }
+  background-color: ${({ theme }) =>
+    theme.mode === "lightMode" ? "white" : theme.colorBackground};
+  caret-color: ${({ theme }) =>
+    theme.mode === "lightMode" ? "black" : theme.colorButton};
+  color: ${({ theme }) =>
+    theme.mode === "lightMode" ? "black" : theme.colorButton};
 `;
 const ErrorMessage = styled.div`
-  color: #d72121;
+  color: ${({ theme }) => theme.colorValidation};
   font-size: 12px;
   margin: 6px 0 0 10px;
 `;
@@ -59,7 +69,7 @@ const LoginBtn = styled.button`
   width: 400px;
   height: 48px;
   border-radius: 10px;
-  background-color: #474040;
+  background-color: ${({ theme }) => theme.colorMain};
   color: #f3f3f3;
   border-style: none;
   font-size: 14px;
@@ -73,10 +83,16 @@ const MoveToSignUp = styled.div`
   font-weight: bold;
   margin-bottom: 65px;
 `;
+const SignUpText = styled.span`
+  color: ${({ theme }) =>
+    theme.mode === "lightTheme" ? theme.colorMain : theme.colorMainFont};
+  cursor: "pointer";
+`;
 const CopyRight = styled.span`
   font-size: 10px;
   font-weight: bold;
-  color: #474040;
+  color: ${({ theme }) =>
+    theme.mode === "lightTheme" ? theme.colorMain : theme.colorSubFont};
 `;
 const EyeContainer = styled.div`
   width: 22px;
@@ -92,7 +108,9 @@ const BtnDivider = styled.hr`
   width: 400px;
   border: 0;
   height: 0;
-  border-top: 0.8px solid #474040;
+  border-top: 0.8px solid
+    ${({ theme }) =>
+      theme.mode === "lightTheme" ? theme.colorMain : theme.colorSubFont};
   margin: 12px 0;
 `;
 
@@ -107,6 +125,7 @@ interface ErrorMessage {
 }
 
 const LoginForm = () => {
+  const { themeMode, toggleThemeMode } = useThemeStore();
   const [loginInfo, setLoginInfo] = useState<LoginData>({
     email: "",
     password: "",
@@ -170,7 +189,13 @@ const LoginForm = () => {
     <MainLayout>
       <Container>
         <Header>
-          <Logo src={logo} />
+          <Link to='/'>
+            {themeMode === "lightMode" ? (
+              <Logo src={lightModeLogo} />
+            ) : (
+              <Logo src={darkModeLogo} />
+            )}
+          </Link>
         </Header>
 
         <form onSubmit={onSubmitHandler}>
@@ -210,6 +235,7 @@ const LoginForm = () => {
           <LoginBtn type='submit'>로그인</LoginBtn>
         </form>
         <BtnDivider />
+
         <KakaoBtn btnText={"카카오 계정으로 로그인하기"} />
 
         <MoveToSignUp>
@@ -220,14 +246,7 @@ const LoginForm = () => {
             to='/signup'
             style={{ textDecoration: "none" }}
           >
-            <span
-              style={{
-                color: "#474040",
-                cursor: "pointer",
-              }}
-            >
-              회원가입
-            </span>
+            <SignUpText>회원가입</SignUpText>
           </Link>
         </MoveToSignUp>
 
