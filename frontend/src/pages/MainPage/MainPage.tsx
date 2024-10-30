@@ -94,7 +94,7 @@ const MainPage = () => {
         navigate("/login");
         return;
       }
-      navigate(`/post/${postId}`);
+      navigate(`/post/${postId}`, { state: { from: "main" } });
     },
     [isLogin],
   );

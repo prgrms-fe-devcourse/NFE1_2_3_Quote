@@ -6,7 +6,7 @@ import QuoteStartIcon from "@assets/icons/quote_start.svg?react";
 import QuoteEndIcon from "@assets/icons/quote_end.svg?react";
 import styled from "styled-components";
 import { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import PostDeletePopUp from "./PostDeletePopUp";
 import useGetLoggedInUser from "../hooks/useGetLoggedInUser";
 import useGetPostInfo from "../hooks/useGetPostInfo";
@@ -179,12 +179,23 @@ const PostDetail = () => {
     loggedInUser && postInfo && loggedInUser?.id === postInfo?.authorId?._id;
 
   const [showList, setShowList] = useState(false);
+  const location = useLocation();
+  const from = location.state.from;
+
   const navigate = useNavigate();
   const [showPopUp, setShowPopUp] = useState(false);
 
   // 뒤로가기
   const handleGoToBack = () => {
-    navigate(-1);
+    if (from === "main") {
+      navigate("/");
+    }
+    if (from === "myPage") {
+      navigate("/mypage");
+    }
+    if (from === "userPage") {
+      navigate(-1);
+    }
   };
 
   // 포스트 삭제 확인 팝업
@@ -241,7 +252,13 @@ const PostDetail = () => {
                 theme.mode == "lightMode" ? "0px 0px 6px #dfdfdf" : "none",
             }}
           >
-            <ModifyItem onClick={() => navigate(`/post/${postId}/modify`)}>
+            <ModifyItem
+              onClick={() =>
+                navigate(`/post/${postId}/modify`, {
+                  state: { from: from },
+                })
+              }
+            >
               수정
             </ModifyItem>
             <ModifyItem onClick={handlePostDeletePopUp}>삭제</ModifyItem>

@@ -37,20 +37,20 @@ export const useMyPage = () => {
     queryFn: fetchUserProfile,
   });
 
-  const {
-    data: myPosts = [],
-    isLoading: postsLoading,
-  } = useQuery<Post[], Error>({
+  const { data: myPosts = [], isLoading: postsLoading } = useQuery<
+    Post[],
+    Error
+  >({
     queryKey: ["myPosts", userProfile?.id],
     queryFn: () => fetchMyPosts(userProfile!),
     enabled: !!userProfile,
     refetchInterval: 500,
   });
 
-  const {
-    data: bookmarkedPosts = [],
-    isLoading: bookmarksLoading,
-  } = useQuery<Post[], Error>({
+  const { data: bookmarkedPosts = [], isLoading: bookmarksLoading } = useQuery<
+    Post[],
+    Error
+  >({
     queryKey: ["bookmarkedPosts", userProfile?.id],
     queryFn: () => fetchBookmarkedPosts(userProfile!),
     enabled: !!userProfile,
@@ -162,7 +162,7 @@ export const useMyPage = () => {
   };
 
   const handleSelectPost = useCallback((postId: string) => {
-    navigate(`/post/${postId}`);
+    navigate(`/post/${postId}`, { state: { from: "myPage" } });
   }, []);
 
   return {

@@ -1,6 +1,6 @@
 import CancelPopUp from "@/pages/PostCreate/components/CancelPopUp";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import styled from "styled-components";
 import useModifyPost from "../hooks/useModifyPost";
 import useGetPostInfo from "@/pages/PostDetail/hooks/useGetPostInfo";
@@ -165,7 +165,10 @@ const PostModifyForm = () => {
     setShowCancelPopUp(!showCancelPopUp);
   };
 
-  const { mutate } = useModifyPost(setShowSuccessMsg, postId);
+  const location = useLocation();
+  const from = location.state.from;
+
+  const { mutate } = useModifyPost(setShowSuccessMsg, postId, from);
   const [btnDisabled, setBtnDisabled] = useState(false);
 
   const handleCreatePost = () => {
