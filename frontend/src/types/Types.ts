@@ -9,7 +9,6 @@ export interface Post {
   bookMarked: { [key: string]: string }[];
   createdAt: string;
   updatedAt: string;
-  __v: 0;
 }
 
 export interface UserMe {
@@ -20,4 +19,14 @@ export interface UserMe {
   profileImage: string;
   myPosts: Post[];
   bookMarkedPosts: Post[];
+}
+
+export interface Comment {
+  _id: string;
+  author : string;
+  contents : string;
+  likeCount : number;
+  info : string;
+  createdAt: string;
+  updatedAt: string;
 }
