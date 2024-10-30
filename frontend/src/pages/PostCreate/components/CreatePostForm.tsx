@@ -1,9 +1,9 @@
 import { useState } from "react";
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
 import CancelPopUp from "./CancelPopUp";
 import CategorySelect from "./CategorySelect";
 import useCreatePost from "../hooks/useCreatePost";
-import { useTheme } from "styled-components";
+import AlertPopUp from "@/components/AlertPopUp/AlertPopUp";
 
 const TitleContainer = styled.div`
   width: 90%;
@@ -111,47 +111,7 @@ const PublishButton = styled.button`
   }
 `;
 
-const fadeOut = keyframes`
-  0% { opacity: 1; }
-  100% { opacity: 0; }
-`;
-
-const CreateError = styled.div`
-  position: fixed;
-  top: 70px;
-  width: 260px;
-  height: 45px;
-  padding: 8px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: ${({ theme }) => theme.colorValidation};
-  font-size: 16px;
-  font-weight: bold;
-  background-color: ${({ theme }) => theme.colorSub};
-  border-radius: 10px;
-  animation: ${fadeOut} 2s ease-in-out 1s forwards;
-`;
-
-const CreateSuccess = styled.div`
-  position: fixed;
-  top: 70px;
-  width: 260px;
-  height: 45px;
-  padding: 8px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: ${({ theme }) => theme.colorMainFont};
-  font-size: 16px;
-  font-weight: bold;
-  background-color: ${({ theme }) => theme.colorSub};
-  border-radius: 10px;
-  animation: ${fadeOut} 2s ease-in-out 1s forwards;
-`;
-
 const CreatePostForm = () => {
-  const theme = useTheme();
   const [category, setCategory] = useState("도서");
   const [title, setTitle] = useState("");
   const [quote, setQuote] = useState("");
@@ -185,8 +145,10 @@ const CreatePostForm = () => {
   };
 
   const { mutate } = useCreatePost(setShowSuccessMsg);
+  const [btnDisabled, setBtnDisabled] = useState(false);
 
   const handleCreatePost = () => {
+    setBtnDisabled(true);
     if (!title.trim()) {
       setShowMsg(true);
       setErrorMsg("제목을 입력해주세요.");
@@ -272,6 +234,7 @@ const CreatePostForm = () => {
         <PublishButton
           type='button'
           onClick={handleCreatePost}
+          disabled={btnDisabled}
         >
           발행
         </PublishButton>
@@ -283,26 +246,8 @@ const CreatePostForm = () => {
           setShowCancelPopUp={setShowCancelPopUp}
         />
       )}
-      {showMsg && (
-        <CreateError
-          style={{
-            boxShadow:
-              theme.mode == "lightMode" ? "0px 0px 6px #dfdfdf" : "none",
-          }}
-        >
-          {errorMsg}
-        </CreateError>
-      )}
-      {showSuccessMsg && (
-        <CreateSuccess
-          style={{
-            boxShadow:
-              theme.mode == "lightMode" ? "0px 0px 6px #dfdfdf" : "none",
-          }}
-        >
-          글 작성이 완료되었습니다.
-        </CreateSuccess>
-      )}
+      {showMsg && <AlertPopUp error>{errorMsg}</AlertPopUp>}
+      {showSuccessMsg && <AlertPopUp>글 작성이 완료되었습니다.</AlertPopUp>}
     </>
   );
 };
