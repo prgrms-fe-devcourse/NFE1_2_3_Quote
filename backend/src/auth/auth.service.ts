@@ -55,8 +55,9 @@ export class AuthService {
         password: hashedPassword,
         profileImage: profileImage,
       };
-      console.log(newUser);
-      return await this.userRepository.createUser(newUser);
+      const createdUser = await this.userRepository.createUser(newUser);
+
+      return createdUser.readOnlyData;
     }
     return await this.signIn({
       email: kakaoId.toString(),
