@@ -4,12 +4,11 @@ export interface Post {
   title: string;
   content: string;
   quote: string;
-  authorId: { nickname: string; _id : string };
+  authorId: { nickname: string; _id: string };
   date: string;
   bookMarked: { [key: string]: string }[];
   createdAt: string;
   updatedAt: string;
-  __v: 0;
 }
 
 export interface UserMe {
@@ -20,4 +19,13 @@ export interface UserMe {
   profileImage: string;
   myPosts: Post[];
   bookMarkedPosts: Post[];
+}
+
+export interface Comment {
+  _id: string;
+  authorId: { nickname: string; _id: string; profileImage: string };
+  contents: string;
+  postId: string;
+  createdAt: string;
+  updatedAt: string;
 }

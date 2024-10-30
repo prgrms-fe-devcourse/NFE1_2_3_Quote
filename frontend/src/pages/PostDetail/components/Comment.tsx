@@ -1,0 +1,213 @@
+import styled from "styled-components";
+import { useEffect, useRef, useState } from "react";
+import { useDeleteCommentMutation } from "../hooks/usePostComment";
+import { Comment as CommentType } from "@/types/Types";
+import { useNavigate } from "react-router-dom";
+import ModifyButton from "@assets/icons/write_modify_button.svg?react";
+import PostCommentPopUp from "./PostCommentPopUp";
+import AlertPopUp from "@/components/AlertPopUp/AlertPopUp";
+
+// Styled Components
+
+const StyledComment = styled.div`
+  width: 760px;
+  display: flex;
+  margin: 10px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid ${({ theme }) => theme.colorLine};
+  position: relative;
+`;
+
+const ProfileContainer = styled.div`
+  margin: 5px;
+`;
+
+const Profile = styled.img`
+  width: 50px;
+  height: 50px;
+  border-radius: 90px;
+  cursor: pointer;
+`;
+
+const TextContainer = styled.div`
+  width: 80%;
+  padding: 5px;
+  white-space: pre-wrap;
+`;
+
+const UserName = styled.p`
+  font-size: 14px;
+  font-weight: bold;
+  margin: 5px 0 10px 0;
+  cursor: pointer;
+`;
+
+const Contents = styled.p`
+  font-size: 16px;
+  margin: 0;
+  line-height: 20px;
+`;
+
+const RightContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin: 5px;
+  margin-left: auto;
+  align-items: flex-end;
+  justify-content: space-between;
+
+  svg {
+    cursor: pointer;
+  }
+`;
+
+const DateContainer = styled.p`
+  font-size: 12px;
+  margin: 0;
+`;
+
+const ModifyMenu = styled.ul`
+  position: absolute;
+  width: 70px;
+  height: 82px;
+  right: 0px;
+  top: 30px;
+  background-color: ${({ theme }) => theme.colorCategoryList};
+  list-style: none;
+  margin: 0px;
+  padding: 0px;
+  border-radius: 10px;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+`;
+const ModifyItem = styled.li`
+  width: 100%;
+  font-size: 12px;
+  text-align: center;
+  line-height: 25px;
+  padding: 8px;
+
+  &:last-child {
+    border-top: 1px solid #e3e3e3;
+  }
+  &:hover {
+    background-color: ${({ theme }) => theme.colorCategoryListHover};
+    cursor: pointer;
+  }
+`;
+
+// Comment
+
+interface CommentProps {
+  isUser: boolean;
+  comment: CommentType;
+  onSetShowDeleteMessage: (value: boolean) => void;
+}
+
+const Comment = (props: CommentProps) => {
+  const { isUser, comment, onSetShowDeleteMessage } = props;
+  const [showList, setShowList] = useState(false);
+  const [showPopUp, setShowPopUp] = useState(false);
+  const [showCommentMessage, setShowCommentMessage] = useState(false);
+  const noUser = !comment.authorId;
+
+  const { mutate: deleteComment } = useDeleteCommentMutation();
+
+  // 댓글 작성자 페이지 이동
+  const navigate = useNavigate();
+  const handleUserPage = () => {
+    if (noUser) {
+      return;
+    }
+    if (isUser) {
+      navigate(`/mypage`);
+      return;
+    }
+    navigate(`/user-page/${comment.authorId._id}`);
+  };
+
+  // 수정 및 삭제 메뉴
+  const handleModifyList = () => {
+    setShowList(!showList);
+  };
+
+  // 댓글 수정 팝업
+  const handleModifyComment = () => {
+    setShowList(!showList);
+    setShowPopUp(true);
+  };
+
+  // 댓글 삭제
+  const handleDeleteComment = () => {
+    setShowList(!showList);
+    onSetShowDeleteMessage(true);
+    deleteComment({ commentId: comment._id });
+    setTimeout(() => {
+      onSetShowDeleteMessage(false);
+    }, 2000);
+  };
+
+  const listRef = useRef<HTMLUListElement | null>(null);
+  useEffect(() => {
+    const handleOutsideClose = (e: { target: any }) => {
+      if (
+        showList &&
+        listRef.current &&
+        !listRef.current.contains(e.target as Node)
+      ) {
+        setShowList(false);
+      }
+    };
+    document.addEventListener("mousedown", handleOutsideClose);
+    return () => document.removeEventListener("mousedown", handleOutsideClose);
+  }, [showList]);
+
+  return (
+    <>
+      <StyledComment>
+        <ProfileContainer>
+          <Profile
+            src={
+              comment.authorId.profileImage ||
+              "https://img1.daumcdn.net/thumb/R1280x0/?fname=http://t1.daumcdn.net/brunch/service/user/7r5X/image/9djEiPBPMLu_IvCYyvRPwmZkM1g.jpg"
+            }
+            onClick={handleUserPage}
+          />
+        </ProfileContainer>
+        <TextContainer>
+          <UserName onClick={handleUserPage}>
+            {comment.authorId.nickname || "탈퇴한 회원"}
+          </UserName>
+          <Contents>{comment.contents}</Contents>
+        </TextContainer>
+        <RightContainer>
+          {isUser ? (
+            <ModifyButton onClick={handleModifyList} />
+          ) : (
+            <div style={{ width: "24px" }} />
+          )}
+          <DateContainer>{comment.createdAt.slice(0, 10)}</DateContainer>
+        </RightContainer>
+        {showList && (
+          <ModifyMenu ref={listRef}>
+            <ModifyItem onClick={handleModifyComment}>수정</ModifyItem>
+            <ModifyItem onClick={handleDeleteComment}>삭제</ModifyItem>
+          </ModifyMenu>
+        )}
+      </StyledComment>
+      {showPopUp && (
+        <PostCommentPopUp
+          postId={comment.postId}
+          contents={comment.contents}
+          commentId={comment._id}
+          showPopUp={showPopUp}
+          onSetShowPopUp={setShowPopUp}
+          onSetShowCommentMessage={setShowCommentMessage}
+        />
+      )}
+      {showCommentMessage && <AlertPopUp>댓글이 수정되었습니다.</AlertPopUp>}
+    </>
+  );
+};
+
+export default Comment;
