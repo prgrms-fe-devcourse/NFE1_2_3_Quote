@@ -29,7 +29,7 @@ const router = createBrowserRouter([
     element: <SignUpForm />,
   },
   {
-    path: "/auth/kakao/callback",
+    path: "/kakao/callback",
     element: <RedirectPage />,
   },
   {
@@ -53,9 +53,9 @@ const router = createBrowserRouter([
     element: <UserPage />,
   },
   {
-    path: '*',
-    element: <NotFoundPage />
-  }
+    path: "*",
+    element: <NotFoundPage />,
+  },
 ]);
 
 export default router;
