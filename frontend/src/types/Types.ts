@@ -21,3 +21,13 @@ export interface UserMe {
   myPosts: Post[];
   bookMarkedPosts: Post[];
 }
+
+export interface User {
+  id: string;
+  createdAt: string;
+  email: string;
+  nickname: string;
+  profileImage: string;
+  myPosts: Post[];
+  bookMarkedPosts: Post[];
+}
