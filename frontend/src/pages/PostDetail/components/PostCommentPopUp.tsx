@@ -99,16 +99,17 @@ const CommentText = styled.p`
 
 interface PostCommentPopUpProps {
   postId: string;
+  contents? : string;
   showPopUp: boolean;
   onSetShowPopUp: (value: boolean) => void;
   onSetShowCommentMessage: (value: boolean) => void;
 }
 
 const PostCommentPopUp = (props: PostCommentPopUpProps) => {
-  const { postId, showPopUp, onSetShowPopUp, onSetShowCommentMessage } = props;
+  const { postId, contents, showPopUp, onSetShowPopUp, onSetShowCommentMessage } = props;
   const theme = useTheme();
 
-  const [comment, setComment] = useState<string>("");
+  const [comment, setComment] = useState<string>(contents || "");
   const [noComment, setNoComment] = useState<boolean>(false);
 
   //댓글 입력
