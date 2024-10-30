@@ -10,6 +10,11 @@ export const lightTheme: DefaultTheme = {
   colorSubFont: "#A7A7A7",
   colorValidation: "#D72121",
   colorSub: "#FFFFFF", //White
+  colorCategoryList: "#ffffff",
+  colorCategoryListHover: "#d4d4d4",
+  colorCancelPopUp: "#ffffff",
+  colorCancelPopUPBtnFont: "#675959",
+  colorShadow: "rgba(0, 0, 0, 0.3)",
   전체: { bgColor: "#F9F9F9", fontColor: "#303030" },
   도서: { bgColor: "#E9E6D2", fontColor: "#303030" },
   노래: { bgColor: "#7F7D6F", fontColor: "#F9F9F9" },
@@ -28,6 +33,11 @@ export const darkTheme = {
   colorSubFont: "#A7A7A7",
   colorValidation: "#E65C5C",
   colorSub: "#303030", //DarkCharcoal
+  colorCategoryList: "#5d5d5d",
+  colorCategoryListHover: "#393939",
+  colorCancelPopUp: "#393939",
+  colorCancelPopUPBtnFont: "#ffffff",
+  colorShadow: "rgba(255, 255, 255, 0.3)",
   전체: { bgColor: "#303030", fontColor: "#F3F3F3" },
   도서: { bgColor: "#94917E", fontColor: "#F3F3F3" },
   노래: { bgColor: "#504E45", fontColor: "#F3F3F3" },

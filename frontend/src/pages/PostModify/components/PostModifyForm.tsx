@@ -1,10 +1,9 @@
 import CancelPopUp from "@/pages/PostCreate/components/CancelPopUp";
-import { getPostInfo } from "@/pages/PostDetail/apis/postDetailApi";
-import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import styled, { keyframes } from "styled-components";
-import { modifyPost } from "../apis/postModifyApi";
+import { useParams } from "react-router-dom";
+import styled, { keyframes, useTheme } from "styled-components";
+import useModifyPost from "../hooks/useModifyPost";
+import useGetPostInfo from "@/pages/PostDetail/hooks/useGetPostInfo";
 
 const SelectedCategory = styled.p`
   width: 90%;
@@ -27,16 +26,17 @@ const TitleInput = styled.input`
   width: 100%;
   padding: 20px;
   font-size: 26px;
+  color: ${({ theme }) => theme.colorMainFont};
   border: none;
   border-bottom: 1px solid #797979;
-  background-color: #f3f3f3;
+  background-color: ${({ theme }) => theme.colorBackground};
 `;
 const TitleText = styled.p`
   font-size: 17px;
   color: #a7a7a7;
   position: absolute;
   right: 55px;
-  top: 120px;
+  top: 135px;
   margin: 12px;
 `;
 
@@ -55,17 +55,18 @@ const QuoteSentence = styled.textarea`
   height: 100%;
   padding: 20px;
   font-size: 18px;
+  color: ${({ theme }) => theme.colorMainFont};
   resize: none;
   border: none;
   border-bottom: 1px solid #797979;
-  background-color: #f3f3f3;
+  background-color: ${({ theme }) => theme.colorBackground};
 `;
 const QuoteText = styled.p`
   font-size: 17px;
   color: #a7a7a7;
   position: absolute;
   right: 55px;
-  top: 290px;
+  top: 305px;
   margin: 12px;
 `;
 
@@ -84,10 +85,11 @@ const ContentInput = styled.textarea`
   height: 100%;
   padding: 20px;
   font-size: 18px;
+  color: ${({ theme }) => theme.colorMainFont};
   resize: none;
   border: none;
   border-bottom: 1px solid #797979;
-  background-color: #f3f3f3;
+  background-color: ${({ theme }) => theme.colorBackground};
 `;
 
 const CancelButton = styled.button`
@@ -95,10 +97,10 @@ const CancelButton = styled.button`
   height: 45px;
   margin: 40px 10px;
   font-size: 16px;
-  color: #474040;
-  background-color: #f3f3f3;
+  color: ${({ theme }) => theme.colorButton};
+  background-color: ${({ theme }) => theme.colorBackground};
   border-radius: 30px;
-  border: 1px solid #474040;
+  border: 1px solid ${({ theme }) => theme.colorButton};
   &:hover {
     cursor: pointer;
   }
@@ -109,7 +111,7 @@ const PublishButton = styled.button`
   margin: 40px 10px;
   font-size: 16px;
   color: #f3f3f3;
-  background-color: #474040;
+  background-color: ${({ theme }) => theme.colorMain};
   border: none;
   border-radius: 30px;
   &:hover {
@@ -131,11 +133,10 @@ const CreateError = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #d72121;
+  color: ${({ theme }) => theme.colorValidation};
   font-size: 16px;
   font-weight: bold;
-  background-color: #fff;
-  box-shadow: 0px 0px 6px #dfdfdf;
+  background-color: ${({ theme }) => theme.colorSub};
   border-radius: 10px;
   animation: ${fadeOut} 2s ease-in-out 1s forwards;
 `;
@@ -149,21 +150,18 @@ const CreateSuccess = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #393939;
+  color: ${({ theme }) => theme.colorMainFont};
   font-size: 16px;
   font-weight: bold;
-  background-color: #fff;
-  box-shadow: 0px 0px 6px #dfdfdf;
+  background-color: ${({ theme }) => theme.colorSub};
   border-radius: 10px;
   animation: ${fadeOut} 2s ease-in-out 1s forwards;
 `;
 
 const PostModifyForm = () => {
+  const theme = useTheme();
   const { postId } = useParams() as { postId: string };
-  const { data: postInfo } = useQuery({
-    queryKey: ["postInfo"],
-    queryFn: () => getPostInfo(postId),
-  });
+  const { postInfo } = useGetPostInfo(postId);
 
   const [category, setCategory] = useState("");
   const [title, setTitle] = useState("");
@@ -201,24 +199,12 @@ const PostModifyForm = () => {
   const [showMsg, setShowMsg] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [showSuccessMsg, setShowSuccessMsg] = useState(false);
-  const navigate = useNavigate();
 
   const handleCancel = () => {
     setShowCancelPopUp(!showCancelPopUp);
   };
 
-  const { mutate } = useMutation({
-    mutationFn: modifyPost,
-    onSuccess: () => {
-      setShowSuccessMsg(true);
-      setTimeout(() => {
-        navigate(`/post/${postId}`);
-      }, 2000);
-    },
-    onError(error) {
-      console.log(error);
-    },
-  });
+  const { mutate } = useModifyPost(setShowSuccessMsg, postId);
 
   const handleCreatePost = () => {
     if (!title.trim()) {
@@ -317,9 +303,25 @@ const PostModifyForm = () => {
           setShowCancelPopUp={setShowCancelPopUp}
         />
       )}
-      {showMsg && <CreateError>{errorMsg}</CreateError>}
+      {showMsg && (
+        <CreateError
+          style={{
+            boxShadow:
+              theme.mode == "lightMode" ? "0px 0px 6px #dfdfdf" : "none",
+          }}
+        >
+          {errorMsg}
+        </CreateError>
+      )}
       {showSuccessMsg && (
-        <CreateSuccess>글 수정이 완료되었습니다.</CreateSuccess>
+        <CreateSuccess
+          style={{
+            boxShadow:
+              theme.mode == "lightMode" ? "0px 0px 6px #dfdfdf" : "none",
+          }}
+        >
+          글 수정이 완료되었습니다.
+        </CreateSuccess>
       )}
     </>
   );
