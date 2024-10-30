@@ -36,7 +36,10 @@ const InputStyle = styled.input`
     ${({ theme }) => (theme.mode === "lightMode" ? "black" : theme.colorButton)};
   padding: 14px 35px 14px 16px;
   &:-webkit-autofill {
-    -webkit-box-shadow: 0 0 0 30px ${({ theme }) => theme.colorBackground} inset;
+    -webkit-box-shadow: 0 0 0 30px
+      ${({ theme }) =>
+        theme.mode === "lightMode" ? "white" : theme.colorBackground}
+      inset;
     -webkit-text-fill-color: ${({ theme }) =>
       theme.mode === "lightMode" ? "black" : theme.colorButton};
   }
