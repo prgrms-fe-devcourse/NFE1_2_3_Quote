@@ -136,7 +136,6 @@ export const useProfileEdit = (
       };
     },
     onSuccess: ({ newImageUrl, updatedNickname }) => {
-      console.log("Profile update success:", newImageUrl);
       onUpdateProfile(newImageUrl, updatedNickname);
       queryClient.invalidateQueries({ queryKey: ["userProfile"] });
       onClose();

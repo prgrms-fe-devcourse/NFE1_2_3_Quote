@@ -11,6 +11,7 @@ import PostCard from "./components/PostCard";
 import WriteButton from "@/components/WriteButton/WriteButton";
 import MainLayout from "@/layouts/MainLayout";
 import MainImage from "@assets/images/mainImage.png";
+import AlertPopUp from "@/components/AlertPopUp/AlertPopUp";
 
 // Styled Components
 
@@ -81,6 +82,7 @@ const MainPage = () => {
   const [searchWord, setSearchWord] = useState<string>("");
   const navigate = useNavigate();
   const { isLogin } = useAuthStore();
+  const [showDeleteMessage, setShowDeleteMessage] = useState(false);
 
   //카테고리 선택
   const handleSelectCategory = (category: string) => {
@@ -128,6 +130,22 @@ const MainPage = () => {
 
   const postData = sortedPostData || [];
 
+  useEffect(() => {
+    const shouldShowMessage =
+      localStorage.getItem("showDeleteMessage") === "true";
+
+    if (shouldShowMessage) {
+      setShowDeleteMessage(true);
+
+      const timer = setTimeout(() => {
+        setShowDeleteMessage(false);
+        localStorage.removeItem("showDeleteMessage");
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
   return (
     <MainLayout>
       <Container>
@@ -167,6 +185,9 @@ const MainPage = () => {
               ))
             ) : (
               <NoPostText>포스트 글이 없습니다.</NoPostText>
+            )}
+            {showDeleteMessage && (
+              <AlertPopUp>회원 탈퇴가 완료되었습니다.</AlertPopUp>
             )}
           </PostContainer>
         </PostSection>

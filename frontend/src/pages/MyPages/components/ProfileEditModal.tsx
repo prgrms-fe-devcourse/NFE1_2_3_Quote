@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { useTheme } from "styled-components";
 import ProfileImgLightMode from "@assets/icons/profile_img_lightMode.svg?react";
 import ProfileImgDarkMode from "@assets/icons/profile_img_darkMode.svg?react";
 import { useProfileEdit } from "../hooks/useProfileEdit";
@@ -22,7 +22,7 @@ const ModalOverlay = styled.div`
 const ModalContainer = styled.div`
   width: 100%;
   max-width: 700px;
-  background: #fff;
+  background: ${({ theme }) => theme.colorCancelPopUp};
   border-radius: 16px;
   padding: 30px 120px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -33,7 +33,7 @@ const ModalContainer = styled.div`
 const Title = styled.h2`
   font-size: 24px;
   margin-bottom: 30px;
-  color: #303030;
+  color: ${({ theme }) => theme.colorMainFont};
   font-weight: bold;
 `;
 
@@ -90,7 +90,7 @@ const LabelContainer = styled.div`
 
 const Label = styled.span`
   font-size: 12px;
-  color: #a7a7a7;
+  color: ${({ theme }) => theme.colorSubFont};
   margin-top: 10px;
   display: block;
   cursor: pointer;
@@ -108,14 +108,15 @@ const Input = styled.input`
   padding: 12px;
   padding-right: 80px;
   border: none;
-  border-bottom: 1px solid #474040;
+  border-bottom: 1px solid ${({ theme }) => theme.colorButton};
   outline: none;
   font-size: 16px;
-  color: #303030;
-  caret-color: #474040;
+  color: ${({ theme }) => theme.colorMainFont};
+  background-color: ${({ theme }) => theme.colorCancelPopUp};
+  caret-color: ${({ theme }) => theme.colorButton};
 
   &::placeholder {
-    color: #a7a7a7;
+    color: ${({ theme }) => theme.colorSubFont};
   }
 `;
 
@@ -125,7 +126,7 @@ const NicknameCounter = styled.span`
   right: 80px;
   transform: translateY(-50%);
   font-size: 12px;
-  color: #a7a7a7;
+  color: ${({ theme }) => theme.colorSubFont};
 `;
 
 const ModifyButtonWrapper = styled.button`
@@ -134,16 +135,16 @@ const ModifyButtonWrapper = styled.button`
   right: 5px;
   transform: translateY(-50%);
   padding: 5px 10px;
-  background-color: #ffffff;
-  color: #474040;
-  border: 1px solid #474040;
+  background-color: ${({ theme }) => theme.colorSub};
+  color: ${({ theme }) => theme.colorButton};
+  border: 1px solid ${({ theme }) => theme.colorButton};
   border-radius: 30px;
   cursor: pointer;
   font-size: 12px;
   transition: all 0.3s ease-in-out;
 
   &:hover {
-    background-color: #474040;
+    background-color: ${({ theme }) => theme.colorMain};
     color: #ffffff;
     transform: translateY(-50%) scale(1.05);
   }
@@ -155,7 +156,7 @@ const ErrorMessageWrapper = styled.div`
 `;
 
 const ErrorMessage = styled.span`
-  color: #d72121;
+  color: ${({ theme }) => theme.colorValidation};
   font-size: 12px;
   display: block;
   text-align: left;
@@ -185,25 +186,24 @@ const Button = styled.button`
 `;
 
 const CancelButton = styled(Button)`
-  background-color: #ffffff;
-  border: 1px solid #474040;
-  color: #474040;
+  background-color: ${({ theme }) => theme.colorCancelPopUp};
+  border: 1px solid ${({ theme }) => theme.colorButton};
+  color: ${({ theme }) => theme.colorButton};
 `;
 
 const SaveButton = styled(Button)`
-  background-color: #474040;
+  background-color: ${({ theme }) => theme.colorMain};
   color: #fff;
+  border: ${({ theme }) => theme.colorSub};
 `;
 
 interface ProfileEditModalProps {
   onClose: () => void;
-  mode?: boolean;
   onUpdateProfile: (updatedImage: string, updatedNickname: string) => void;
 }
 
 const ProfileEditModal = ({
   onClose,
-  mode = false,
   onUpdateProfile,
 }: ProfileEditModalProps) => {
   const {
@@ -220,6 +220,8 @@ const ProfileEditModal = ({
     handleCancel,
     fileInputRef,
   } = useProfileEdit(onUpdateProfile, onClose);
+
+  const theme = useTheme();
 
   return (
     <ModalOverlay>
@@ -241,7 +243,11 @@ const ProfileEditModal = ({
             onChange={handleFileChange}
           />
           <CameraIconWrapper onClick={() => fileInputRef.current?.click()}>
-            {mode ? <ProfileImgDarkMode /> : <ProfileImgLightMode />}
+            {theme.mode === "lightMode" ? (
+              <ProfileImgLightMode />
+            ) : (
+              <ProfileImgDarkMode />
+            )}
           </CameraIconWrapper>
         </ProfileImageWrapper>
         <LabelContainer>

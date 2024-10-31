@@ -26,7 +26,6 @@ export const useMyPage = () => {
   const menuRef = useRef<HTMLDivElement>(null);
   const settingsButtonRef = useRef<HTMLDivElement>(null);
 
-  // 사용자 프로필 가져오기
   const fetchUserProfileMutation = useMutation<UserMe, Error>({
     mutationFn: fetchUserProfile,
     onSuccess: (profile) => {
@@ -39,7 +38,6 @@ export const useMyPage = () => {
     },
   });
 
-  // 마이 포스트 가져오기
   const fetchMyPostsMutation = useMutation<Post[], Error, UserMe>({
     mutationFn: (profile) => fetchMyPosts(profile),
     onSuccess: (posts) => {
@@ -54,7 +52,6 @@ export const useMyPage = () => {
     },
   });
 
-  // 북마크한 포스트 가져오기
   const fetchBookmarkedPostsMutation = useMutation<Post[], Error, UserMe>({
     mutationFn: (profile) => fetchBookmarkedPosts(profile),
     onSuccess: (bookmarkedPosts) => {
@@ -65,35 +62,20 @@ export const useMyPage = () => {
     },
   });
 
-  // 계정 탈퇴
   const deleteAccountMutation = useMutation<void, Error>({
     mutationFn: deleteUserAccount,
     onSuccess: () => {
       localStorage.removeItem("token");
-      setShowDeleteSuccess(true);
+      setShowDeleteSuccess(false);
       storeLogout();
-      setTimeout(() => {
-        setShowDeleteSuccess(false);
-        navigate("/");
-      }, 3000);
-    },
-    onError: () => {
-      alert("계정 탈퇴 실패. 다시 시도해주세요.");
+      localStorage.setItem("showDeleteMessage", "true");
+      navigate("/");
     },
   });
 
   useEffect(() => {
     fetchUserProfileMutation.mutate();
   }, []);
-
-  useEffect(() => {
-    if (showEditSuccess) {
-      setTimeout(() => {
-        setShowEditSuccess(false);
-        localStorage.removeItem("profileEditSuccess");
-      }, 3000);
-    }
-  }, [showEditSuccess]);
 
   const toggleMenu = useCallback(() => {
     setMenuVisible((prev) => !prev);
@@ -121,16 +103,20 @@ export const useMyPage = () => {
     updatedImage: string,
     updatedNickname: string,
   ) => {
+    const isDataUrl = updatedImage.startsWith("data:image");
+
     queryClient.setQueryData<UserMe>(["userProfile"], (prevProfile) => ({
       ...prevProfile!,
-      profileImage: `${updatedImage}?timestamp=${new Date().getTime()}`,
+      profileImage: isDataUrl
+        ? updatedImage
+        : `${updatedImage}?timestamp=${new Date().getTime()}`,
       nickname: updatedNickname,
     }));
-    localStorage.setItem("profileEditSuccess", "true");
+    setShowEditSuccess(true);
+    setTimeout(() => setShowEditSuccess(false), 3000);
     fetchUserProfileMutation.mutate();
   };
 
-  // 북마크 추가
   const handleAddBookmark = (post: Post) => {
     queryClient.setQueryData<Post[]>(
       ["bookmarkedPosts"],
@@ -139,7 +125,6 @@ export const useMyPage = () => {
           (p) => p._id === post._id,
         );
 
-        // 북마크 포스트 목록에만 추가
         return existingPost
           ? prevBookmarkedPosts
           : [post, ...(prevBookmarkedPosts || [])];
@@ -153,7 +138,6 @@ export const useMyPage = () => {
     );
   };
 
-  // 북마크 해제
   const handleRemoveBookmark = (postId: string) => {
     queryClient.setQueryData<Post[]>(
       ["bookmarkedPosts"],
