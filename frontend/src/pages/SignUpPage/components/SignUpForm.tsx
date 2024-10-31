@@ -121,7 +121,7 @@ export interface ErrorMessage {
 }
 
 const SignUpForm = () => {
-  const { themeMode, toggleThemeMode } = useThemeStore();
+  const { themeMode } = useThemeStore();
   const navigate = useNavigate();
   const [info, setInfo] = useState<SignUpData>({
     nickname: "",
