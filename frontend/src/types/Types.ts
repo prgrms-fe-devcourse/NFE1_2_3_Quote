@@ -29,3 +29,13 @@ export interface Comment {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface User {
+  id: string;
+  createdAt: string;
+  email: string;
+  nickname: string;
+  profileImage: string;
+  myPosts: Post[];
+  bookMarkedPosts: Post[];
+}
