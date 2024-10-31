@@ -35,14 +35,27 @@ const CommentCount = styled.div`
   }
 `;
 
+const ButtonContainer = styled.div`
+  width: auto;
+  display: flex;
+  gap: 10px;
+`;
+
 const CommentButton = styled.button`
+  width: 100px;
+  height: 35px;
+  border-radius: 10px;
   background: none;
   border: 1px solid ${({ theme }) => theme.colorMainFont};
-  border-radius: 20px;
   font-weight: bold;
   padding: 5px 10px;
   color: ${({ theme }) => theme.colorMainFont};
   cursor: pointer;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.colorMainFont};
+    color: ${({ theme }) => theme.colorMain};
+  }
 `;
 
 const NoCommentText = styled.p`
@@ -89,7 +102,12 @@ const PostComment = () => {
           <CommentCount>
             댓글 <span>{commentData.length}</span>
           </CommentCount>
-          <CommentButton onClick={handleCommentPopUp}>댓글 쓰기</CommentButton>
+          <ButtonContainer>
+            <CommentButton onClick={handleCommentPopUp}>
+              댓글 작성
+            </CommentButton>
+            <CommentButton>북마크</CommentButton>
+          </ButtonContainer>
         </CommentSection>
 
         {isLoading ? (
