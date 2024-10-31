@@ -3,11 +3,10 @@ import { ChangeEvent, FormEvent, useState } from "react";
 import styled from "styled-components";
 import darkModeLogo from "@assets/images/quoteLogo_darkMode.png";
 import lightModeLogo from "@assets/images/quoteLogo_lightMode.png";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useLogin } from "../hooks/useLogin";
 import KakaoBtn from "@/pages/SignUpPage/components/KakaoBtn";
 import useThemeStore from "@/styles/store/useThemeStore";
-import AlertPopUp from "@/components/AlertPopUp/AlertPopUp";
 import PwdInput from "@/pages/SignUpPage/components/PwdInput";
 
 const Container = styled.div`
@@ -118,7 +117,7 @@ interface ErrorMessage {
 }
 
 const LoginForm = () => {
-  const { themeMode, toggleThemeMode } = useThemeStore();
+  const { themeMode } = useThemeStore();
   const [loginInfo, setLoginInfo] = useState<LoginData>({
     email: "",
     password: "",
