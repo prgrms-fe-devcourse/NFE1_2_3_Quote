@@ -3,12 +3,12 @@ import { ChangeEvent, FormEvent, useState } from "react";
 import styled from "styled-components";
 import darkModeLogo from "@assets/images/quoteLogo_darkMode.png";
 import lightModeLogo from "@assets/images/quoteLogo_lightMode.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useLogin } from "../hooks/useLogin";
-import PwdHideEye from "@assets/icons/pwd_hideEye.svg?react";
-import PwdShowEye from "@assets/icons/pwd_showEye.svg?react";
 import KakaoBtn from "@/pages/SignUpPage/components/KakaoBtn";
 import useThemeStore from "@/styles/store/useThemeStore";
+import AlertPopUp from "@/components/AlertPopUp/AlertPopUp";
+import PwdInput from "@/pages/SignUpPage/components/PwdInput";
 
 const Container = styled.div`
   width: 100%;
@@ -97,16 +97,6 @@ const CopyRight = styled.span`
   color: ${({ theme }) =>
     theme.mode === "lightTheme" ? theme.colorMain : theme.colorSubFont};
 `;
-const EyeContainer = styled.div`
-  width: 22px;
-  cursor: pointer;
-  position: absolute;
-  z-index: 10;
-  right: 7px;
-  display: flex;
-  align-items: center;
-  top: 15px;
-`;
 const BtnDivider = styled.hr`
   width: 400px;
   border: 0;
@@ -133,9 +123,21 @@ const LoginForm = () => {
     email: "",
     password: "",
   });
+  // const [alert, setAlert] = useState("");
   const [errMsg, setErrorMsg] = useState<ErrorMessage>({});
-  const { mutate: loginMutation } = useLogin(setErrorMsg);
-  const [showPwd, setShowPwd] = useState<boolean>(false);
+  // const navigate = useNavigate();
+
+  // const showAlert = () => {
+  //   setAlert("로그인이 완료되었습니다.");
+  //   setTimeout(() => {
+  //     navigate("/");
+  //   }, 1500);
+  // };
+
+  const { mutate: loginMutation } = useLogin(
+    // showAlert: showAlert,
+    setErrorMsg,
+  );
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
@@ -214,26 +216,11 @@ const LoginForm = () => {
             {errMsg.emailErr && <ErrorMessage>{errMsg.emailErr}</ErrorMessage>}
           </InputDiv>
 
-          <InputDiv
-            style={{
-              position: "relative",
-            }}
-          >
-            <InputStyle
-              type={showPwd ? "text" : "password"}
-              placeholder='비밀번호 입력(영문, 숫자, 특수문자 포함 8~15자)'
-              name='password'
-              onChange={handleChange}
-              value={loginInfo.password}
-              required
-            />
-            {errMsg.passwordErr && (
-              <ErrorMessage>{errMsg.passwordErr}</ErrorMessage>
-            )}
-            <EyeContainer onClick={() => setShowPwd(!showPwd)}>
-              {showPwd ? <PwdShowEye /> : <PwdHideEye />}
-            </EyeContainer>
-          </InputDiv>
+          <PwdInput
+            password={loginInfo.password}
+            handleChange={handleChange}
+            errMsg={errMsg.passwordErr}
+          />
 
           <LoginBtn type='submit'>로그인</LoginBtn>
         </form>
@@ -255,6 +242,7 @@ const LoginForm = () => {
 
         <CopyRight>Copyright © TEAM333333 All Rights Reserved.</CopyRight>
       </Container>
+      {/* {alert && <AlertPopUp>{alert}</AlertPopUp>} */}
     </MainLayout>
   );
 };

@@ -180,21 +180,20 @@ const PostDetail = () => {
 
   const [showList, setShowList] = useState(false);
   const location = useLocation();
-  const from = location.state.from;
 
   const navigate = useNavigate();
   const [showPopUp, setShowPopUp] = useState(false);
 
   // 뒤로가기
   const handleGoToBack = () => {
-    if (from === "main") {
-      navigate("/");
+    if (location.state.from === "main") {
+      return navigate("/");
     }
-    if (from === "myPage") {
-      navigate("/mypage");
+    if (location.state.from === "myPage") {
+      return navigate("/mypage");
     }
-    if (from === "userPage") {
-      navigate(-1);
+    if (location.state.from === "userPage") {
+      return navigate(`/user-page/${location.state.user}`);
     }
   };
 
@@ -255,7 +254,7 @@ const PostDetail = () => {
             <ModifyItem
               onClick={() =>
                 navigate(`/post/${postId}/modify`, {
-                  state: { from: from },
+                  state: { from: location.state.from },
                 })
               }
             >
