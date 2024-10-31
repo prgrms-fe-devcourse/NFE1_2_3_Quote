@@ -31,9 +31,7 @@ export const getCategoryPostData = async (
   category: string,
 ): Promise<Post[]> => {
   try {
-    const response = await postAxiosClient.get(
-      `/posts/quote/${category}`,
-    );
+    const response = await postAxiosClient.get(`/posts/quote/${category}`);
     return response.data.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -45,10 +43,15 @@ export const getCategoryPostData = async (
 };
 
 //검색된 목록 불러오기
-export const getSearchPostData = async (title: string, category : string): Promise<Post[]> => {
+export const getSearchPostData = async (
+  title: string,
+  category: string,
+): Promise<Post[]> => {
   try {
-    const response = await postAxiosClient.get(`/posts/search?title=${title}&category=${category}`);
-    console.log(response.data.data)
+    const response = await postAxiosClient.get(
+      `/posts/search?title=${title}&category=${category}`,
+    );
+    console.log(response.data.data);
     return response.data.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {

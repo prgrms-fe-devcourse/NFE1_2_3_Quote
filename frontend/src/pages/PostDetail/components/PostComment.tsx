@@ -2,10 +2,14 @@ import styled from "styled-components";
 import { useGetComment } from "../hooks/usePostComment";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { getUserData } from "@/pages/MainPage/apis/userApi";
 import Comment from "./Comment";
 import PostCommentPopUp from "./PostCommentPopUp";
 import AlertPopUp from "@/components/AlertPopUp/AlertPopUp";
-import { getUserData } from "@/pages/MainPage/apis/userApi";
+import BookMarkBeforeBtn from "@assets/icons/bookMark_before_select.svg?react";
+import BookMarkAfterBtn from "@assets/icons/bookMark_after_select.svg?react";
+import useGetPostInfo from "../hooks/useGetPostInfo";
+import useBookmark from "../hooks/useBookmark";
 
 // Styled Components
 
@@ -16,18 +20,61 @@ const CommentContainer = styled.div`
   align-items: center;
   justify-content: center;
   gap: 10px;
-  margin-bottom: 20px;
+  margin: 30px 0;
+`;
+
+const CommentSection = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+`;
+
+const CommentCount = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 3px;
+
+  & > span {
+    font-weight: bold;
+    color: ${({ theme }) => theme.colorButton};
+  }
+`;
+
+const ButtonContainer = styled.div`
+  width: auto;
+  display: flex;
+  gap: 10px;
 `;
 
 const CommentButton = styled.button`
-  align-self: flex-end;
-  margin-bottom: 10px;
+  width: 100px;
+  height: 35px;
+  border-radius: 10px;
   background: none;
-  border: none;
-  font-weight: bold;
-  padding: 0;
-  color: ${({ theme }) => theme.colorMainFont};
+  border: 1px solid
+    ${({ theme }) =>
+      theme.mode === "lightMode" ? theme.colorMain : theme.colorMainFont};
+  font-size: 14px;
+  padding: 5px 10px;
+  color: ${({ theme }) =>
+    theme.mode === "lightMode" ? theme.colorMain : theme.colorMainFont};
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 3px;
   cursor: pointer;
+
+  &:hover {
+    background-color: ${({ theme }) =>
+      theme.mode === "lightMode" ? theme.colorMain : theme.colorMainFont};
+    color: ${({ theme }) =>
+      theme.mode === "lightMode" ? "#F3F3F3" : "#303030"};
+  }
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
 `;
 
 const NoCommentText = styled.p`
@@ -36,12 +83,13 @@ const NoCommentText = styled.p`
 `;
 
 const PostComment = () => {
-  const [showPopUp, setShowPopUp] = useState(false);
-  const [showCommentMessage, setShowCommentMessage] = useState(false);
-  const [showDeleteMessage, setShowDeleteMessage] = useState(false);
+  const [showPopUp, setShowPopUp] = useState<boolean>(false);
+  const [showCommentMessage, setShowCommentMessage] = useState<boolean>(false);
+  const [showDeleteMessage, setShowDeleteMessage] = useState<boolean>(false);
 
   const [userId, setUserId] = useState<string>("");
   const { postId } = useParams() as { postId: string };
+  const { postInfo } = useGetPostInfo(postId);
   const { data, isLoading, isError } = useGetComment(postId);
   const commentData = data || [];
 
@@ -54,10 +102,20 @@ const PostComment = () => {
     getUserId();
   }, []);
 
-
   //댓글 작성 팝업
   const handleCommentPopUp = () => {
     setShowPopUp(true);
+  };
+
+  //북마크
+  const { mutate } = useBookmark();
+  const isActive =
+    userId &&
+    postInfo &&
+    postInfo?.bookMarked.some((item) => item.userId === userId);
+
+  const handleBookMarked = () => {
+    mutate(postId);
   };
 
   return (
@@ -71,7 +129,21 @@ const PostComment = () => {
             onSetShowCommentMessage={setShowCommentMessage}
           />
         )}
-        <CommentButton onClick={handleCommentPopUp}>댓글 쓰기</CommentButton>
+        <CommentSection>
+          <CommentCount>
+            댓글 <span>{commentData.length}</span>
+          </CommentCount>
+          <ButtonContainer>
+            <CommentButton onClick={handleCommentPopUp}>
+              댓글 작성
+            </CommentButton>
+            <CommentButton onClick={handleBookMarked}>
+              {isActive ? <BookMarkAfterBtn /> : <BookMarkBeforeBtn />}
+              <p>{postInfo?.bookMarked.length}</p>
+            </CommentButton>
+          </ButtonContainer>
+        </CommentSection>
+
         {isLoading ? (
           <NoCommentText>Loading ...</NoCommentText>
         ) : isError ? (
