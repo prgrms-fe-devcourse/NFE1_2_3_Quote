@@ -77,6 +77,9 @@ const CancelPopUp = ({
   const location = useLocation();
 
   const handlePopUpConfirm = () => {
+    if (modify) {
+      return navigate(-1);
+    }
     if (location.state.from === "main") {
       return navigate("/");
     }
