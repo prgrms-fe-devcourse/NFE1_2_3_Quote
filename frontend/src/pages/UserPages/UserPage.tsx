@@ -39,14 +39,14 @@ const ProfileImage = styled.img`
 const UserName = styled.h2`
   margin-top: 20px;
   font-size: 20px;
-  color: #303030;
+  color: ${({ theme }) => theme.colorMainFont};
   text-align: center;
 `;
 
 const UserEmail = styled.p`
   margin-top: 5px;
   font-size: 10px;
-  color: #a7a7a7;
+  color: ${({ theme }) => theme.colorSubFont};
   text-align: center;
 `;
 
@@ -65,14 +65,14 @@ const TabLabel = styled.h3`
   border: none;
   font-size: 18px;
   text-align: center;
-  color: #303030;
-  border-bottom: 2px solid black;
+  color: ${({ theme }) => theme.colorMainFont};
+  border-bottom: 2px solid ${({ theme }) => theme.colorMainFont};
 `;
 
 const MessageContainer = styled.div`
   margin-top: 50px;
   font-size: 18px;
-  color: #a7a7a7;
+  color: ${({ theme }) => theme.colorSubFont};
   text-align: center;
 `;
 
@@ -94,7 +94,6 @@ const UserPage = () => {
     handleRemoveBookmark,
     handleSelectPost,
   } = useUserPage();
-
 
   const renderPosts = (posts: Post[]) =>
     posts.length ? (

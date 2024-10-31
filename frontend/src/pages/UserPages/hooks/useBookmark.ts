@@ -73,7 +73,6 @@ export const useBookmark = ({
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["posts", post._id] });
-      await queryClient.refetchQueries({ queryKey: ["posts", post._id] });
       await queryClient.invalidateQueries({ queryKey: ["userPosts"] });
     },
     onError: (error) => {
