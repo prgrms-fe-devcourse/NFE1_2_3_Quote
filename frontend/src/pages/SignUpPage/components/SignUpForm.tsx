@@ -1,13 +1,13 @@
 import MainLayout from "@/layouts/MainLayout";
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import styled, { keyframes } from "styled-components";
+import { ChangeEvent, FormEvent, useState } from "react";
+import styled from "styled-components";
 import darkModeLogo from "@assets/images/quoteLogo_darkMode.png";
 import lightModeLogo from "@assets/images/quoteLogo_lightMode.png";
 import { Link, useNavigate } from "react-router-dom";
 import { useSignUp } from "../hooks/useSignUp";
-import PwdHideEye from "@assets/icons/pwd_hideEye.svg?react";
-import PwdShowEye from "@assets/icons/pwd_showEye.svg?react";
 import useThemeStore from "@/styles/store/useThemeStore";
+import AlertPopUp from "@/components/AlertPopUp/AlertPopUp";
+import PwdInput from "./PwdInput";
 
 const Container = styled.div`
   width: 100%;
@@ -96,16 +96,6 @@ const CopyRight = styled.span`
   color: ${({ theme }) =>
     theme.mode === "lightTheme" ? theme.colorMain : theme.colorSubFont};
 `;
-const EyeContainer = styled.div`
-  width: 22px;
-  cursor: pointer;
-  position: absolute;
-  z-index: 10;
-  right: 7px;
-  display: flex;
-  align-items: center;
-  top: 15px;
-`;
 const MaxLength = styled.div`
   font-size: 14px;
   height: 15px;
@@ -113,27 +103,6 @@ const MaxLength = styled.div`
   position: absolute;
   right: 13px;
   top: 15px;
-`;
-const fadeOut = keyframes`
-  0% { opacity: 1; }
-  100% { opacity: 0; }
-`;
-const AlertStyle = styled.div`
-  width: 200px;
-  font-size: 14px;
-  height: 40px;
-  text-align: center;
-  line-height: 40px;
-  background-color: #ffffff;
-  color: 393939;
-  position: fixed;
-  top: 5%;
-  left: 50%;
-  transform: translate(-50%, 5%);
-  border-radius: 10px;
-  box-shadow: 0 0 5px gray;
-  opacity: 1;
-  animation: ${fadeOut} 2s ease-in-out 1s forwards;
 `;
 
 interface SignUpData {
@@ -161,15 +130,13 @@ const SignUpForm = () => {
     checkPwd: "",
   });
   const [alert, setAlert] = useState("");
-  const [showPwd, setShowPwd] = useState<boolean>(false);
   const [errMsg, setErrorMsg] = useState<ErrorMessage>({});
 
   const showAlert = () => {
     setAlert("회원가입이 완료되었습니다.");
     setTimeout(() => {
-      setAlert("");
       navigate("/login");
-    }, 2000);
+    }, 1500);
   };
 
   const { mutate: signUp } = useSignUp({
@@ -308,26 +275,11 @@ const SignUpForm = () => {
             {errMsg.emailErr && <ErrorMessage>{errMsg.emailErr}</ErrorMessage>}
           </InputDiv>
 
-          <InputDiv
-            style={{
-              position: "relative",
-            }}
-          >
-            <InputStyle
-              type={showPwd ? "text" : "password"}
-              placeholder='비밀번호 입력(영문, 숫자, 특수문자 포함 8~15자)'
-              name='password'
-              value={info.password}
-              onChange={handleChange}
-              required
-            />
-            {errMsg.passwordErr && (
-              <ErrorMessage>{errMsg.passwordErr}</ErrorMessage>
-            )}
-            <EyeContainer onClick={() => setShowPwd(!showPwd)}>
-              {showPwd ? <PwdShowEye /> : <PwdHideEye />}
-            </EyeContainer>
-          </InputDiv>
+          <PwdInput
+            password={info.password}
+            handleChange={handleChange}
+            errMsg={errMsg.passwordErr}
+          />
 
           <InputDiv>
             <InputStyle
@@ -360,7 +312,7 @@ const SignUpForm = () => {
 
         <CopyRight>Copyright © TEAM333333 All Rights Reserved.</CopyRight>
       </Container>
-      {alert && <AlertStyle>{alert}</AlertStyle>}
+      {alert && <AlertPopUp>{alert}</AlertPopUp>}
     </MainLayout>
   );
 };

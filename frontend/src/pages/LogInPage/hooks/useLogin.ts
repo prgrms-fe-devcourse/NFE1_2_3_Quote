@@ -1,9 +1,9 @@
 import { useMutation } from "@tanstack/react-query"
 import { loginRequest } from "../apis/login"
 import { useNavigate } from "react-router-dom"
-import { Dispatch } from "react";
 import axios from "axios";
 import { useAuthStore } from "../store/authStore";
+import { Dispatch } from "react";
 
 interface ErrorMessage {
   emailErr?: string;
@@ -22,7 +22,8 @@ export const useLogin = (setError: Dispatch<React.SetStateAction<ErrorMessage>>)
       storeLogin(bearerToken); // 토큰 저장하기
 
       console.log("Login Success");    
-      navigate('/');
+      // showAlert();
+      navigate('/')
     },
     onError: (err) => {
       if (axios.isAxiosError(err) && err.response?.status === 401) {

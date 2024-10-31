@@ -171,7 +171,7 @@ const MainPage = () => {
           </PostContainer>
         </PostSection>
       </Container>
-      <WriteButton />
+      <WriteButton location={"main"} />
     </MainLayout>
   );
 };

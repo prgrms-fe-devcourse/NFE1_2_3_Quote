@@ -4,7 +4,7 @@ import React, { Dispatch } from "react";
 import axios from "axios";
 import { ErrorMessage } from "../components/SignUpForm";
 
-interface setFunc {
+export interface setFunc {
   showAlert: () => void;
   setError: Dispatch<React.SetStateAction<ErrorMessage>>;
 }

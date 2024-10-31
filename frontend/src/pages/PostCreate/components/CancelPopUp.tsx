@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useTheme } from "styled-components";
 
@@ -74,9 +74,23 @@ const CancelPopUp = ({
     setShowCancelPopUp(!showCancelPopUp);
   };
   const navigate = useNavigate();
+  const location = useLocation();
+
   const handlePopUpConfirm = () => {
-    navigate("/");
+    if (modify) {
+      return navigate(-1);
+    }
+    if (location.state.from === "main") {
+      return navigate("/");
+    }
+    if (location.state.from === "myPage") {
+      return navigate("/mypage");
+    }
+    if (location.state.from === "userPage") {
+      return navigate(`/user-page/${location.state.id}`);
+    }
   };
+
   return (
     <>
       <PopUpContainer
