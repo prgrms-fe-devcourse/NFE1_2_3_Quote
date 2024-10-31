@@ -1,0 +1,47 @@
+name: CICD
+# 언제 실행되는지 설정
+on:
+  push:
+    branches:
+      # main 브랜치에 push가 일어나면 실행
+      - main
+# 실행되는 job 설정
+jobs:
+  build:
+    # 실행환경 설정
+    runs-on: ubuntu-latest
+    # 실행할 step 설정
+    steps:
+      # 소스코드 체크아웃
+      - name: List Files in Directory Before Checkout
+        run: ls -al
+        # 사용할 action 설정.
+        # actions/checkout@v3는 github에서 제공하는 action으로
+        # 소스코드를 체크아웃하는 action
+      - name: Checkout Source Code
+        uses: actions/checkout@v3
+      - name: List Files in Directory After Checkout
+        run: ls -al
+      - name: Login to Docker Hub
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+        # 현재 디렉토리에서 도커 이미지 빌드하고 태그지정
+      - name: Build Docker Image
+        run: docker build -t yongdev/quote .
+        # 빌드한 이미지를 도커 허브에 푸시. 뒤에 latest 태그를 붙임.
+      - name: Publish image to docker hub
+        run: docker push yongdev/quote:latest
+  # 이전까진 이미지 빌드해서 도커허브에 올리기. 이제 배포시작
+  deploy:
+    # build가 성공하는 경우에만 실행
+    needs: build
+    # 러너 설정
+    runs-on: aws-ec2
+    steps:
+      - name: Pull image from docker hub
+        run: docker pull yongdev/quote:latest
+        #기존 컨테이너 지우기
+      - name: Delete existing container
+        run: docker rm -f quote
+        #새 컨테이너 실행. vite는 5173포트 사용. nginx는 80포트 사용.
+      - name: Run container
+        run: docker run -d -p 5173:80 --name quote yongdev/quote:latest
