@@ -19,13 +19,28 @@ const CommentContainer = styled.div`
   margin-bottom: 20px;
 `;
 
+const CommentSection = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+`;
+
+const CommentCount = styled.div`
+  text-align: center;
+  line-height: 26px;
+
+  & > span {
+    font-weight: bold;
+    color: ${({ theme }) => theme.colorButton};
+  }
+`;
+
 const CommentButton = styled.button`
-  align-self: flex-end;
-  margin-bottom: 10px;
   background: none;
-  border: none;
+  border: 1px solid ${({ theme }) => theme.colorMainFont};
+  border-radius: 20px;
   font-weight: bold;
-  padding: 0;
+  padding: 5px 10px;
   color: ${({ theme }) => theme.colorMainFont};
   cursor: pointer;
 `;
@@ -54,7 +69,6 @@ const PostComment = () => {
     getUserId();
   }, []);
 
-
   //댓글 작성 팝업
   const handleCommentPopUp = () => {
     setShowPopUp(true);
@@ -71,7 +85,13 @@ const PostComment = () => {
             onSetShowCommentMessage={setShowCommentMessage}
           />
         )}
-        <CommentButton onClick={handleCommentPopUp}>댓글 쓰기</CommentButton>
+        <CommentSection>
+          <CommentCount>
+            댓글 <span>{commentData.length}</span>
+          </CommentCount>
+          <CommentButton onClick={handleCommentPopUp}>댓글 쓰기</CommentButton>
+        </CommentSection>
+
         {isLoading ? (
           <NoCommentText>Loading ...</NoCommentText>
         ) : isError ? (
