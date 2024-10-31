@@ -296,6 +296,7 @@ const PostDetail = () => {
           showPopUp={showPopUp}
           setShowPopUp={setShowPopUp}
           postId={postId}
+          form={location.state.from}
         />
       )}
     </DetailContainer>
