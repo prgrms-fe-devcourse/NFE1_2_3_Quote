@@ -1,7 +1,5 @@
 import WriteModifyBtn from "@assets/icons/write_modify_button.svg?react";
 import GoToBackBtn from "@assets/icons/goToBack_button.svg?react";
-import BookMarkBeforeBtn from "@assets/icons/bookMark_before_select.svg?react";
-import BookMarkAfterBtn from "@assets/icons/bookMark_after_select.svg?react";
 import QuoteStartIcon from "@assets/icons/quote_start.svg?react";
 import QuoteEndIcon from "@assets/icons/quote_end.svg?react";
 import styled from "styled-components";
@@ -10,7 +8,6 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import PostDeletePopUp from "./PostDeletePopUp";
 import useGetLoggedInUser from "../hooks/useGetLoggedInUser";
 import useGetPostInfo from "../hooks/useGetPostInfo";
-import useBookmark from "../hooks/useBookmark";
 import { useTheme } from "styled-components";
 
 const DetailContainer = styled.div`
@@ -134,7 +131,7 @@ const QuoteContainer = styled.div`
   justify-content: center;
   align-items: center;
   padding: 30px 0px 40px 0px;
-  border-top: 1px solid black;
+  border-top: 1px solid #797979;
 `;
 const Quote = styled.p`
   font-size: 18px;
@@ -151,26 +148,6 @@ const Content = styled.p`
   padding: 16px 0px 50px 0px;
   white-space: pre-wrap;
   border-bottom: 1px solid #797979;
-`;
-
-const BookmarkContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 40px;
-`;
-
-const BookmarkBtn = styled.button`
-  border: none;
-  background: none;
-  font-size: 25px;
-  margin-top: 25px;
-  color: ${({ theme }) => theme.colorMainFont};
-`;
-const BookmarkCount = styled.p`
-  font-size: 14px;
-  line-height: 25px;
-  margin: -7px;
 `;
 
 const PostDetail = () => {
@@ -222,18 +199,6 @@ const PostDetail = () => {
     } else {
       navigate(`/user-page/${postInfo?.authorId._id}`);
     }
-  };
-
-  // 북마크
-  const { mutate } = useBookmark();
-
-  const isActive =
-    loggedInUser &&
-    postInfo &&
-    postInfo?.bookMarked.some((item) => item.userId === loggedInUser.id);
-
-  const handleBookMarked = () => {
-    mutate(postId);
   };
 
   return (
@@ -297,12 +262,6 @@ const PostDetail = () => {
         </QuoteContainer>
         <Content>{postInfo?.content}</Content>
       </ContentContainer>
-      {/* <BookmarkContainer>
-        <BookmarkBtn onClick={handleBookMarked}>
-          {isActive ? <BookMarkAfterBtn /> : <BookMarkBeforeBtn />}
-        </BookmarkBtn>
-        <BookmarkCount>{postInfo?.bookMarked.length}</BookmarkCount>
-      </BookmarkContainer> */}
       {showPopUp && (
         <PostDeletePopUp
           showPopUp={showPopUp}

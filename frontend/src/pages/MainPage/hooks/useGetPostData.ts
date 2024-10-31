@@ -11,10 +11,10 @@ export const useGetCategoryPostData = (category: string, search?: string) => {
   const { data, isLoading, isError } = useQuery<Post[]>({
     queryKey: ["categoryPost", category, search],
     queryFn: () => {
-      if (search && category === '전체') {
+      if (search && category === "전체") {
         return getSearchPostData(search, "");
-      } else if(search) {
-        return getSearchPostData(search, category)
+      } else if (search) {
+        return getSearchPostData(search, category);
       }
       return category === "전체"
         ? getPostData()

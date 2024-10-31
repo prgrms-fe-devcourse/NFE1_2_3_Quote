@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { useDeleteCommentMutation } from "../hooks/usePostComment";
 import { Comment as CommentType } from "@/types/Types";
 import { useNavigate } from "react-router-dom";
+import formatTime from "@/utils/formatTime";
 import ModifyButton from "@assets/icons/write_modify_button.svg?react";
 import PostCommentPopUp from "./PostCommentPopUp";
 import AlertPopUp from "@/components/AlertPopUp/AlertPopUp";
@@ -36,6 +37,8 @@ const TextContainer = styled.div`
 `;
 
 const UserName = styled.p`
+  width: auto;
+  display: inline-block;
   font-size: 14px;
   font-weight: bold;
   margin: 5px 0 10px 0;
@@ -66,6 +69,8 @@ const DateContainer = styled.p`
   margin: 0;
 `;
 
+const ModifyButtonContainer = styled.div``;
+
 const ModifyMenu = styled.ul`
   position: absolute;
   width: 70px;
@@ -80,6 +85,7 @@ const ModifyMenu = styled.ul`
   box-shadow: 0 0 6px rgba(0, 0, 0, 0.25);
   overflow: hidden;
 `;
+
 const ModifyItem = styled.li`
   width: 100%;
   font-size: 12px;
@@ -106,10 +112,10 @@ interface CommentProps {
 
 const Comment = (props: CommentProps) => {
   const { isUser, comment, onSetShowDeleteMessage } = props;
-  const [showList, setShowList] = useState(false);
-  const [showPopUp, setShowPopUp] = useState(false);
-  const [showCommentMessage, setShowCommentMessage] = useState(false);
-  const noUser = !comment.authorId;
+  const [showList, setShowList] = useState<boolean>(false);
+  const [showPopUp, setShowPopUp] = useState<boolean>(false);
+  const [showCommentMessage, setShowCommentMessage] = useState<boolean>(false);
+  const noUser: boolean = !comment.authorId;
 
   const { mutate: deleteComment } = useDeleteCommentMutation();
 
@@ -128,39 +134,43 @@ const Comment = (props: CommentProps) => {
 
   // 수정 및 삭제 메뉴
   const handleModifyList = () => {
-    setShowList(!showList);
+    setShowList((prev) => !prev);
   };
+
+  const listRef = useRef<HTMLDivElement | null>(null);
+  const menuRef = useRef<HTMLUListElement | null>(null);
+  useEffect(() => {
+    const handleOutsideClose = (e: { target: any }) => {
+      if (
+        showList &&
+        listRef.current &&
+        !listRef.current.contains(e.target as Node) &&
+        menuRef.current &&
+        !menuRef.current.contains(e.target as Node)
+      ) {
+        setShowList(false);
+      }
+    };
+    document.addEventListener("mousedown", handleOutsideClose);
+
+    return () => document.removeEventListener("mousedown", handleOutsideClose);
+  }, [showList]);
 
   // 댓글 수정 팝업
   const handleModifyComment = () => {
-    setShowList(!showList);
+    setShowList(false);
     setShowPopUp(true);
   };
 
   // 댓글 삭제
   const handleDeleteComment = () => {
-    setShowList(!showList);
+    setShowList(false);
     onSetShowDeleteMessage(true);
     deleteComment({ commentId: comment._id });
     setTimeout(() => {
       onSetShowDeleteMessage(false);
     }, 2000);
   };
-
-  const listRef = useRef<HTMLUListElement | null>(null);
-  useEffect(() => {
-    const handleOutsideClose = (e: { target: any }) => {
-      if (
-        showList &&
-        listRef.current &&
-        !listRef.current.contains(e.target as Node)
-      ) {
-        setShowList(false);
-      }
-    };
-    document.addEventListener("mousedown", handleOutsideClose);
-    return () => document.removeEventListener("mousedown", handleOutsideClose);
-  }, [showList]);
 
   return (
     <>
@@ -182,14 +192,19 @@ const Comment = (props: CommentProps) => {
         </TextContainer>
         <RightContainer>
           {isUser ? (
-            <ModifyButton onClick={handleModifyList} />
+            <ModifyButtonContainer
+              ref={listRef}
+              onClick={handleModifyList}
+            >
+              <ModifyButton />
+            </ModifyButtonContainer>
           ) : (
             <div style={{ width: "24px" }} />
           )}
-          <DateContainer>{comment.createdAt.slice(0, 10)}</DateContainer>
+          <DateContainer>{formatTime(comment.createdAt)}</DateContainer>
         </RightContainer>
         {showList && (
-          <ModifyMenu ref={listRef}>
+          <ModifyMenu ref={menuRef}>
             <ModifyItem onClick={handleModifyComment}>수정</ModifyItem>
             <ModifyItem onClick={handleDeleteComment}>삭제</ModifyItem>
           </ModifyMenu>
