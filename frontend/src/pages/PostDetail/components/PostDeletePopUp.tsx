@@ -66,17 +66,19 @@ interface DeletePopUpProps {
   showPopUp: boolean;
   setShowPopUp: (value: boolean) => void;
   postId: string;
+  form: string;
 }
 
 const PostDeletePopUp = ({
   showPopUp,
   setShowPopUp,
   postId,
+  form,
 }: DeletePopUpProps) => {
   const theme = useTheme();
   const [deleteSuccessMsg, setDeleteSuccessMsg] = useState(false);
 
-  const { mutate } = useDeletePost(setDeleteSuccessMsg);
+  const { mutate } = useDeletePost(setDeleteSuccessMsg, form);
   const [btnDisabled, setBtnDisabled] = useState(false);
 
   const handleConfirmDelete = () => {
@@ -93,7 +95,10 @@ const PostDeletePopUp = ({
       >
         <PopUpTitle>글을 삭제하시겠습니까?</PopUpTitle>
         <PopUpButtonContainer>
-          <PopUpCancelButton onClick={() => setShowPopUp(!showPopUp)}>
+          <PopUpCancelButton
+            disabled={btnDisabled}
+            onClick={() => setShowPopUp(!showPopUp)}
+          >
             취소
           </PopUpCancelButton>
           <PopUpConfirmButton

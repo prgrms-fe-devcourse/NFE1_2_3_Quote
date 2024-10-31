@@ -172,7 +172,6 @@ const PostModifyForm = () => {
   const [btnDisabled, setBtnDisabled] = useState(false);
 
   const handleCreatePost = () => {
-    setBtnDisabled(true);
     if (!title.trim()) {
       setShowMsg(true);
       setErrorMsg("제목을 입력해주세요.");
@@ -197,6 +196,7 @@ const PostModifyForm = () => {
       }, 2000);
       return;
     }
+    setBtnDisabled(true);
     mutate({
       data: {
         title: title,
@@ -252,6 +252,7 @@ const PostModifyForm = () => {
         <CancelButton
           type='button'
           onClick={handleCancel}
+          disabled={btnDisabled}
         >
           취소
         </CancelButton>
