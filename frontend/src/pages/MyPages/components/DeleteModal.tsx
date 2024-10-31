@@ -18,7 +18,7 @@ const ModalOverlay = styled.div`
 const ModalContainer = styled.div`
   width: 400px;
   padding: 30px;
-  background-color: #fff;
+  background-color: ${({ theme }) => theme.colorCancelPopUp};
   border-radius: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   text-align: center;
@@ -33,7 +33,7 @@ const ModalTitle = styled.h2`
 const ModalMessage = styled.p`
   font-size: 14px;
   margin-bottom: 30px;
-  color: #303030;
+  color: ${({ theme }) => theme.colorMainFont};
 `;
 
 const ButtonContainer = styled.div`
@@ -43,9 +43,9 @@ const ButtonContainer = styled.div`
 
 const CancelButton = styled.button`
   width: 40%;
-  background-color: #fff;
-  border: 1px solid #474040;
-  color: #474040;
+  background-color: ${({ theme }) => theme.colorCancelPopUp};
+  border: 1px solid ${({ theme }) => theme.colorButton};
+  color: ${({ theme }) => theme.colorCancelPopUPBtnFont};
   padding: 10px 20px;
   border-radius: 30px;
   cursor: pointer;
@@ -53,7 +53,7 @@ const CancelButton = styled.button`
 
 const ConfirmButton = styled.button`
   width: 40%;
-  background-color: #474040;
+  background-color: ${({ theme }) => theme.colorMain};
   color: #fff;
   padding: 10px 20px;
   border-radius: 30px;
@@ -67,7 +67,6 @@ interface DeleteModalProps {
 }
 
 const DeleteModal = ({ onClose, onConfirm }: DeleteModalProps) => {
-
   const handleConfirm = async () => {
     try {
       await onConfirm();

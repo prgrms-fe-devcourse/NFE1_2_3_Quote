@@ -1,5 +1,5 @@
 import { memo } from "react";
-import styled, { keyframes } from "styled-components";
+import styled, { useTheme } from "styled-components";
 import { useMyPage } from "./hooks/useMyPage";
 import ProfileEditModal from "./components/ProfileEditModal";
 import DeleteModal from "./components/DeleteModal";
@@ -7,8 +7,10 @@ import PostCard from "./components/PostCard";
 import profile from "@assets/images/profile.png";
 import WriteButton from "@/components/WriteButton/WriteButton";
 import MainLayout from "@/layouts/MainLayout";
-import ProfileModifyButton from "@assets/icons/profile_modify_button.svg?react";
+import ProfileModifyLightMode from "@assets/icons/profile_modify_lightMode.svg?react";
+import ProfileModifyDarkMode from "@assets/icons/profile_modify_darkMode.svg?react";
 import { Post } from "@/types/Types";
+import AlertPopUp from "@/components/AlertPopUp/AlertPopUp";
 
 // Styled Components
 
@@ -19,29 +21,6 @@ const Container = styled.div`
   align-items: center;
   caret-color: transparent;
   overflow: hidden;
-`;
-
-const fadeOut = keyframes`
-  0% { opacity: 1; }
-  100% { opacity: 0; }
-`;
-
-const SuccessMessage = styled.div`
-  position: fixed;
-  top: 70px;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: #fff;
-  color: #303030;
-  padding: 10px 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
-  font-size: 14px;
-  font-weight: bold;
-  z-index: 1100;
-  pointer-events: none;
-  opacity: 1;
-  animation: ${fadeOut} 2s ease-in-out 1s forwards;
 `;
 
 const ProfileSection = styled.div`
@@ -77,17 +56,17 @@ const ProfileImage = styled.img`
   border-radius: 50%;
 `;
 
-const UserName = styled.h2`
-  margin-top: 20px;
+const UserName = styled.h1`
+  margin-top: 10px;
   font-size: 20px;
-  color: #303030;
+  color: ${({ theme }) => theme.colorMainFont};
   text-align: center;
 `;
 
 const UserEmail = styled.p`
-  margin-top: 5px;
+  margin-top: -5px;
   font-size: 10px;
-  color: #a7a7a7;
+  color: ${({ theme }) => theme.colorSubFont};
   text-align: center;
 `;
 
@@ -108,14 +87,16 @@ const TabButton = styled.button<{ $isActive: boolean }>`
   padding-top: 20px;
   padding-bottom: 15px;
   cursor: pointer;
-  color: ${({ $isActive }) => ($isActive ? "#303030" : "#A7A7A7")};
-  border-bottom: ${({ $isActive }) => ($isActive ? "2px solid black" : "none")};
+  color: ${({ theme, $isActive }) =>
+    $isActive ? theme.colorMainFont : theme.colorSubFont};
+  border-bottom: ${({ $isActive, theme }) =>
+    $isActive ? `2px solid ${theme.colorMainFont}` : "none"};
 `;
 
 const MessageContainer = styled.div`
   margin-top: 50px;
   font-size: 18px;
-  color: #a7a7a7;
+  color: ${({ theme }) => theme.colorSubFont};
 `;
 
 const PostContainer = styled.div`
@@ -132,9 +113,9 @@ const Menu = styled.div`
   top: 30px;
   right: -20px;
   width: 110px;
-  background: #ffffff;
+  background: ${({ theme }) => theme.colorCategoryList};
   border-radius: 8px;
-  box-shadow: 0 4px 8px #e3e3e3;
+  box-shadow: 0 4px 8px ${({ theme }) => theme.colorLine};
   z-index: 10;
 `;
 
@@ -146,9 +127,10 @@ const MenuItem = styled.button`
   cursor: pointer;
   text-align: center;
   font-size: 12px;
+  color: ${({ theme }) => theme.colorMainFont};
 
   &:not(:last-child) {
-    border-bottom: 1px solid #e3e3e3;
+    border-bottom: 1px solid ${({ theme }) => theme.colorBottom};
   }
 `;
 
@@ -157,7 +139,6 @@ const MyPage = memo(() => {
     userProfile,
     myPosts,
     bookmarkedPosts,
-    loading,
     activeTab,
     setActiveTab,
     menuVisible,
@@ -165,7 +146,6 @@ const MyPage = memo(() => {
     isModalOpen,
     setIsModalOpen,
     showEditSuccess,
-    showDeleteSuccess,
     isDeleteModalOpen,
     setIsDeleteModalOpen,
     handleDeleteAccount,
@@ -178,16 +158,16 @@ const MyPage = memo(() => {
     settingsButtonRef,
   } = useMyPage();
 
-  if (loading) return <MessageContainer>로딩 중...</MessageContainer>;
+  const theme = useTheme();
 
   const renderPosts = (posts: Post[]) =>
     posts.length ? (
       <PostContainer>
-        {posts.map((post) => (
+        {posts.map((post, index) => (
           <PostCard
-            key={post._id}
+            key={`${post._id}-${index}`}
             post={post}
-            userId={userProfile?.id || ""}
+            userId={profile || ""}
             isBookmarked={bookmarkedPosts.some((p) => p._id === post._id)}
             onClick={() => handleSelectPost(post._id)}
             onAddBookmark={handleAddBookmark}
@@ -207,8 +187,12 @@ const MyPage = memo(() => {
     <MainLayout>
       <Container>
         <ProfileSection>
-          <SettingsButtonWrapper ref={settingsButtonRef}>
-            <ProfileModifyButton onClick={toggleMenu} />
+          <SettingsButtonWrapper ref={settingsButtonRef} onClick={toggleMenu}>
+              {theme.mode === "lightMode" ? (
+                <ProfileModifyLightMode />
+              ) : (
+                <ProfileModifyDarkMode />
+              )}
           </SettingsButtonWrapper>
           {menuVisible && (
             <Menu ref={menuRef}>
@@ -260,7 +244,7 @@ const MyPage = memo(() => {
           />
         )}
         {showEditSuccess && (
-          <SuccessMessage>프로필 수정이 완료되었습니다.</SuccessMessage>
+          <AlertPopUp>프로필 수정이 완료되었습니다.</AlertPopUp>
         )}
         {isDeleteModalOpen && (
           <DeleteModal
@@ -268,11 +252,8 @@ const MyPage = memo(() => {
             onConfirm={handleDeleteAccount}
           />
         )}
-        {showDeleteSuccess && (
-          <SuccessMessage>탈퇴가 완료되었습니다.</SuccessMessage>
-        )}
       </Container>
-      <WriteButton />
+      <WriteButton location={"myPage"} />
     </MainLayout>
   );
 });
