@@ -36,15 +36,15 @@ const ProfileImage = styled.img`
   border-radius: 50%;
 `;
 
-const UserName = styled.h2`
-  margin-top: 20px;
+const UserName = styled.h1`
+  margin-top: 10px;
   font-size: 20px;
   color: ${({ theme }) => theme.colorMainFont};
   text-align: center;
 `;
 
 const UserEmail = styled.p`
-  margin-top: 5px;
+  margin-top: -5px;
   font-size: 10px;
   color: ${({ theme }) => theme.colorSubFont};
   text-align: center;
@@ -131,7 +131,10 @@ const UserPage = () => {
         </ContentSection>
         {renderPosts(posts)}
       </Container>
-      <WriteButton />
+      <WriteButton
+        location={"userPage"}
+        id={user?.id}
+      />
     </MainLayout>
   );
 };

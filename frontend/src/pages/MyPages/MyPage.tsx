@@ -31,8 +31,8 @@ const SuccessMessage = styled.div`
   top: 70px;
   left: 50%;
   transform: translateX(-50%);
-  background-color: #fff;
-  color: #303030;
+  background-color: ${({ theme }) => theme.colorSub};
+  color: ${({ theme }) => theme.colorMainFont};
   padding: 10px 20px;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
@@ -77,17 +77,17 @@ const ProfileImage = styled.img`
   border-radius: 50%;
 `;
 
-const UserName = styled.h2`
-  margin-top: 20px;
+const UserName = styled.h1`
+  margin-top: 10px;
   font-size: 20px;
-  color: #303030;
+  color: ${({ theme }) => theme.colorMainFont};
   text-align: center;
 `;
 
 const UserEmail = styled.p`
-  margin-top: 5px;
+  margin-top: -5px;
   font-size: 10px;
-  color: #a7a7a7;
+  color: ${({ theme }) => theme.colorSubFont};
   text-align: center;
 `;
 
@@ -115,7 +115,7 @@ const TabButton = styled.button<{ $isActive: boolean }>`
 const MessageContainer = styled.div`
   margin-top: 50px;
   font-size: 18px;
-  color: #a7a7a7;
+  color: ${({ theme }) => theme.colorSubFont};
 `;
 
 const PostContainer = styled.div`
@@ -132,9 +132,9 @@ const Menu = styled.div`
   top: 30px;
   right: -20px;
   width: 110px;
-  background: #ffffff;
+  background: ${({ theme }) => theme.colorCategoryList};
   border-radius: 8px;
-  box-shadow: 0 4px 8px #e3e3e3;
+  box-shadow: 0 4px 8px ${({ theme }) => theme.colorLine};
   z-index: 10;
 `;
 
@@ -146,9 +146,10 @@ const MenuItem = styled.button`
   cursor: pointer;
   text-align: center;
   font-size: 12px;
+  color: ${({ theme }) => theme.colorMainFont};
 
   &:not(:last-child) {
-    border-bottom: 1px solid #e3e3e3;
+    border-bottom: 1px solid ${({ theme }) => theme.colorBottom};
   }
 `;
 
@@ -157,7 +158,6 @@ const MyPage = memo(() => {
     userProfile,
     myPosts,
     bookmarkedPosts,
-    loading,
     activeTab,
     setActiveTab,
     menuVisible,
@@ -178,16 +178,14 @@ const MyPage = memo(() => {
     settingsButtonRef,
   } = useMyPage();
 
-  if (loading) return <MessageContainer>로딩 중...</MessageContainer>;
-
   const renderPosts = (posts: Post[]) =>
     posts.length ? (
       <PostContainer>
-        {posts.map((post) => (
+        {posts.map((post, index) => (
           <PostCard
-            key={post._id}
+            key={`${post._id}-${index}`}
             post={post}
-            userId={userProfile?.id || ""}
+            userId={profile || ""}
             isBookmarked={bookmarkedPosts.some((p) => p._id === post._id)}
             onClick={() => handleSelectPost(post._id)}
             onAddBookmark={handleAddBookmark}
@@ -272,7 +270,7 @@ const MyPage = memo(() => {
           <SuccessMessage>탈퇴가 완료되었습니다.</SuccessMessage>
         )}
       </Container>
-      <WriteButton />
+      <WriteButton location={"myPage"}/>
     </MainLayout>
   );
 });
