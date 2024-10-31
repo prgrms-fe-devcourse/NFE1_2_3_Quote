@@ -1,7 +1,7 @@
 import { getToken } from "@/pages/LogInPage/store/authStore";
 import axios, { AxiosInstance } from "axios";
 
-const URL = import.meta.env.VITE_APP_SERVER_URL;;
+const URL = import.meta.env.VITE_APP_SERVER_URL;
 
 // 사용자 axiosClient
 export const userAxiosClient: AxiosInstance = axios.create({
