@@ -57,7 +57,7 @@ const CopyRight = styled.span`
 `;
 
 const SignUpRoutePage = () => {
-  const { themeMode, toggleThemeMode } = useThemeStore();
+  const { themeMode } = useThemeStore();
 
   return (
     <MainLayout>
