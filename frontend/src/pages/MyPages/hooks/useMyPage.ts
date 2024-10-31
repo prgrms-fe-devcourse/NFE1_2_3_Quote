@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserMe, Post } from "@/types/Types";
 import { useAuthStore } from "@/pages/LogInPage/store/authStore";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   fetchUserProfile,
   deleteUserAccount,
@@ -12,8 +12,6 @@ import {
 
 export const useMyPage = () => {
   const [activeTab, setActiveTab] = useState("posts");
-  const [bookmarkedPostsState, setBookmarkedPostsState] = useState<Post[]>([]);
-  const [myPostsState, setMyPostsState] = useState<Post[]>([]);
   const [menuVisible, setMenuVisible] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showEditSuccess, setShowEditSuccess] = useState(
@@ -28,88 +26,71 @@ export const useMyPage = () => {
   const menuRef = useRef<HTMLDivElement>(null);
   const settingsButtonRef = useRef<HTMLDivElement>(null);
 
-  const {
-    data: userProfile,
-    isLoading: profileLoading,
-    refetch: refetchUserProfile,
-  } = useQuery<UserMe, Error>({
-    queryKey: ["userProfile"],
-    queryFn: fetchUserProfile,
+  const fetchUserProfileMutation = useMutation<UserMe, Error>({
+    mutationFn: fetchUserProfile,
+    onSuccess: (profile) => {
+      queryClient.setQueryData(["userProfile"], profile);
+      fetchMyPostsMutation.mutate(profile);
+      fetchBookmarkedPostsMutation.mutate(profile);
+    },
+    onError: (error) => {
+      console.error("사용자 프로필 가져오기 실패:", error);
+    },
   });
 
-  const { data: myPosts = [], isLoading: postsLoading } = useQuery<
-    Post[],
-    Error
-  >({
-    queryKey: ["myPosts", userProfile?.id],
-    queryFn: () => fetchMyPosts(userProfile!),
-    enabled: !!userProfile,
-    refetchInterval: 500,
+  const fetchMyPostsMutation = useMutation<Post[], Error, UserMe>({
+    mutationFn: (profile) => fetchMyPosts(profile),
+    onSuccess: (posts) => {
+      const sortedPosts = posts.sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+      );
+      queryClient.setQueryData(["myPosts"], sortedPosts);
+    },
+    onError: (error) => {
+      console.error("마이 포스트 가져오기 실패:", error);
+    },
   });
 
-  const { data: bookmarkedPosts = [], isLoading: bookmarksLoading } = useQuery<
-    Post[],
-    Error
-  >({
-    queryKey: ["bookmarkedPosts", userProfile?.id],
-    queryFn: () => fetchBookmarkedPosts(userProfile!),
-    enabled: !!userProfile,
+  const fetchBookmarkedPostsMutation = useMutation<Post[], Error, UserMe>({
+    mutationFn: (profile) => fetchBookmarkedPosts(profile),
+    onSuccess: (bookmarkedPosts) => {
+      queryClient.setQueryData(["bookmarkedPosts"], bookmarkedPosts);
+    },
+    onError: (error) => {
+      console.error("북마크 포스트 가져오기 실패:", error);
+    },
   });
 
-  useEffect(() => {
-    const sortedPosts = [...myPosts].sort(
-      (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-    );
-    setMyPostsState(sortedPosts);
-  }, [myPosts]);
-
-  useEffect(() => {
-    setBookmarkedPostsState(bookmarkedPosts);
-  }, [bookmarkedPosts]);
-
-  const deleteAccountMutation = useMutation<void, Error, void>({
+  const deleteAccountMutation = useMutation<void, Error>({
     mutationFn: deleteUserAccount,
     onSuccess: () => {
       localStorage.removeItem("token");
-      setShowDeleteSuccess(true);
+      setShowDeleteSuccess(false);
       storeLogout();
-      setTimeout(() => {
-        setShowDeleteSuccess(false);
-        navigate("/");
-      }, 3000);
-    },
-    onError: () => {
-      alert("탈퇴에 실패했습니다. 다시 시도해 주세요.");
+      localStorage.setItem("showDeleteMessage", "true");
+      navigate("/");
     },
   });
 
   useEffect(() => {
-    if (showEditSuccess) {
-      setTimeout(() => {
-        setShowEditSuccess(false);
-        localStorage.removeItem("profileEditSuccess");
-      }, 3000);
-    }
-  }, [showEditSuccess]);
+    fetchUserProfileMutation.mutate();
+  }, []);
 
   const toggleMenu = useCallback(() => {
     setMenuVisible((prev) => !prev);
   }, []);
 
-  const handleClickOutside = useCallback(
-    (event: MouseEvent) => {
-      if (
-        menuRef.current &&
-        settingsButtonRef.current &&
-        !menuRef.current.contains(event.target as Node) &&
-        !settingsButtonRef.current.contains(event.target as Node)
-      ) {
-        setMenuVisible(false);
-      }
-    },
-    [menuRef, settingsButtonRef],
-  );
+  const handleClickOutside = useCallback((event: MouseEvent) => {
+    if (
+      menuRef.current &&
+      settingsButtonRef.current &&
+      !menuRef.current.contains(event.target as Node) &&
+      !settingsButtonRef.current.contains(event.target as Node)
+    ) {
+      setMenuVisible(false);
+    }
+  }, []);
 
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
@@ -122,43 +103,63 @@ export const useMyPage = () => {
     updatedImage: string,
     updatedNickname: string,
   ) => {
+    const isDataUrl = updatedImage.startsWith("data:image");
+
     queryClient.setQueryData<UserMe>(["userProfile"], (prevProfile) => ({
       ...prevProfile!,
-      profileImage: `${updatedImage}?timestamp=${new Date().getTime()}`,
+      profileImage: isDataUrl
+        ? updatedImage
+        : `${updatedImage}?timestamp=${new Date().getTime()}`,
       nickname: updatedNickname,
     }));
-    localStorage.setItem("profileEditSuccess", "true");
-    refetchUserProfile();
+    setShowEditSuccess(true);
+    setTimeout(() => setShowEditSuccess(false), 3000);
+    fetchUserProfileMutation.mutate();
   };
 
   const handleAddBookmark = (post: Post) => {
-    const updatedBookmarks = [post, ...bookmarkedPostsState];
-    setBookmarkedPostsState(updatedBookmarks);
+    queryClient.setQueryData<Post[]>(
+      ["bookmarkedPosts"],
+      (prevBookmarkedPosts) => {
+        const existingPost = (prevBookmarkedPosts || []).find(
+          (p) => p._id === post._id,
+        );
 
-    const updatedMyPosts = myPostsState.map((p) =>
-      p._id === post._id ? { ...p, isBookmarked: true } : p,
+        return existingPost
+          ? prevBookmarkedPosts
+          : [post, ...(prevBookmarkedPosts || [])];
+      },
     );
-    setMyPostsState(updatedMyPosts);
+
+    queryClient.setQueryData(["myPosts"], (prevMyPosts: Post[] | undefined) =>
+      (prevMyPosts || []).map((p) =>
+        p._id === post._id ? { ...p, isBookmarked: true } : p,
+      ),
+    );
   };
 
   const handleRemoveBookmark = (postId: string) => {
-    const updatedBookmarks = bookmarkedPostsState.filter(
-      (post) => post._id !== postId,
+    queryClient.setQueryData<Post[]>(
+      ["bookmarkedPosts"],
+      (prevBookmarkedPosts) =>
+        (prevBookmarkedPosts || []).filter((post) => post._id !== postId),
     );
-    setBookmarkedPostsState(updatedBookmarks);
 
-    const updatedMyPosts = myPostsState.map((p) =>
-      p._id === postId
-        ? {
-            ...p,
-            isBookmarked: false,
-            bookMarked: (p.bookMarked || []).filter(
-              (user) => user.userId !== userProfile?.id,
-            ),
-          }
-        : p,
+    queryClient.setQueryData(["myPosts"], (prevMyPosts: Post[] | undefined) =>
+      (prevMyPosts || []).map((p) =>
+        p._id === postId
+          ? {
+              ...p,
+              isBookmarked: false,
+              bookMarked: (p.bookMarked || []).filter(
+                (user) =>
+                  user.userId !==
+                  queryClient.getQueryData<UserMe>(["userProfile"])?.id,
+              ),
+            }
+          : p,
+      ),
     );
-    setMyPostsState(updatedMyPosts);
   };
 
   const handleSelectPost = useCallback((postId: string) => {
@@ -166,10 +167,10 @@ export const useMyPage = () => {
   }, []);
 
   return {
-    userProfile,
-    myPosts: myPostsState,
-    bookmarkedPosts: bookmarkedPostsState,
-    loading: profileLoading || postsLoading || bookmarksLoading,
+    userProfile: queryClient.getQueryData<UserMe>(["userProfile"]),
+    myPosts: queryClient.getQueryData<Post[]>(["myPosts"]) || [],
+    bookmarkedPosts:
+      queryClient.getQueryData<Post[]>(["bookmarkedPosts"]) || [],
     activeTab,
     setActiveTab,
     menuVisible,

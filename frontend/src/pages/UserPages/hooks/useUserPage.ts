@@ -126,7 +126,9 @@ export const useUserPage = () => {
 
   const handleSelectPost = useCallback(
     (postId: string) =>
-      navigate(`/post/${postId}`, { state: { from: "UserPage" } }),
+      navigate(`/post/${postId}`, {
+        state: { from: "UserPage", user: userId },
+      }),
     [navigate],
   );
 

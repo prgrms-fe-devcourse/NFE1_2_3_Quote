@@ -18,7 +18,8 @@ const PostCardContainer = styled.div<PostCardContainerProps>`
   border-radius: 20px;
   overflow: hidden;
   background-color: ${({ theme, $category }) => theme[$category].bgColor};
-  box-shadow: 0 0 8px ${({ theme }) => theme.colorLine};
+  color: ${({ theme, $category }) => theme[$category].fontColor};
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.25);
   transition:
     transform 0.3s ease,
     box-shadow 0.3s ease;
@@ -73,8 +74,8 @@ const BookMark = styled.div`
   width: auto;
   display: flex;
   align-items: center;
+  color: ${({ theme }) => theme.colorMainFont};
   svg {
-    color: ${({ theme }) => theme.colorFont};
     width: 16px;
     height: 16px;
     cursor: pointer;
@@ -87,6 +88,7 @@ const UserText = styled.p`
   display: flex;
   justify-content: end;
   align-items: center;
+  color: ${({ theme }) => theme.colorMainFont};
 `;
 
 interface PostCardProps {

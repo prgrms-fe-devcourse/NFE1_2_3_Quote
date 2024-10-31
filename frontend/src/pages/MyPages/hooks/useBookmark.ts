@@ -27,39 +27,53 @@ export const useBookmark = ({
   );
 
   useEffect(() => {
-    setIsBookmarked(initialIsBookmarked);
-  }, [initialIsBookmarked]);
+    queryClient.refetchQueries({ queryKey: ["posts", post._id] });
+  }, [post._id, queryClient]);
+
+  useEffect(() => {
+    const cachedPost = queryClient.getQueryData<Post>(["posts", post._id]);
+    if (cachedPost) {
+      const currentlyBookmarked = cachedPost.bookMarked.some(
+        (b) => b.userId === post.authorId._id,
+      );
+      setIsBookmarked(currentlyBookmarked);
+    } else {
+      setIsBookmarked(initialIsBookmarked);
+    }
+  }, [post, queryClient, initialIsBookmarked]);
 
   const mutation: UseMutationResult<void, Error, void> = useMutation({
     mutationFn: async () => {
       await postBookmark(post._id);
     },
-    onSuccess: () => {
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey: ["posts", post._id] });
+
       const newIsBookmarked = !isBookmarked;
       setIsBookmarked(newIsBookmarked);
       setBookmarkCount((prev) =>
         newIsBookmarked ? prev + 1 : Math.max(prev - 1, 0),
       );
 
+      queryClient.setQueryData<Post>(["posts", post._id], (oldPost) => {
+        if (!oldPost) return oldPost;
+
+        const updatedBookMarked = newIsBookmarked
+          ? [...oldPost.bookMarked, { userId: post.authorId._id }]
+          : oldPost.bookMarked.filter((b) => b.userId !== post.authorId._id);
+
+        return { ...oldPost, bookMarked: updatedBookMarked };
+      });
+
       if (newIsBookmarked) {
         onAddBookmark(post);
       } else {
         onRemoveBookmark(post._id);
       }
-
-      queryClient.setQueryData<Post[]>(["bookmarkedPosts"], (prev) =>
-        newIsBookmarked
-          ? [...(prev || []), post]
-          : prev?.filter((p) => p._id !== post._id) || [],
-      );
-
-      queryClient.setQueryData<Post[]>(
-        ["myPosts"],
-        (prev) =>
-          prev?.map((p) =>
-            p._id === post._id ? { ...p, isBookmarked: newIsBookmarked } : p,
-          ) || [],
-      );
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["posts", post._id] });
+      await queryClient.invalidateQueries({ queryKey: ["userPosts"] });
     },
     onError: (error) => {
       console.error("Bookmark error:", error);
