@@ -31,18 +31,23 @@ const GotoBackButton = styled.button`
 
 const TopContainer = styled.div`
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   position: relative;
   padding-top: 15px;
 `;
 
 const Category = styled.p`
-  font-size: 14px;
+  font-size: 16px;
   font-weight: bold;
   line-height: 25px;
+  margin-top: 16px;
+  margin-bottom: 0px;
+  color: #a7a7a7;
 `;
 
 const ModifyBtn = styled.button`
+  position: absolute;
+  right: 0;
   height: 20px;
   border: none;
   padding: 0px;
@@ -87,19 +92,22 @@ const ModifyItem = styled.li`
 
 const AuthorProfile = styled.div`
   display: flex;
-  flex-direction: column;
   align-items: center;
+  margin: 8px 0px;
 `;
 
 const AuthorProfileImg = styled.img`
-  width: 70px;
-  height: 70px;
+  width: 30px;
+  height: 30px;
   border-radius: 90px;
+  margin-right: 8px;
 `;
 const AuthorName = styled.p`
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
   line-height: 25px;
+  margin: 0px;
+  height: 20px;
 `;
 
 const ContentContainer = styled.div`
@@ -109,24 +117,24 @@ const ContentContainer = styled.div`
 
 const Title = styled.p`
   font-size: 26px;
-  padding: 16px 8px;
+  padding: 20px 0px;
   margin: 0;
-  border-bottom: 1px solid #797979;
 `;
 
 const CreatedAt = styled.span`
-  font-size: 12px;
+  font-size: 10px;
   line-height: 25px;
   color: #a7a7a7;
   text-align: end;
-  padding: 8px;
+  height: 20px;
 `;
 
 const QuoteContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 16px 8px 50px 8px;
+  padding: 30px 0px 40px 0px;
+  border-top: 1px solid black;
 `;
 const Quote = styled.p`
   font-size: 18px;
@@ -140,7 +148,7 @@ const Content = styled.p`
   font-weight: bold;
   line-height: 30px;
   margin: 0;
-  padding: 16px 8px 50px 8px;
+  padding: 16px 0px 50px 0px;
   white-space: pre-wrap;
   border-bottom: 1px solid #797979;
 `;
@@ -234,7 +242,6 @@ const PostDetail = () => {
         <GoToBackBtn />
       </GotoBackButton>
       <TopContainer>
-        <Category>{postInfo?.category}</Category>
         {isAuthor && (
           <ModifyBtn
             onClick={() => {
@@ -263,6 +270,8 @@ const PostDetail = () => {
             <ModifyItem onClick={handlePostDeletePopUp}>삭제</ModifyItem>
           </ModifyMenu>
         )}
+        <Category>{postInfo?.category}</Category>
+        <Title>{postInfo?.title}</Title>
       </TopContainer>
       <AuthorProfile>
         <AuthorProfileImg
@@ -273,11 +282,14 @@ const PostDetail = () => {
           alt='작성자 프로필사진'
           onClick={handleProfileClick}
         />
-        <AuthorName>{postInfo?.authorId?.nickname || "탈퇴한 회원"}</AuthorName>
+        <div>
+          <AuthorName>
+            {postInfo?.authorId?.nickname || "탈퇴한 회원"}
+          </AuthorName>
+          <CreatedAt>{postInfo?.createdAt.slice(0, 10)}</CreatedAt>
+        </div>
       </AuthorProfile>
       <ContentContainer>
-        <Title>{postInfo?.title}</Title>
-        <CreatedAt>{postInfo?.createdAt.slice(0, 10)}</CreatedAt>
         <QuoteContainer>
           <QuoteStartIcon />
           <Quote>{postInfo?.quote}</Quote>
@@ -285,12 +297,12 @@ const PostDetail = () => {
         </QuoteContainer>
         <Content>{postInfo?.content}</Content>
       </ContentContainer>
-      <BookmarkContainer>
+      {/* <BookmarkContainer>
         <BookmarkBtn onClick={handleBookMarked}>
           {isActive ? <BookMarkAfterBtn /> : <BookMarkBeforeBtn />}
         </BookmarkBtn>
         <BookmarkCount>{postInfo?.bookMarked.length}</BookmarkCount>
-      </BookmarkContainer>
+      </BookmarkContainer> */}
       {showPopUp && (
         <PostDeletePopUp
           showPopUp={showPopUp}
