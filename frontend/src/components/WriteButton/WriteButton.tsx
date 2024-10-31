@@ -16,11 +16,16 @@ const StyledButton = styled.div`
   }
 `;
 
-const WriteButton = () => {
+interface WriteBtnProps {
+  location: string;
+  id?: string;
+}
+
+const WriteButton = ({ location, id }: WriteBtnProps) => {
   const theme = useTheme();
   const navigate = useNavigate();
   const handleWriteButton = () => {
-    navigate("/create-post");
+    navigate("/create-post", { state: { from: location, id: id } });
   };
   return (
     <>
