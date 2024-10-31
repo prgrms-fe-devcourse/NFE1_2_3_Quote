@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDeleteCommentMutation } from "../hooks/usePostComment";
 import { Comment as CommentType } from "@/types/Types";
 import { useNavigate } from "react-router-dom";
@@ -112,10 +112,10 @@ interface CommentProps {
 
 const Comment = (props: CommentProps) => {
   const { isUser, comment, onSetShowDeleteMessage } = props;
-  const [showList, setShowList] = useState(false);
-  const [showPopUp, setShowPopUp] = useState(false);
-  const [showCommentMessage, setShowCommentMessage] = useState(false);
-  const noUser = !comment.authorId;
+  const [showList, setShowList] = useState<boolean>(false);
+  const [showPopUp, setShowPopUp] = useState<boolean>(false);
+  const [showCommentMessage, setShowCommentMessage] = useState<boolean>(false);
+  const noUser: boolean = !comment.authorId;
 
   const { mutate: deleteComment } = useDeleteCommentMutation();
 

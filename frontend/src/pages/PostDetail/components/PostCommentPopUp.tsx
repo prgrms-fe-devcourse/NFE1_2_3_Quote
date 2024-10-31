@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import { useState } from "react";
-import { useTheme } from "styled-components";
 import AlertPopUp from "@/components/AlertPopUp/AlertPopUp";
 import {
   useCommentMutation,
@@ -21,6 +20,8 @@ const PopUpContainer = styled.div`
   align-items: center;
   background-color: ${({ theme }) => theme.colorCancelPopUp};
   border-radius: 20px;
+  box-shadow: ${({ theme }) =>
+    theme.mode === "lightMode" ? "0px 0px 6px #dfdfdf" : "none"};
 `;
 
 const PopUpTitle = styled.p`
@@ -119,8 +120,6 @@ const PostCommentPopUp = (props: PostCommentPopUpProps) => {
     onSetShowPopUp,
     onSetShowCommentMessage,
   } = props;
-  const theme = useTheme();
-
   const [comment, setComment] = useState<string>(contents || "");
   const [noComment, setNoComment] = useState<boolean>(false);
 
@@ -157,11 +156,7 @@ const PostCommentPopUp = (props: PostCommentPopUpProps) => {
 
   return (
     <>
-      <PopUpContainer
-        style={{
-          boxShadow: theme.mode == "lightMode" ? "0px 0px 6px #dfdfdf" : "none",
-        }}
-      >
+      <PopUpContainer>
         <PopUpTitle>댓글 입력</PopUpTitle>
         <PopUpTextAreaContainer>
           <PopUpTextArea

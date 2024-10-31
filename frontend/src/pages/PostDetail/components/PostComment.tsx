@@ -51,9 +51,9 @@ const NoCommentText = styled.p`
 `;
 
 const PostComment = () => {
-  const [showPopUp, setShowPopUp] = useState(false);
-  const [showCommentMessage, setShowCommentMessage] = useState(false);
-  const [showDeleteMessage, setShowDeleteMessage] = useState(false);
+  const [showPopUp, setShowPopUp] = useState<boolean>(false);
+  const [showCommentMessage, setShowCommentMessage] = useState<boolean>(false);
+  const [showDeleteMessage, setShowDeleteMessage] = useState<boolean>(false);
 
   const [userId, setUserId] = useState<string>("");
   const { postId } = useParams() as { postId: string };
