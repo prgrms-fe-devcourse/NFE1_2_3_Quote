@@ -1,7 +1,7 @@
 import { Post } from "@/types/Types";
 import axios, { AxiosInstance } from "axios";
 
-const URL = "http://43.200.164.241:8000";
+const URL = import.meta.env.VITE_APP_SERVER_URL;
 
 // 포스트 전용 axiosClient
 export const postAxiosClient: AxiosInstance = axios.create({

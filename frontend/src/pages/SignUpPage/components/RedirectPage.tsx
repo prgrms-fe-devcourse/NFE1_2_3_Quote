@@ -17,14 +17,12 @@ const RedirectPage = () => {
   //Params를 추출하는 함수
   function getAuthCodeFromURL() {
     const urlParams = new URLSearchParams(window.location.search);
-    console.log({ urlParams, code: urlParams.get("code") });
     return urlParams.get("code");
   }
 
   //추출한 Params로 서버에 요청을 보내는 함수
   function sendAuthCodeToServer(authCode: string) {
-    const url = `http://localhost:8000/auth/kakao/callback?code=${authCode}`;
-    console.log("test!");
+    const url = `${import.meta.env.VITE_APP_CALLBACK_URL}/callback?code=${authCode}`;
 
     fetch(url, {
       method: "GET",

@@ -27,7 +27,7 @@ type PropType = {
 const KakaoBtn = (props: PropType) => {
   const loginKakao = () => {
     //window.location.href = kakaoURL;
-    fetch("http://localhost:8000/auth/kakao")
+    fetch(import.meta.env.VITE_APP_CALLBACK_URL)
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
