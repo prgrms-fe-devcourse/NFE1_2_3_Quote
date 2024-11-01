@@ -31,6 +31,11 @@ export class CommentsRepository {
     });
 
     await newComment.save();
+
+    // 새로운 댓글의 ID를 게시물의 댓글에 추가
+    post.comments.push(newComment.id);
+    await post.save();
+
     return newComment;
   }
   async updateComment(comments: CommentsCreateDto, user: User, id: string) {
@@ -43,9 +48,14 @@ export class CommentsRepository {
   }
   async deleteComment(id: string, user: User) {
     const comment = await this.commentsModel.findById(id);
+    const post = await this.postModel.findById(comment.postId);
     if (comment.authorId.toString() !== user._id.toString()) {
       throw new Error('This is not your comment');
     }
+    post.comments = post.comments.filter(
+      (commentId) => commentId.toString() !== id,
+    );
+    await post.save();
     await this.commentsModel.findByIdAndDelete(id);
   }
 }
