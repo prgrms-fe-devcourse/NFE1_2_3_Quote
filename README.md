@@ -1,8 +1,8 @@
 # Quote.
-![alt text](썸네일.png)
-> 프로그래머스 프론트엔드 데브코스 1기 3차 프로젝트 3팀 
-<br> 
-개발 기간 : 2024.10.22 ~ 24.11.06
+![썸네일](https://github.com/user-attachments/assets/0fb7ce9b-3e68-4a27-83e9-a60663694202)
+
+> 프로그래머스 프론트엔드 데브코스 1기 3차 프로젝트 3팀 <br>
+**개발 기간** : 2024.10.22 ~ 24.11.06
 
 <br/>
 
@@ -106,7 +106,7 @@ Local (frontend)
 
 ## 화면설계서
 
-![alt text](<스크린샷 2024-11-01 오후 3.47.14.png>)
+<img width="841" alt="화면설계서" src="https://github.com/user-attachments/assets/01db352b-9421-4275-94aa-9d856290d79f">
 
 <br>
 
