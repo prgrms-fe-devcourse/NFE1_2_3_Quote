@@ -101,15 +101,12 @@ export class Post extends Document {
     default: [],
   })
   bookMarked: { userId: Types.ObjectId }[];
+
+  @ApiProperty({ description: '포스트에 달린 댓글 목록', required: false })
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'Comments' }], default: [] }) // Comments 컬렉션을 참조하는 배열 필드
+  comments: Types.ObjectId[];
 }
 
 export const _PostSchema = SchemaFactory.createForClass(Post);
-// // PostSchema에 가상 필드 추가
-// _PostSchema.virtual('author', {
-//   ref: 'User',
-//   localField: 'authorId',
-//   foreignField: '_id',
-//   justOne: true,
-// });
 
 export const PostSchema = _PostSchema;
