@@ -83,6 +83,7 @@ const MainPage = () => {
   const navigate = useNavigate();
   const { isLogin } = useAuthStore();
   const [showDeleteMessage, setShowDeleteMessage] = useState(false);
+  const [alert, setAlert] = useState<string>("");
 
   //카테고리 선택
   const handleSelectCategory = (category: string) => {
@@ -146,6 +147,15 @@ const MainPage = () => {
     }
   }, []);
 
+  useEffect(() => {
+    const loginAlert = localStorage.getItem("loginAlert");
+    if (loginAlert) {
+      setAlert(loginAlert);
+      localStorage.removeItem("loginAlert");
+      setTimeout(() => setAlert(""), 3000);
+    }
+  }, []);
+
   return (
     <MainLayout>
       <Container>
@@ -189,6 +199,7 @@ const MainPage = () => {
             {showDeleteMessage && (
               <AlertPopUp>회원 탈퇴가 완료되었습니다.</AlertPopUp>
             )}
+            {alert && <AlertPopUp>{alert}</AlertPopUp>}
           </PostContainer>
         </PostSection>
       </Container>
