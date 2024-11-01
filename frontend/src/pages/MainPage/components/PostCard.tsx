@@ -155,7 +155,11 @@ const PostCard = (props: PostCardProps) => {
       return;
     }
 
-    navigate(`/user-page/${post.authorId._id}`);
+    const path =
+      post.authorId._id === userId
+        ? "/mypage"
+        : `/user-page/${post.authorId._id}`;
+    navigate(path);
   };
 
   return (
