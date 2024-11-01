@@ -2,22 +2,17 @@ import { useMutation } from "@tanstack/react-query";
 import { deletePost } from "../apis/postDetailApi";
 import { useNavigate } from "react-router-dom";
 
-const useDeletePost = (
-  setDeleteSuccessMsg: (value: boolean) => void,
-  form: string,
-) => {
+const useDeletePost = (form: string) => {
   const navigate = useNavigate();
   const { mutate } = useMutation({
     mutationFn: deletePost,
     onSuccess: () => {
-      setDeleteSuccessMsg(true);
-      setTimeout(() => {
-        if (form === "myPage") {
-          navigate("/mypage");
-        } else {
-          navigate("/");
-        }
-      }, 2000);
+      localStorage.setItem("deleteSuccess", "true");
+      if (form === "myPage") {
+        navigate("/mypage");
+      } else {
+        navigate("/");
+      }
     },
     onError(error) {
       console.log(error);

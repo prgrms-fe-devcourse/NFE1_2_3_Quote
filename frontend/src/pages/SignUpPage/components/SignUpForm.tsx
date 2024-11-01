@@ -132,9 +132,7 @@ const SignUpForm = () => {
 
   const showAlert = () => {
     localStorage.setItem("signUpAlert", "회원가입이 완료되었습니다.");
-    setTimeout(() => {
-      navigate("/login");
-    });
+    navigate("/login");
   };
 
   const { mutate: signUp } = useSignUp({

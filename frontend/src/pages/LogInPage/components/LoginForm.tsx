@@ -138,9 +138,7 @@ const LoginForm = () => {
 
   const showAlert = () => {
     localStorage.setItem("loginAlert", "로그인 되었습니다.");
-    setTimeout(() => {
-      navigate("/");
-    });
+    navigate("/");
   };
 
   const { mutate: loginMutation } = useLogin(setErrorMsg, { showAlert });

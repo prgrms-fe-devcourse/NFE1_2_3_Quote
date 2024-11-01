@@ -2,6 +2,7 @@ import styled, { useTheme } from "styled-components";
 import WriteButtonDarkMode from "@assets/icons/write_button_darkMode.svg?react";
 import WriteButtonLightMode from "@assets/icons/write_button_lightMode.svg?react";
 import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "@pages/LogInPage/store/authStore";
 
 const StyledButton = styled.div`
   width: 50px;
@@ -24,9 +25,16 @@ interface WriteBtnProps {
 const WriteButton = ({ location, id }: WriteBtnProps) => {
   const theme = useTheme();
   const navigate = useNavigate();
+  const isLogin = useAuthStore((state) => state.isLogin);
+  
   const handleWriteButton = () => {
-    navigate("/create-post", { state: { from: location, id: id } });
+    if (isLogin) {
+      navigate("/create-post", { state: { from: location, id: id } });
+    } else {
+      navigate("/login");
+    }
   };
+
   return (
     <>
       <StyledButton onClick={handleWriteButton}>
