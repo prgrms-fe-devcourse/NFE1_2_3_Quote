@@ -106,7 +106,7 @@ Local (frontend)
 
 ## 화면설계서
 
-<img width="841" alt="화면설계서" src="https://github.com/user-attachments/assets/01db352b-9421-4275-94aa-9d856290d79f">
+<img width="841" alt="화면설계서" src="https://github.com/user-attachments/assets/4ebfce9f-bf37-47e9-b698-82fb318a1cfd">
 
 <br>
 
