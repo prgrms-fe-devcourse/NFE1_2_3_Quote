@@ -24,11 +24,13 @@ const PostCardContainer = styled.div<PostCardContainerProps>`
   background-color: ${({ theme, $category }) => theme[$category].bgColor};
   color: ${({ theme, $category }) => theme[$category].fontColor};
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.25);
-  cursor: pointer;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 
   &:hover {
     transform: translateY(-3px) scale(1.03);
-    box-shadow: 0 4px 12px ${({ theme }) => theme.colorShadow};
+    box-shadow: 0 8px 12px ${({ theme }) => theme.colorShadow};
   }
 `;
 
@@ -38,6 +40,7 @@ const PostContentContainer = styled.div<PostCardContainerProps>`
   flex-direction: column;
   justify-content: space-between;
   height: calc(300px - 50px);
+  cursor: pointer;
 `;
 
 const PostContent = styled.p`
@@ -91,6 +94,7 @@ const UserText = styled.p<{ $noUser: boolean }>`
   display: flex;
   justify-content: end;
   align-items: center;
+  cursor: pointer;
 
   &:hover {
     //탈퇴한 회원이 아닐 때만 적용
