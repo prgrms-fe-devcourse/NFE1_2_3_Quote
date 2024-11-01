@@ -105,8 +105,8 @@ const BookMark = styled.div`
   align-items: center;
   svg {
     color: ${({ theme }) => theme.colorFont};
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
     cursor: pointer;
     margin-right: 3px;
   }
@@ -209,10 +209,9 @@ const PostCard = (props: PostCardProps) => {
             </BookMark>
             <Comment>
               <CommentIcon />
-              댓글수
+              {post.comments.length}
             </Comment>
           </BookMarkComment>
-
           <UserText
             onClick={handleSelectAuthor}
             $noUser={noUser}

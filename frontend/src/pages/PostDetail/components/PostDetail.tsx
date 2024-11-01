@@ -99,6 +99,7 @@ const AuthorProfile = styled.div`
   display: flex;
   align-items: center;
   margin: 8px 0px;
+  cursor: pointer;
 `;
 
 const AuthorProfileImg = styled.img`
@@ -113,6 +114,7 @@ const AuthorName = styled.p`
   line-height: 25px;
   margin: 0px;
   height: 20px;
+  cursor: pointer;
 `;
 
 const ContentContainer = styled.div`
@@ -263,7 +265,7 @@ const PostDetail = () => {
               onClick={handleProfileClick}
             />
             <div>
-              <AuthorName>
+              <AuthorName onClick={handleProfileClick}>
                 {noUser ? "탈퇴한 회원" : postInfo?.authorId?.nickname}
               </AuthorName>
               <CreatedAt>{postInfo?.createdAt.slice(0, 10)}</CreatedAt>
