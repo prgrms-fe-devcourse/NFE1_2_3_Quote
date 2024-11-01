@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useBookmarkMutation } from "../hooks/useBookmarkMutation";
 import BookMarkBefore from "@assets/icons/bookMark_before_select.svg?react";
 import BookMarkAfter from "@assets/icons/bookMark_after_select.svg?react";
+import CommentIcon from "@assets/icons/comment.svg?react";
 
 // Styled Components
 
@@ -93,6 +94,11 @@ const BottomContainer = styled.div`
   font-size: 14px;
 `;
 
+const BookMarkComment = styled.div`
+  display: flex;
+  gap: 8px;
+`;
+
 const BookMark = styled.div`
   width: auto;
   display: flex;
@@ -102,7 +108,20 @@ const BookMark = styled.div`
     width: 18px;
     height: 18px;
     cursor: pointer;
-    margin-right: 5px;
+    margin-right: 3px;
+  }
+`;
+
+const Comment = styled.div`
+  width: auto;
+  display: flex;
+  align-items: center;
+  svg {
+    color: ${({ theme }) => theme.colorFont};
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    margin-right: 3px;
   }
 `;
 
@@ -155,6 +174,7 @@ const PostCard = (props: PostCardProps) => {
       return;
     }
 
+    //마이페이지 또는 다른유저페이지
     const path =
       post.authorId._id === userId
         ? "/mypage"
@@ -178,14 +198,21 @@ const PostCard = (props: PostCardProps) => {
           </TitleDateContainer>
         </PostContentContainer>
         <BottomContainer>
-          <BookMark onClick={handleCheckBookmark}>
-            {post.bookMarked.map((user) => user.userId).includes(userId) ? (
-              <BookMarkAfter />
-            ) : (
-              <BookMarkBefore />
-            )}
-            {post.bookMarked.length}
-          </BookMark>
+          <BookMarkComment>
+            <BookMark onClick={handleCheckBookmark}>
+              {post.bookMarked.map((user) => user.userId).includes(userId) ? (
+                <BookMarkAfter />
+              ) : (
+                <BookMarkBefore />
+              )}
+              {post.bookMarked.length}
+            </BookMark>
+            <Comment>
+              <CommentIcon />
+              댓글수
+            </Comment>
+          </BookMarkComment>
+
           <UserText
             onClick={handleSelectAuthor}
             $noUser={noUser}
