@@ -19,6 +19,7 @@ export const useMyPage = () => {
   );
   const [showDeleteSuccess, setShowDeleteSuccess] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [bookmarkedPostsState, setBookmarkedPostsState] = useState<Post[]>([]);
   const navigate = useNavigate();
   const { storeLogout } = useAuthStore();
   const queryClient = useQueryClient();
@@ -56,6 +57,7 @@ export const useMyPage = () => {
     mutationFn: (profile) => fetchBookmarkedPosts(profile),
     onSuccess: (bookmarkedPosts) => {
       queryClient.setQueryData(["bookmarkedPosts"], bookmarkedPosts);
+      setBookmarkedPostsState(bookmarkedPosts);
     },
     onError: (error) => {
       console.error("북마크 포스트 가져오기 실패:", error);
@@ -118,48 +120,47 @@ export const useMyPage = () => {
   };
 
   const handleAddBookmark = (post: Post) => {
-    queryClient.setQueryData<Post[]>(
-      ["bookmarkedPosts"],
-      (prevBookmarkedPosts) => {
-        const existingPost = (prevBookmarkedPosts || []).find(
-          (p) => p._id === post._id,
-        );
-
-        return existingPost
-          ? prevBookmarkedPosts
-          : [post, ...(prevBookmarkedPosts || [])];
-      },
-    );
+    setBookmarkedPostsState((prevBookmarkedPosts) => {
+      const existingPost = prevBookmarkedPosts.find((p) => p._id === post._id);
+      return existingPost
+        ? prevBookmarkedPosts
+        : [post, ...prevBookmarkedPosts];
+    });
 
     queryClient.setQueryData(["myPosts"], (prevMyPosts: Post[] | undefined) =>
       (prevMyPosts || []).map((p) =>
         p._id === post._id ? { ...p, isBookmarked: true } : p,
       ),
     );
+
+    queryClient.invalidateQueries({ queryKey: ["bookmarkedPosts"] });
+    queryClient.invalidateQueries({ queryKey: ["myPosts"] });
   };
 
   const handleRemoveBookmark = (postId: string) => {
-    queryClient.setQueryData<Post[]>(
-      ["bookmarkedPosts"],
-      (prevBookmarkedPosts) =>
-        (prevBookmarkedPosts || []).filter((post) => post._id !== postId),
+    setBookmarkedPostsState((prevBookmarkedPosts) =>
+      prevBookmarkedPosts.filter((post) => post._id !== postId),
     );
 
-    queryClient.setQueryData(["myPosts"], (prevMyPosts: Post[] | undefined) =>
-      (prevMyPosts || []).map((p) =>
-        p._id === postId
-          ? {
-              ...p,
-              isBookmarked: false,
-              bookMarked: (p.bookMarked || []).filter(
-                (user) =>
-                  user.userId !==
-                  queryClient.getQueryData<UserMe>(["userProfile"])?.id,
-              ),
-            }
-          : p,
-      ),
+    const updatedMyPosts = (
+      queryClient.getQueryData<Post[]>(["myPosts"]) || []
+    ).map((p) =>
+      p._id === postId
+        ? {
+            ...p,
+            isBookmarked: false,
+            bookMarked: (p.bookMarked || []).filter(
+              (user) =>
+                user.userId !==
+                queryClient.getQueryData<UserMe>(["userProfile"])?.id,
+            ),
+          }
+        : p,
     );
+    queryClient.setQueryData(["myPosts"], updatedMyPosts);
+
+    queryClient.invalidateQueries({ queryKey: ["bookmarkedPosts"] });
+    queryClient.invalidateQueries({ queryKey: ["myPosts"] });
   };
 
   const handleSelectPost = useCallback((postId: string) => {
@@ -169,8 +170,7 @@ export const useMyPage = () => {
   return {
     userProfile: queryClient.getQueryData<UserMe>(["userProfile"]),
     myPosts: queryClient.getQueryData<Post[]>(["myPosts"]) || [],
-    bookmarkedPosts:
-      queryClient.getQueryData<Post[]>(["bookmarkedPosts"]) || [],
+    bookmarkedPosts: bookmarkedPostsState,
     activeTab,
     setActiveTab,
     menuVisible,
