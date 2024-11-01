@@ -55,14 +55,31 @@ const PostContent = styled.p`
   line-height: 24px;
 `;
 
-const PostTitle = styled.p`
+const TitleDateContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  height: auto;
+`;
+
+const PostTitle = styled.p<PostCardContainerProps>`
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 1;
+  width: 10rem;
   font-size: 14px;
+  border-left: 2px solid ${({ theme, $category }) => theme[$category].fontColor};
+  padding-left: 5px;
   font-weight: bold;
   margin: 0;
   overflow: hidden;
+  white-space: pre-wrap;
+  text-overflow: ellipsis;
+`;
+
+const PostDate = styled.p`
+  font-size: 12px;
+  margin: 0;
 `;
 
 const BottomContainer = styled.div`
@@ -70,7 +87,7 @@ const BottomContainer = styled.div`
   height: 50px;
   display: flex;
   justify-content: space-between;
-  padding: 0 1rem;
+  padding: 0 20px;
   background-color: ${({ theme }) => theme.colorSub};
   color: ${({ theme }) => theme.colorMainFont};
   font-size: 14px;
@@ -149,7 +166,12 @@ const PostCard = (props: PostCardProps) => {
           onClick={onClick}
         >
           <PostContent>{post.quote}</PostContent>
-          <PostTitle>{post.title}</PostTitle>
+          <TitleDateContainer>
+            <PostTitle $category={post.category}>{post.title}</PostTitle>
+            <PostDate>
+              {post.createdAt.slice(0, 10).replace(/-/g, ".")}
+            </PostDate>
+          </TitleDateContainer>
         </PostContentContainer>
         <BottomContainer>
           <BookMark onClick={handleCheckBookmark}>
