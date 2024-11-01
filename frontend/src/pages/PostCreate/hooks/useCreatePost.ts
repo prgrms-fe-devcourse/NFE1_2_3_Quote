@@ -2,15 +2,13 @@ import { useMutation } from "@tanstack/react-query";
 import { createPost } from "../apis/api";
 import { useNavigate } from "react-router-dom";
 
-export const useCreatePost = (setShowSuccessMsg: (value: boolean) => void) => {
+export const useCreatePost = () => {
   const navigate = useNavigate();
   const { mutate } = useMutation({
     mutationFn: createPost,
     onSuccess: () => {
-      setShowSuccessMsg(true);
-      setTimeout(() => {
+      localStorage.setItem("postSuccessMessage", "글 작성이 완료되었습니다.");
         navigate(-1);
-      }, 2000);
     },
     onError(error) {
       console.log(error);
