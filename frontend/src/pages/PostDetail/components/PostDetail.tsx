@@ -9,9 +9,17 @@ import PostDeletePopUp from "./PostDeletePopUp";
 import useGetLoggedInUser from "../hooks/useGetLoggedInUser";
 import useGetPostInfo from "../hooks/useGetPostInfo";
 import { useTheme } from "styled-components";
+import Spinner from "@/components/Spinner/Spinner";
+import PostComment from "./PostComment";
+
+const SpinnerContainer = styled.div`
+  position: fixed;
+  top: 50%;
+`;
 
 const DetailContainer = styled.div`
   width: 760px;
+  height: 100%;
   position: relative;
 `;
 const GotoBackButton = styled.button`
@@ -157,7 +165,7 @@ const PostDetail = () => {
 
   // 포스트 정보 가져오기
   const { postId } = useParams() as { postId: string };
-  const { postInfo } = useGetPostInfo(postId);
+  const { postInfo, isLoading } = useGetPostInfo(postId);
 
   // 현재 로그인한 사용자가 작성자인지 확인
   const isAuthor =
@@ -177,7 +185,7 @@ const PostDetail = () => {
     if (location.state.from === "myPage") {
       return navigate("/mypage");
     }
-    if (location.state.from === "userPage") {
+    if (location.state.from === "UserPage") {
       return navigate(`/user-page/${location.state.user}`);
     }
   };
@@ -188,7 +196,7 @@ const PostDetail = () => {
   };
 
   // 프로필 누르면 해당 유저 프로필로 이동
-  const noUser = !postInfo?.authorId?._id;
+  const noUser = postInfo && !postInfo.authorId._id;
 
   const handleProfileClick = () => {
     if (noUser) {
@@ -202,75 +210,85 @@ const PostDetail = () => {
   };
 
   return (
-    <DetailContainer>
-      <GotoBackButton onClick={handleGoToBack}>
-        <GoToBackBtn />
-      </GotoBackButton>
-      <TopContainer>
-        {isAuthor && (
-          <ModifyBtn
-            onClick={() => {
-              setShowList(!showList);
-            }}
-          >
-            <WriteModifyBtn />
-          </ModifyBtn>
-        )}
-        {showList && (
-          <ModifyMenu
-            style={{
-              boxShadow:
-                theme.mode == "lightMode" ? "0px 0px 6px #dfdfdf" : "none",
-            }}
-          >
-            <ModifyItem
-              onClick={() =>
-                navigate(`/post/${postId}/modify`, {
-                  state: { from: location.state.from },
-                })
+    <>
+      {isLoading ? (
+        <SpinnerContainer>
+          <Spinner />
+        </SpinnerContainer>
+      ) : (
+        <DetailContainer>
+          <GotoBackButton onClick={handleGoToBack}>
+            <GoToBackBtn />
+          </GotoBackButton>
+          <TopContainer>
+            {isAuthor && (
+              <ModifyBtn
+                onClick={() => {
+                  setShowList(!showList);
+                }}
+              >
+                <WriteModifyBtn />
+              </ModifyBtn>
+            )}
+            {showList && (
+              <ModifyMenu
+                style={{
+                  boxShadow:
+                    theme.mode == "lightMode" ? "0px 0px 6px #dfdfdf" : "none",
+                }}
+              >
+                <ModifyItem
+                  onClick={() =>
+                    navigate(`/post/${postId}/modify`, {
+                      state: { from: location.state.from },
+                    })
+                  }
+                >
+                  수정
+                </ModifyItem>
+                <ModifyItem onClick={handlePostDeletePopUp}>삭제</ModifyItem>
+              </ModifyMenu>
+            )}
+            <Category>{postInfo?.category}</Category>
+            <Title>{postInfo?.title}</Title>
+          </TopContainer>
+          <AuthorProfile>
+            <AuthorProfileImg
+              src={
+                noUser
+                  ? "https://img1.daumcdn.net/thumb/R1280x0/?fname=http://t1.daumcdn.net/brunch/service/user/7r5X/image/9djEiPBPMLu_IvCYyvRPwmZkM1g.jpg"
+                  : postInfo?.authorId?.profileImage
               }
-            >
-              수정
-            </ModifyItem>
-            <ModifyItem onClick={handlePostDeletePopUp}>삭제</ModifyItem>
-          </ModifyMenu>
-        )}
-        <Category>{postInfo?.category}</Category>
-        <Title>{postInfo?.title}</Title>
-      </TopContainer>
-      <AuthorProfile>
-        <AuthorProfileImg
-          src={
-            postInfo?.authorId?.profileImage ||
-            "https://img1.daumcdn.net/thumb/R1280x0/?fname=http://t1.daumcdn.net/brunch/service/user/7r5X/image/9djEiPBPMLu_IvCYyvRPwmZkM1g.jpg"
-          }
-          alt='작성자 프로필사진'
-          onClick={handleProfileClick}
-        />
-        <div>
-          <AuthorName>
-            {postInfo?.authorId?.nickname || "탈퇴한 회원"}
-          </AuthorName>
-          <CreatedAt>{postInfo?.createdAt.slice(0, 10)}</CreatedAt>
-        </div>
-      </AuthorProfile>
-      <ContentContainer>
-        <QuoteContainer>
-          <QuoteStartIcon />
-          <Quote>{postInfo?.quote}</Quote>
-          <QuoteEndIcon />
-        </QuoteContainer>
-        <Content>{postInfo?.content}</Content>
-      </ContentContainer>
-      {showPopUp && (
-        <PostDeletePopUp
-          showPopUp={showPopUp}
-          setShowPopUp={setShowPopUp}
-          postId={postId}
-          form={location.state.from}
-        />
+              alt='작성자 프로필사진'
+              onClick={handleProfileClick}
+            />
+            <div>
+              <AuthorName>
+                {noUser ? "탈퇴한 회원" : postInfo?.authorId?.nickname}
+              </AuthorName>
+              <CreatedAt>{postInfo?.createdAt.slice(0, 10)}</CreatedAt>
+            </div>
+          </AuthorProfile>
+          <ContentContainer>
+            <QuoteContainer>
+              <QuoteStartIcon />
+              <Quote>{postInfo?.quote}</Quote>
+              <QuoteEndIcon />
+            </QuoteContainer>
+            <Content>{postInfo?.content}</Content>
+          </ContentContainer>
+          {showPopUp && (
+            <PostDeletePopUp
+              showPopUp={showPopUp}
+              setShowPopUp={setShowPopUp}
+              postId={postId}
+              form={location.state.from}
+            />
+          )}
+          <PostComment />
+        </DetailContainer>
       )}
-    </DetailContainer>
+    </>
   );
 };
 

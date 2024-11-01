@@ -90,8 +90,7 @@ const PostComment = () => {
   const [userId, setUserId] = useState<string>("");
   const { postId } = useParams() as { postId: string };
   const { postInfo } = useGetPostInfo(postId);
-  const { data, isLoading, isError } = useGetComment(postId);
-  const commentData = data || [];
+  const { data: commentData, isError } = useGetComment(postId);
 
   // 현재 유저 id 확인
   useEffect(() => {
@@ -118,6 +117,8 @@ const PostComment = () => {
     mutate(postId);
   };
 
+  const noComment = commentData?.length === 0;
+
   return (
     <>
       <CommentContainer>
@@ -131,7 +132,7 @@ const PostComment = () => {
         )}
         <CommentSection>
           <CommentCount>
-            댓글 <span>{commentData.length}</span>
+            댓글 <span>{commentData?.length}</span>
           </CommentCount>
           <ButtonContainer>
             <CommentButton onClick={handleCommentPopUp}>
@@ -144,12 +145,11 @@ const PostComment = () => {
           </ButtonContainer>
         </CommentSection>
 
-        {isLoading ? (
-          <NoCommentText>Loading ...</NoCommentText>
-        ) : isError ? (
-          <NoCommentText>Error</NoCommentText>
-        ) : commentData?.length > 0 ? (
-          commentData.map((comment) => (
+        {isError && <NoCommentText>Error</NoCommentText>}
+        {noComment ? (
+          <NoCommentText>댓글이 없습니다.</NoCommentText>
+        ) : (
+          commentData?.map((comment) => (
             <Comment
               isUser={userId === comment.authorId._id}
               key={comment._id}
@@ -157,10 +157,7 @@ const PostComment = () => {
               onSetShowDeleteMessage={setShowDeleteMessage}
             />
           ))
-        ) : (
-          <NoCommentText>댓글이 없습니다.</NoCommentText>
         )}
-        {}
       </CommentContainer>
       {showCommentMessage && <AlertPopUp>댓글이 작성되었습니다.</AlertPopUp>}
       {showDeleteMessage && <AlertPopUp>댓글이 삭제되었습니다.</AlertPopUp>}
