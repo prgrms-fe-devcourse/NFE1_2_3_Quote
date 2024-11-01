@@ -68,11 +68,11 @@ const PostTitle = styled.p<PostCardContainerProps>`
   -webkit-line-clamp: 1;
   width: 10rem;
   font-size: 14px;
-  border-left: 2px solid ${({ theme, $category }) => theme[$category].fontColor};
-  padding-left: 5px;
   font-weight: bold;
   margin: 0;
   overflow: hidden;
+  border-left: 2px solid ${({ theme, $category }) => theme[$category].fontColor};
+  padding-left: 5px;
   white-space: pre-wrap;
   text-overflow: ellipsis;
 `;
