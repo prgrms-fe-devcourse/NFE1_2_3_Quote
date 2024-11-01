@@ -4,16 +4,17 @@ import styled from "styled-components";
 import { useTheme } from "styled-components";
 
 const CategorySelectContainer = styled.div`
-  width: 90%;
-  margin-top: 50px;
+  width: 85%;
   padding-top: 20px;
+  margin: 50px 0 10px 0;
   display: flex;
   flex-direction: row-reverse;
+  position: relative;
 `;
 
 const CategorySelectButton = styled.button`
   padding: 0px;
-  font-size: 20px;
+  font-size: 16px;
   color: ${({ theme }) => theme.colorMainFont};
   display: flex;
   justify-content: end;
@@ -26,7 +27,7 @@ const CategorySelectButton = styled.button`
 `;
 
 const DropBoxButton = styled(DropBoxBtn)`
-  font-size: 24px;
+  font-size: 20px;
   margin-left: 4px;
   color: ${({ theme }) => theme.colorMainFont};
   &:hover {
@@ -35,11 +36,10 @@ const DropBoxButton = styled(DropBoxBtn)`
 `;
 
 const CategoryListContainer = styled.div`
-  width: 135px;
-  height: 194px;
+  width: 130px;
   position: absolute;
-  right: 25px;
-  top: 100px;
+  top: 50px;
+  right: -30px;
   background-color: ${({ theme }) => theme.colorCategoryList};
   border-radius: 10px;
   overflow: hidden;
@@ -55,7 +55,7 @@ const CategoryItem = styled.li`
     cursor: pointer;
   }
   list-style: none;
-  font-size: 16px;
+  font-size: 14px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -84,25 +84,25 @@ const CategorySelect = ({ category, setCategory }: CategorySelectProps) => {
           {category}
           <DropBoxButton />
         </CategorySelectButton>
+        {showList && (
+          <CategoryListContainer
+            style={{
+              boxShadow:
+                theme.mode == "lightMode" ? "0px 0px 6px #dfdfdf" : "none",
+              border: theme.mode === "lightMode" ? "1px solid #e3e3e3" : "none",
+            }}
+          >
+            {categoryList.map((item, index) => (
+              <CategoryItem
+                key={index}
+                onClick={() => handleCategorySelect(item)}
+              >
+                {item}
+              </CategoryItem>
+            ))}
+          </CategoryListContainer>
+        )}
       </CategorySelectContainer>
-      {showList && (
-        <CategoryListContainer
-          style={{
-            boxShadow:
-              theme.mode == "lightMode" ? "0px 0px 6px #dfdfdf" : "none",
-            border: theme.mode === "lightMode" ? "1px solid #e3e3e3" : "none",
-          }}
-        >
-          {categoryList.map((item, index) => (
-            <CategoryItem
-              key={index}
-              onClick={() => handleCategorySelect(item)}
-            >
-              {item}
-            </CategoryItem>
-          ))}
-        </CategoryListContainer>
-      )}
     </>
   );
 };
