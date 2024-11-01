@@ -50,16 +50,30 @@ const PostContent = styled.p`
   line-height: 24px;
 `;
 
-const PostTitle = styled.p`
+const TitleDateContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  height: auto;
+`;
+
+const PostTitle = styled.p<PostCardContainerProps>`
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 1;
+  width: 6rem;
   font-size: 10px;
   font-weight: bold;
   margin: 0;
   overflow: hidden;
+  border-left: 2px solid ${({ theme, $category }) => theme[$category].fontColor};
+  padding-left: 5px;
 `;
 
+const PostDate = styled.p`
+  font-size: 10px;
+  margin: 0;
+`;
 const BottomContainer = styled.div`
   width: 100%;
   height: 60px;
@@ -122,7 +136,12 @@ const PostCard = ({
           onClick={onClick}
         >
           <PostContent>{post.quote}</PostContent>
-          <PostTitle>{post.title}</PostTitle>
+          <TitleDateContainer>
+            <PostTitle $category={post.category}>{post.title}</PostTitle>
+            <PostDate>
+              {post.createdAt.slice(0, 10).replace(/-/g, ".")}
+            </PostDate>
+          </TitleDateContainer>
         </PostContentContainer>
         <BottomContainer>
           <BookMark onClick={toggleBookmark}>
