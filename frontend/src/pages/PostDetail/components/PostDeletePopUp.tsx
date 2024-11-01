@@ -2,7 +2,6 @@ import styled from "styled-components";
 import { useState } from "react";
 import useDeletePost from "../hooks/useDeletePost";
 import { useTheme } from "styled-components";
-import AlertPopUp from "@/components/AlertPopUp/AlertPopUp";
 
 const PopUpContainer = styled.div`
   width: 400px;
@@ -76,9 +75,8 @@ const PostDeletePopUp = ({
   form,
 }: DeletePopUpProps) => {
   const theme = useTheme();
-  const [deleteSuccessMsg, setDeleteSuccessMsg] = useState(false);
 
-  const { mutate } = useDeletePost(setDeleteSuccessMsg, form);
+  const { mutate } = useDeletePost(form);
   const [btnDisabled, setBtnDisabled] = useState(false);
 
   const handleConfirmDelete = () => {
@@ -108,7 +106,6 @@ const PostDeletePopUp = ({
             확인
           </PopUpConfirmButton>
         </PopUpButtonContainer>
-        {deleteSuccessMsg && <AlertPopUp>글이 삭제되었습니다.</AlertPopUp>}
       </PopUpContainer>
     </>
   );

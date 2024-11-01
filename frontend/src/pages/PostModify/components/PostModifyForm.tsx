@@ -159,7 +159,6 @@ const PostModifyForm = () => {
   const [showCancelPopUp, setShowCancelPopUp] = useState(false);
   const [showMsg, setShowMsg] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
-  const [showSuccessMsg, setShowSuccessMsg] = useState(false);
 
   const handleCancel = () => {
     setShowCancelPopUp(!showCancelPopUp);
@@ -168,7 +167,7 @@ const PostModifyForm = () => {
   const location = useLocation();
   const from = location.state.from;
 
-  const { mutate } = useModifyPost(setShowSuccessMsg, postId, from);
+  const { mutate } = useModifyPost(postId, from);
   const [btnDisabled, setBtnDisabled] = useState(false);
 
   const handleCreatePost = () => {
@@ -206,6 +205,7 @@ const PostModifyForm = () => {
       },
       postId,
     });
+    localStorage.setItem("postModifySuccess", "글 수정이 완료되었습니다.");
   };
 
   return (
@@ -272,7 +272,6 @@ const PostModifyForm = () => {
         />
       )}
       {showMsg && <AlertPopUp error>{errorMsg}</AlertPopUp>}
-      {showSuccessMsg && <AlertPopUp>글 수정이 완료되었습니다.</AlertPopUp>}
     </>
   );
 };

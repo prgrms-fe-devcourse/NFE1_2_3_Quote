@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { memo } from "react";
 import styled, { useTheme } from "styled-components";
 import { useMyPage } from "./hooks/useMyPage";
@@ -160,6 +161,17 @@ const MyPage = memo(() => {
 
   const theme = useTheme();
 
+  const [showDeleteSuccess, setShowDeleteSuccess] = useState(false);
+
+  useEffect(() => {
+    const deleteSuccess = localStorage.getItem("deleteSuccess");
+    if (deleteSuccess) {
+      setShowDeleteSuccess(true);
+      localStorage.removeItem("deleteSuccess");
+      setTimeout(() => setShowDeleteSuccess(false), 2000);
+    }
+  }, []);
+
   const renderPosts = (posts: Post[]) =>
     posts.length ? (
       <PostContainer>
@@ -255,6 +267,7 @@ const MyPage = memo(() => {
             onConfirm={handleDeleteAccount}
           />
         )}
+        {showDeleteSuccess && <AlertPopUp>글이 삭제되었습니다.</AlertPopUp>}
       </Container>
       <WriteButton location={"myPage"} />
     </MainLayout>

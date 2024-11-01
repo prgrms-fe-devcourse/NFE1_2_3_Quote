@@ -6,7 +6,6 @@ import lightModeLogo from "@assets/images/quoteLogo_lightMode.png";
 import { Link, useNavigate } from "react-router-dom";
 import { useSignUp } from "../hooks/useSignUp";
 import useThemeStore from "@/styles/store/useThemeStore";
-import AlertPopUp from "@/components/AlertPopUp/AlertPopUp";
 import PwdInput from "./PwdInput";
 
 const Container = styled.div`
@@ -129,18 +128,15 @@ const SignUpForm = () => {
     password: "",
     checkPwd: "",
   });
-  const [alert, setAlert] = useState("");
   const [errMsg, setErrorMsg] = useState<ErrorMessage>({});
 
   const showAlert = () => {
-    setAlert("회원가입이 완료되었습니다.");
-    setTimeout(() => {
-      navigate("/login");
-    }, 1500);
+    localStorage.setItem("signUpAlert", "회원가입이 완료되었습니다.");
+    navigate("/login");
   };
 
   const { mutate: signUp } = useSignUp({
-    showAlert: showAlert,
+    showAlert,
     setError: setErrorMsg,
   });
 
@@ -312,7 +308,6 @@ const SignUpForm = () => {
 
         <CopyRight>Copyright © TEAM333333 All Rights Reserved.</CopyRight>
       </Container>
-      {alert && <AlertPopUp>{alert}</AlertPopUp>}
     </MainLayout>
   );
 };

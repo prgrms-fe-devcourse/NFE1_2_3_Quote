@@ -83,6 +83,8 @@ const MainPage = () => {
   const navigate = useNavigate();
   const { isLogin } = useAuthStore();
   const [showDeleteMessage, setShowDeleteMessage] = useState(false);
+  const [alert, setAlert] = useState<string>("");
+  const [showDeleteSuccess, setShowDeleteSuccess] = useState(false);
 
   //카테고리 선택
   const handleSelectCategory = (category: string) => {
@@ -146,6 +148,24 @@ const MainPage = () => {
     }
   }, []);
 
+  useEffect(() => {
+    const loginAlert = localStorage.getItem("loginAlert");
+    if (loginAlert) {
+      setAlert(loginAlert);
+      localStorage.removeItem("loginAlert");
+      setTimeout(() => setAlert(""), 3000);
+    }
+  }, []);
+
+  useEffect(() => {
+    const deleteSuccess = localStorage.getItem("deleteSuccess");
+    if (deleteSuccess) {
+      setShowDeleteSuccess(true);
+      localStorage.removeItem("deleteSuccess");
+      setTimeout(() => setShowDeleteSuccess(false), 2000);
+    }
+  }, []);
+
   return (
     <MainLayout>
       <Container>
@@ -189,6 +209,8 @@ const MainPage = () => {
             {showDeleteMessage && (
               <AlertPopUp>회원 탈퇴가 완료되었습니다.</AlertPopUp>
             )}
+            {alert && <AlertPopUp>{alert}</AlertPopUp>}
+            {showDeleteSuccess && <AlertPopUp>글이 삭제되었습니다.</AlertPopUp>}
           </PostContainer>
         </PostSection>
       </Container>

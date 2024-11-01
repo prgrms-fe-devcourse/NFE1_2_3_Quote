@@ -3,12 +3,13 @@ import GoToBackBtn from "@assets/icons/goToBack_button.svg?react";
 import QuoteStartIcon from "@assets/icons/quote_start.svg?react";
 import QuoteEndIcon from "@assets/icons/quote_end.svg?react";
 import styled from "styled-components";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import PostDeletePopUp from "./PostDeletePopUp";
 import useGetLoggedInUser from "../hooks/useGetLoggedInUser";
 import useGetPostInfo from "../hooks/useGetPostInfo";
 import { useTheme } from "styled-components";
+import AlertPopUp from "@/components/AlertPopUp/AlertPopUp";
 import Spinner from "@/components/Spinner/Spinner";
 import PostComment from "./PostComment";
 
@@ -177,6 +178,17 @@ const PostDetail = () => {
   const navigate = useNavigate();
   const [showPopUp, setShowPopUp] = useState(false);
 
+  const [showSuccessMsg, setShowSuccessMsg] = useState("");
+
+  useEffect(() => {
+    const successMsg = localStorage.getItem("postModifySuccess");
+    if (successMsg) {
+      setShowSuccessMsg(successMsg);
+      localStorage.removeItem("postModifySuccess");
+      setTimeout(() => setShowSuccessMsg(""), 3000);
+    }
+  }, []);
+
   // 뒤로가기
   const handleGoToBack = () => {
     if (location.state.from === "main") {
@@ -288,6 +300,7 @@ const PostDetail = () => {
           <PostComment />
         </DetailContainer>
       )}
+      {showSuccessMsg && <AlertPopUp>{showSuccessMsg}</AlertPopUp>}
     </>
   );
 };

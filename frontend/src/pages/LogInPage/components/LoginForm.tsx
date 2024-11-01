@@ -1,13 +1,14 @@
 import MainLayout from "@/layouts/MainLayout";
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useState, useEffect } from "react";
 import styled from "styled-components";
 import darkModeLogo from "@assets/images/quoteLogo_darkMode.png";
 import lightModeLogo from "@assets/images/quoteLogo_lightMode.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useLogin } from "../hooks/useLogin";
 import KakaoBtn from "@/pages/SignUpPage/components/KakaoBtn";
 import useThemeStore from "@/styles/store/useThemeStore";
 import PwdInput from "@/pages/SignUpPage/components/PwdInput";
+import AlertPopUp from "@/components/AlertPopUp/AlertPopUp";
 
 const Container = styled.div`
   width: 100%;
@@ -122,21 +123,25 @@ const LoginForm = () => {
     email: "",
     password: "",
   });
-  // const [alert, setAlert] = useState("");
   const [errMsg, setErrorMsg] = useState<ErrorMessage>({});
-  // const navigate = useNavigate();
+  const [alert, setAlert] = useState<string>("");
+  const navigate = useNavigate();
 
-  // const showAlert = () => {
-  //   setAlert("로그인이 완료되었습니다.");
-  //   setTimeout(() => {
-  //     navigate("/");
-  //   }, 1500);
-  // };
+  useEffect(() => {
+    const signUpAlert = localStorage.getItem("signUpAlert");
+    if (signUpAlert) {
+      setAlert(signUpAlert);
+      localStorage.removeItem("signUpAlert");
+      setTimeout(() => setAlert(""), 3000);
+    }
+  }, []);
 
-  const { mutate: loginMutation } = useLogin(
-    // showAlert: showAlert,
-    setErrorMsg,
-  );
+  const showAlert = () => {
+    localStorage.setItem("loginAlert", "로그인 되었습니다.");
+    navigate("/");
+  };
+
+  const { mutate: loginMutation } = useLogin(setErrorMsg, { showAlert });
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
@@ -241,7 +246,7 @@ const LoginForm = () => {
 
         <CopyRight>Copyright © TEAM333333 All Rights Reserved.</CopyRight>
       </Container>
-      {/* {alert && <AlertPopUp>{alert}</AlertPopUp>} */}
+      {alert && <AlertPopUp>{alert}</AlertPopUp>}
     </MainLayout>
   );
 };
