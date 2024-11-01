@@ -13,12 +13,12 @@ type ModifyCommentType = { commentId: string; contents: string };
 type DeleteCommentType = { commentId: string };
 
 export const useGetComment = (postId: string) => {
-  const { data, isLoading, isError } = useQuery<Comment[]>({
-    queryKey: ["comment"],
+  const { data, isError } = useQuery<Comment[]>({
+    queryKey: ["comment", postId],
     queryFn: () => getPostComment(postId),
   });
 
-  return { data, isLoading, isError };
+  return { data, isError };
 };
 
 export const useCommentMutation = () => {

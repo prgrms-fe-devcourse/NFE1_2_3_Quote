@@ -167,7 +167,7 @@ const MyPage = memo(() => {
           <PostCard
             key={`${post._id}-${index}`}
             post={post}
-            userId={profile || ""}
+            userId={userProfile?.id || ""}
             isBookmarked={bookmarkedPosts.some((p) => p._id === post._id)}
             onClick={() => handleSelectPost(post._id)}
             onAddBookmark={handleAddBookmark}
@@ -187,12 +187,15 @@ const MyPage = memo(() => {
     <MainLayout>
       <Container>
         <ProfileSection>
-          <SettingsButtonWrapper ref={settingsButtonRef} onClick={toggleMenu}>
-              {theme.mode === "lightMode" ? (
-                <ProfileModifyLightMode />
-              ) : (
-                <ProfileModifyDarkMode />
-              )}
+          <SettingsButtonWrapper
+            ref={settingsButtonRef}
+            onClick={toggleMenu}
+          >
+            {theme.mode === "lightMode" ? (
+              <ProfileModifyLightMode />
+            ) : (
+              <ProfileModifyDarkMode />
+            )}
           </SettingsButtonWrapper>
           {menuVisible && (
             <Menu ref={menuRef}>
