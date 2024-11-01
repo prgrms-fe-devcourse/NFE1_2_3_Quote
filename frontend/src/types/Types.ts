@@ -3,6 +3,7 @@ export interface Post {
   category: string;
   title: string;
   content: string;
+  comments: string[];
   quote: string;
   authorId: { nickname: string; _id: string };
   date: string;

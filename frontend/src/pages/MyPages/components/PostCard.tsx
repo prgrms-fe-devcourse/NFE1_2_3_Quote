@@ -1,10 +1,12 @@
 import styled from "styled-components";
 import BookMarkBefore from "@assets/icons/bookMark_before_select.svg?react";
 import BookMarkAfter from "@assets/icons/bookMark_after_select.svg?react";
+import CommentIcon from "@assets/icons/comment.svg?react";
 import { Post } from "@/types/Types";
 import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useBookmark } from "../hooks/useBookmark";
+
 
 interface PostCardContainerProps {
   $category: string;
@@ -87,6 +89,11 @@ const BottomContainer = styled.div`
   font-size: 10px;
 `;
 
+const BookMarkComment = styled.div`
+  display: flex;
+  gap: 5px;
+`;
+
 const BookMark = styled.div`
   width: auto;
   display: flex;
@@ -96,7 +103,20 @@ const BookMark = styled.div`
     width: 16px;
     height: 16px;
     cursor: pointer;
-    margin-right: 5px;
+    margin-right: 3px;
+  }
+`;
+
+const Comment = styled.div`
+  width: auto;
+  display: flex;
+  align-items: center;
+  svg {
+    color: ${({ theme }) => theme.colorFont};
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    margin-right: 3px;
   }
 `;
 
@@ -164,10 +184,17 @@ const PostCard = ({
         </TitleDateContainer>
       </PostContentContainer>
       <BottomContainer>
+        <BookMarkComment>
         <BookMark onClick={toggleBookmark}>
           {isBookmarked ? <BookMarkAfter /> : <BookMarkBefore />}
           {bookmarkCount}
         </BookMark>
+        <Comment>
+              <CommentIcon />
+              {post.comments.length}
+            </Comment>
+        </BookMarkComment>
+
         <UserText
           onClick={handleSelectAuthor}
           $noUser={noUser}
