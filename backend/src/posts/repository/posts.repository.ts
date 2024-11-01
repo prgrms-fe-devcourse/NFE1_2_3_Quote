@@ -18,6 +18,7 @@ export class PostsRepository {
     @InjectModel(Post.name) private postModel: Model<Post>,
     @InjectModel(User.name) private usersModel: Model<User>,
   ) {}
+
   //모든 포스트 가져오기
   async getAllPosts(): Promise<PostPreviewResponseDto[]> {
     const result = await this.postModel
@@ -32,10 +33,12 @@ export class PostsRepository {
           createdAt: 1,
           updatedAt: 1,
           bookMarked: 1,
+          comments: 1,
         },
       )
       .populate('authorId', 'nickname')
       .exec();
+
     return result;
   }
 
@@ -67,6 +70,7 @@ export class PostsRepository {
           createdAt: 1,
           updatedAt: 1,
           bookMarked: 1,
+          comments: 1,
         },
       )
       .populate('authorId', 'nickname')
@@ -93,6 +97,7 @@ export class PostsRepository {
         createdAt: 1,
         updatedAt: 1,
         bookMarked: 1,
+        comments: 1,
       })
       .populate('authorId', 'nickname')
       .exec();
