@@ -133,6 +133,8 @@ const MainPage = () => {
 
   const postData = sortedPostData || [];
 
+  const noPost = postData.length === 0;
+
   useEffect(() => {
     const shouldShowMessage =
       localStorage.getItem("showDeleteMessage") === "true";
@@ -199,11 +201,11 @@ const MainPage = () => {
         </TopSection>
         <PostSection>
           <PostContainer>
-            {isLoading || !userId ? (
-              <NoPostText>Loading ...</NoPostText>
-            ) : isError ? (
-              <NoPostText>Error</NoPostText>
-            ) : postData?.length > 0 ? (
+            {isLoading ? (
+              <div /> 
+            ) : isError || noPost ? (
+              <NoPostText>포스트 글이 없습니다.</NoPostText>
+            ) : (
               postData.map((post: Post) => (
                 <PostCard
                   key={post._id}
@@ -213,8 +215,6 @@ const MainPage = () => {
                   onClick={() => handleSelectPost(post._id)}
                 />
               ))
-            ) : (
-              <NoPostText>포스트 글이 없습니다.</NoPostText>
             )}
             {showDeleteMessage && (
               <AlertPopUp>회원 탈퇴가 완료되었습니다.</AlertPopUp>
