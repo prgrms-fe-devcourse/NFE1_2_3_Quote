@@ -41,26 +41,29 @@ const TopContainer = styled.div`
   position: relative;
   padding-top: 15px;
 `;
+const CtgyAndBtn = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 6px;
+`;
 
 const Category = styled.p`
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
-  line-height: 25px;
-  margin-top: 16px;
-  margin-bottom: 0px;
   color: #a7a7a7;
 `;
 
 const ModifyBtn = styled.button`
-  position: absolute;
-  right: 0;
-  height: 20px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   border: none;
   padding: 0px;
   background: none;
   font-size: 20px;
   color: ${({ theme }) => theme.colorMainFont};
-  margin: 14px 14px 6px 14px;
   &:hover {
     cursor: pointer;
   }
@@ -70,8 +73,8 @@ const ModifyMenu = styled.ul`
   position: absolute;
   width: 70px;
   height: 82px;
-  right: 0px;
-  top: 55px;
+  right: 0;
+  top: 50px;
   background-color: ${({ theme }) => theme.colorCategoryList};
   list-style: none;
   margin: 0px;
@@ -98,67 +101,69 @@ const ModifyItem = styled.li`
 
 const AuthorProfile = styled.div`
   display: flex;
-  align-items: center;
-  margin: 8px 0px;
+  align-items: flex-end;
+  margin: 16px 0px;
   cursor: pointer;
 `;
 
 const AuthorProfileImg = styled.img`
-  width: 30px;
-  height: 30px;
+  width: 38px;
+  height: 38px;
   border-radius: 90px;
-  margin-right: 8px;
+  margin-right: 12px;
 `;
 const AuthorName = styled.p`
   font-size: 14px;
   font-weight: bold;
-  line-height: 25px;
-  margin: 0px;
-  height: 20px;
+  line-height: 14px;
+  margin: 0;
+  height: 14px;
   cursor: pointer;
 `;
 
 const ContentContainer = styled.div`
   display: flex;
   flex-direction: column;
+  padding: 70px 0;
+  border-top: 0.7px solid #797979;
+  border-bottom: 0.7px solid #797979;
 `;
 
 const Title = styled.p`
-  font-size: 26px;
-  padding: 20px 0px;
-  margin: 0;
+  font-size: 28px;
+  margin: 20px 0 30px 0;
 `;
 
 const CreatedAt = styled.span`
-  font-size: 10px;
-  line-height: 25px;
+  font-size: 12px;
   color: #a7a7a7;
-  text-align: end;
-  height: 20px;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 6px;
 `;
 
 const QuoteContainer = styled.div`
   display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 30px 0px 40px 0px;
-  border-top: 1px solid #797979;
+  flex-direction: column;
+  /* justify-content: center; */
+  /* align-items: center; */
+  margin-bottom: 70px;
+  padding-left: 20px;
+  border-left: 3px solid
+    ${({ theme }) => (theme.mode === "lightMode" ? "black" : "#ffffff")};
 `;
 const Quote = styled.p`
   font-size: 18px;
   line-height: 30px;
-  margin: 18px 30px;
-  max-width: 450px;
+  margin: 0;
   white-space: pre-wrap;
+  font-style: italic;
 `;
 const Content = styled.p`
-  font-size: 18px;
-  font-weight: bold;
+  font-size: 15px;
   line-height: 30px;
   margin: 0;
-  padding: 16px 0px 50px 0px;
   white-space: pre-wrap;
-  border-bottom: 1px solid #797979;
 `;
 
 const PostDetail = () => {
@@ -235,35 +240,39 @@ const PostDetail = () => {
             <GoToBackBtn />
           </GotoBackButton>
           <TopContainer>
-            {isAuthor && (
-              <ModifyBtn
-                onClick={() => {
-                  setShowList(!showList);
-                }}
-              >
-                <WriteModifyBtn />
-              </ModifyBtn>
-            )}
-            {showList && (
-              <ModifyMenu
-                style={{
-                  boxShadow:
-                    theme.mode == "lightMode" ? "0px 0px 6px #dfdfdf" : "none",
-                }}
-              >
-                <ModifyItem
-                  onClick={() =>
-                    navigate(`/post/${postId}/modify`, {
-                      state: { from: location.state.from },
-                    })
-                  }
+            <CtgyAndBtn>
+              <Category>{postInfo?.category}</Category>
+              {isAuthor && (
+                <ModifyBtn
+                  onClick={() => {
+                    setShowList(!showList);
+                  }}
                 >
-                  수정
-                </ModifyItem>
-                <ModifyItem onClick={handlePostDeletePopUp}>삭제</ModifyItem>
-              </ModifyMenu>
-            )}
-            <Category>{postInfo?.category}</Category>
+                  <WriteModifyBtn />
+                </ModifyBtn>
+              )}
+              {showList && (
+                <ModifyMenu
+                  style={{
+                    boxShadow:
+                      theme.mode == "lightMode"
+                        ? "0px 0px 6px #dfdfdf"
+                        : "none",
+                  }}
+                >
+                  <ModifyItem
+                    onClick={() =>
+                      navigate(`/post/${postId}/modify`, {
+                        state: { from: location.state.from },
+                      })
+                    }
+                  >
+                    수정
+                  </ModifyItem>
+                  <ModifyItem onClick={handlePostDeletePopUp}>삭제</ModifyItem>
+                </ModifyMenu>
+              )}
+            </CtgyAndBtn>
             <Title>{postInfo?.title}</Title>
           </TopContainer>
           <AuthorProfile>
@@ -285,9 +294,9 @@ const PostDetail = () => {
           </AuthorProfile>
           <ContentContainer>
             <QuoteContainer>
-              <QuoteStartIcon />
+              {/* <QuoteStartIcon /> */}
               <Quote>{postInfo?.quote}</Quote>
-              <QuoteEndIcon />
+              {/* <QuoteEndIcon /> */}
             </QuoteContainer>
             <Content>{postInfo?.content}</Content>
           </ContentContainer>

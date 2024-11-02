@@ -13,70 +13,75 @@ import AlertPopUp from "@/components/AlertPopUp/AlertPopUp";
 const StyledComment = styled.div`
   width: 760px;
   display: flex;
-  margin: 10px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid ${({ theme }) => theme.colorLine};
+  /* padding-bottom: 20px; */
+  border-bottom: 0.7px solid #797979;
+  padding: 20px 5px 25px 5px;
   position: relative;
 `;
 
-const ProfileContainer = styled.div`
-  margin: 5px;
+const ImgBox = styled.div`
+  flex: 1;
 `;
-
 const Profile = styled.img`
-  width: 50px;
-  height: 50px;
+  width: 45px;
+  height: 45px;
   border-radius: 90px;
   cursor: pointer;
 `;
 
 const TextContainer = styled.div`
-  width: 80%;
-  padding: 5px;
+  flex: 16;
+  margin: 10px 0 0 15px;
   white-space: pre-wrap;
+  display: flex;
+  flex-direction: column;
 `;
-
 const UserName = styled.p`
   width: auto;
   display: inline-block;
   font-size: 14px;
   font-weight: bold;
-  margin: 5px 0 10px 0;
+  margin: 0;
   cursor: pointer;
 `;
-
+const DateContainer = styled.span`
+  font-size: 12px;
+  margin: 5px 0 15px 0;
+  color: ${({ theme }) => theme.colorSubFont};
+`;
 const Contents = styled.p`
-  font-size: 16px;
+  font-size: 14px;
   margin: 0;
-  line-height: 20px;
+  line-height: 23.8px;
+  overflow-wrap: break-word;
+  word-break: break-word;
 `;
 
 const RightContainer = styled.div`
+  position: absolute;
+  top: 10px;
+  right: 0;
+`;
+
+const ModifyButtonContainer = styled.div`
+  position: relative;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  text-align: end;
+  font-size: 18px;
+  z-index: 10px;
   display: flex;
-  flex-direction: column;
-  margin: 5px;
-  margin-left: auto;
-  align-items: flex-end;
-  justify-content: space-between;
-
-  svg {
-    cursor: pointer;
-  }
+  align-items: center;
+  justify-content: center;
 `;
-
-const DateContainer = styled.p`
-  font-size: 12px;
-  margin: 0;
-`;
-
-const ModifyButtonContainer = styled.div``;
 
 const ModifyMenu = styled.ul`
   position: absolute;
   width: 70px;
   height: 82px;
-  right: 0px;
-  top: 30px;
+  right: 5px;
+  top: 35px;
   background-color: ${({ theme }) => theme.colorCategoryList};
   list-style: none;
   margin: 0px;
@@ -175,7 +180,7 @@ const Comment = (props: CommentProps) => {
   return (
     <>
       <StyledComment>
-        <ProfileContainer>
+        <ImgBox>
           <Profile
             src={
               comment.authorId.profileImage ||
@@ -183,11 +188,13 @@ const Comment = (props: CommentProps) => {
             }
             onClick={handleUserPage}
           />
-        </ProfileContainer>
+        </ImgBox>
+
         <TextContainer>
           <UserName onClick={handleUserPage}>
             {comment.authorId.nickname || "탈퇴한 회원"}
           </UserName>
+          <DateContainer>{formatTime(comment.createdAt)}</DateContainer>
           <Contents>{comment.contents}</Contents>
         </TextContainer>
         <RightContainer>
@@ -201,7 +208,6 @@ const Comment = (props: CommentProps) => {
           ) : (
             <div style={{ width: "24px" }} />
           )}
-          <DateContainer>{formatTime(comment.createdAt)}</DateContainer>
         </RightContainer>
         {showList && (
           <ModifyMenu ref={menuRef}>
