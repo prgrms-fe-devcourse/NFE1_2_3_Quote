@@ -130,6 +130,10 @@ const UserPage = () => {
         </ContentSection>
         {renderPosts(posts)}
       </Container>
+      {/* <WriteButton
+        location={"userPage"}
+        id={user?.id}
+      /> */}
     </MainLayout>
   );
 };

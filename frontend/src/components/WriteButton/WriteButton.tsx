@@ -7,13 +7,23 @@ import { useAuthStore } from "@pages/LogInPage/store/authStore";
 const StyledButton = styled.div`
   width: 50px;
   height: 50px;
+  border-radius: 50px;
   position: fixed;
-  left: calc(50% + 480px + 20px);
+  left: calc(50% + 480px - 25px);
   bottom: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  svg {
-    width: 100%;
-    height: 100%;
+  border: none;
+  background-color: ${({ theme }) => theme.colorMain};
+  & > {
+   
+    svg {
+      padding: 1px 6px;
+      width: 100%;
+      height: 100%;
+    }
   }
 `;
 
@@ -26,7 +36,7 @@ const WriteButton = ({ location, id }: WriteBtnProps) => {
   const theme = useTheme();
   const navigate = useNavigate();
   const isLogin = useAuthStore((state) => state.isLogin);
-  
+
   const handleWriteButton = () => {
     if (isLogin) {
       navigate("/create-post", { state: { from: location, id: id } });
