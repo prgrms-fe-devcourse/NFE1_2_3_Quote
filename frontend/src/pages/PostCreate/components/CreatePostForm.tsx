@@ -98,6 +98,7 @@ const ContentInput = styled.textarea`
 
 const BtnContainer = styled.div`
   position: fixed;
+  left: calc(50% + 480px - 25px);
   bottom: 50px;
   align-self: flex-end;
   display: flex;
@@ -123,6 +124,7 @@ const CancelButton = styled(BtnCommonStyle)`
 const PublishButton = styled(BtnCommonStyle)`
   color: #f3f3f3;
   background-color: ${({ theme }) => theme.colorMain};
+  padding: 1px 6px;
   border: none;
   svg {
     width: 100%;

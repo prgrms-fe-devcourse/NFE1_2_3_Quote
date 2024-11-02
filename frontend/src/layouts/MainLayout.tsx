@@ -1,6 +1,7 @@
 import Header from "@/components/Header/Header";
 import styled from "styled-components";
 import { useLocation } from "react-router-dom";
+import ScrollButton from "@/components/ScrollButton/ScrollButton";
 
 const Layout = styled.div`
   width: 100%;
@@ -30,6 +31,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
     <Layout>
       {!hideHeader && <Header />}
       <Container>{children}</Container>
+      <ScrollButton />
     </Layout>
   );
 };
