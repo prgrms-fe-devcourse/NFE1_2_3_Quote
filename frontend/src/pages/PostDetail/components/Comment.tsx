@@ -13,14 +13,13 @@ import AlertPopUp from "@/components/AlertPopUp/AlertPopUp";
 const StyledComment = styled.div`
   width: 760px;
   display: flex;
-  /* padding-bottom: 20px; */
   border-bottom: 0.7px solid #797979;
   padding: 20px 5px 25px 5px;
   position: relative;
 `;
 
 const ImgBox = styled.div`
-  flex: 1;
+  width: 45px;
 `;
 const Profile = styled.img`
   width: 45px;
@@ -30,13 +29,13 @@ const Profile = styled.img`
 `;
 
 const TextContainer = styled.div`
-  flex: 16;
+  width: 100%;
   margin: 10px 0 0 15px;
   white-space: pre-wrap;
   display: flex;
   flex-direction: column;
 `;
-const UserName = styled.p`
+const UserName = styled.span`
   width: auto;
   display: inline-block;
   font-size: 14px;

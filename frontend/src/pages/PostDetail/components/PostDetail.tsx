@@ -145,12 +145,11 @@ const CreatedAt = styled.span`
 const QuoteContainer = styled.div`
   display: flex;
   flex-direction: column;
-  /* justify-content: center; */
-  /* align-items: center; */
+  justify-content: center;
+  align-items: center;
   margin-bottom: 70px;
-  padding-left: 20px;
-  border-left: 3px solid
-    ${({ theme }) => (theme.mode === "lightMode" ? "black" : "#ffffff")};
+  /* border-left: 3px solid
+    ${({ theme }) => (theme.mode === "lightMode" ? "black" : "#ffffff")}; */
 `;
 const Quote = styled.p`
   font-size: 18px;
@@ -158,6 +157,9 @@ const Quote = styled.p`
   margin: 0;
   white-space: pre-wrap;
   font-style: italic;
+  padding: 50px 0;
+  color: #a7a7a7;
+  text-align: center;
 `;
 const Content = styled.p`
   font-size: 15px;
@@ -294,9 +296,9 @@ const PostDetail = () => {
           </AuthorProfile>
           <ContentContainer>
             <QuoteContainer>
-              {/* <QuoteStartIcon /> */}
+              <QuoteStartIcon />
               <Quote>{postInfo?.quote}</Quote>
-              {/* <QuoteEndIcon /> */}
+              <QuoteEndIcon />
             </QuoteContainer>
             <Content>{postInfo?.content}</Content>
           </ContentContainer>

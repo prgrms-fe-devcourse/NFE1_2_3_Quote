@@ -20,7 +20,7 @@ const CommentContainer = styled.div`
   align-items: center;
   justify-content: center;
   /* gap: 10px; */
-  margin: 30px 0;
+  margin: 30px 0 100px 0;
 `;
 
 const CommentSection = styled.div`
@@ -33,7 +33,7 @@ const CommentSection = styled.div`
 const CommentCount = styled.div`
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   font-size: 14px;
 
   & > span {
@@ -49,10 +49,9 @@ const ButtonContainer = styled.div`
 `;
 
 const CommentButton = styled.button`
-  width: 96px;
+  width: 100px;
   height: 35px;
-  /* border-radius: 10px; */
-  background: none;
+  border-radius: 0px;
   background-color: ${({ theme }) =>
     theme.mode === "lightMode" ? theme.colorMain : "#3b3b3b"};
   border: none;
@@ -80,7 +79,7 @@ const CommentButton = styled.button`
 `;
 
 const NoCommentText = styled.p`
-  margin: 50px auto;
+  margin: 50px 0 100px 0;
   font-size: 15px;
   color: ${({ theme }) => theme.colorSubFont};
 `;
@@ -140,7 +139,7 @@ const PostComment = () => {
           <ButtonContainer>
             <CommentButton onClick={handleBookMarked}>
               {isActive ? <BookMarkAfterBtn /> : <BookMarkBeforeBtn />}
-              <p>{postInfo?.bookMarked.length}</p>
+              <span>{postInfo?.bookMarked.length}</span>
             </CommentButton>
             <CommentButton onClick={handleCommentPopUp}>
               댓글 작성
