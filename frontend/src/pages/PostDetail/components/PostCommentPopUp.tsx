@@ -7,16 +7,17 @@ import {
 } from "../hooks/usePostComment";
 
 const PopUpContainer = styled.div`
-  width: 400px;
-  height: 250px;
+  width: 480px;
+  height: 290px;
   z-index: 10;
   position: fixed;
+  /* position: absolute; */
   display: flex;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-evenly;
   align-items: center;
   background-color: ${({ theme }) => theme.colorCancelPopUp};
   border-radius: 20px;
@@ -25,7 +26,7 @@ const PopUpContainer = styled.div`
 `;
 
 const PopUpTitle = styled.p`
-  font-size: 18px;
+  font-size: 16px;
   font-weight: bold;
   margin: 14px 0;
 `;
@@ -37,7 +38,7 @@ const PopUpButtonContainer = styled.div`
 
 const PopUpCancelButton = styled.p`
   width: 120px;
-  height: 40px;
+  height: 35px;
   background-color: ${({ theme }) => theme.colorCancelPopUp};
   display: flex;
   justify-content: center;
@@ -54,7 +55,7 @@ const PopUpCancelButton = styled.p`
 
 const PopUpConfirmButton = styled.p`
   width: 120px;
-  height: 40px;
+  height: 35px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -69,16 +70,18 @@ const PopUpConfirmButton = styled.p`
 `;
 
 const PopUpTextAreaContainer = styled.div`
-  width: 250px;
-  height: 120px;
+  width: 400px;
+  height: 130px;
   position: relative;
 `;
 
 const PopUpTextArea = styled.textarea`
-  width: 250px;
-  height: 120px;
+  width: 400px;
+  height: 130px;
   border-radius: 10px;
   padding: 10px;
+  font-size: 14px;
+  line-height: 21px;
   border: 1px solid ${({ theme }) => theme.colorMainFont};
   color: ${({ theme }) => theme.colorMainFont};
   background: none;
@@ -96,8 +99,8 @@ const CommentText = styled.p`
   font-size: 12px;
   color: #a7a7a7;
   position: absolute;
-  right: -5px;
-  bottom: -5px;
+  right: 0;
+  bottom: 0;
   z-index: 10;
   margin: 12px;
 `;

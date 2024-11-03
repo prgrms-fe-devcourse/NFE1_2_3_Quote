@@ -19,20 +19,22 @@ const CommentContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  margin: 30px 0;
+  /* gap: 10px; */
+  margin: 30px 0 100px 0;
 `;
 
 const CommentSection = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;
+  margin-bottom: 30px;
 `;
 
 const CommentCount = styled.div`
   display: flex;
   align-items: center;
-  gap: 3px;
+  gap: 8px;
+  font-size: 14px;
 
   & > span {
     font-weight: bold;
@@ -49,26 +51,25 @@ const ButtonContainer = styled.div`
 const CommentButton = styled.button`
   width: 100px;
   height: 35px;
-  border-radius: 10px;
-  background: none;
-  border: 1px solid
-    ${({ theme }) =>
-      theme.mode === "lightMode" ? theme.colorMain : theme.colorMainFont};
-  font-size: 14px;
+  border-radius: 0px;
+  background-color: ${({ theme }) =>
+    theme.mode === "lightMode" ? theme.colorMain : "#3b3b3b"};
+  border: none;
   padding: 5px 10px;
-  color: ${({ theme }) =>
-    theme.mode === "lightMode" ? theme.colorMain : theme.colorMainFont};
+  font-size: 14px;
+  color: #f3f3f3;
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 3px;
+  gap: 5px;
   cursor: pointer;
 
   &:hover {
+    transition: 0.1s linear;
     background-color: ${({ theme }) =>
-      theme.mode === "lightMode" ? theme.colorMain : theme.colorMainFont};
+      theme.mode === "lightMode" ? "#675959" : "#797979"};
     color: ${({ theme }) =>
-      theme.mode === "lightMode" ? "#F3F3F3" : "#303030"};
+      theme.mode === "lightMode" ? "#F3F3F3" : "#f3f3f3"};
   }
 
   svg {
@@ -78,8 +79,9 @@ const CommentButton = styled.button`
 `;
 
 const NoCommentText = styled.p`
-  margin: 20px auto;
-  font-size: 18px;
+  margin: 50px 0 100px 0;
+  font-size: 15px;
+  color: ${({ theme }) => theme.colorSubFont};
 `;
 
 const PostComment = () => {
@@ -135,12 +137,12 @@ const PostComment = () => {
             댓글 <span>{commentData?.length}</span>
           </CommentCount>
           <ButtonContainer>
-            <CommentButton onClick={handleCommentPopUp}>
-              댓글 작성
-            </CommentButton>
             <CommentButton onClick={handleBookMarked}>
               {isActive ? <BookMarkAfterBtn /> : <BookMarkBeforeBtn />}
-              <p>{postInfo?.bookMarked.length}</p>
+              <span>{postInfo?.bookMarked.length}</span>
+            </CommentButton>
+            <CommentButton onClick={handleCommentPopUp}>
+              댓글 작성
             </CommentButton>
           </ButtonContainer>
         </CommentSection>
