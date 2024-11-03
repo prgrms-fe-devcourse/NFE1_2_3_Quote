@@ -191,13 +191,12 @@ const CreatePostForm = () => {
   const [showCancelPopUp, setShowCancelPopUp] = useState(false);
   const [showMsg, setShowMsg] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
-  const [showSuccessMsg, setShowSuccessMsg] = useState(false);
 
   const handleCancel = () => {
     setShowCancelPopUp(!showCancelPopUp);
   };
 
-  const { mutate } = useCreatePost(setShowSuccessMsg);
+  const { mutate } = useCreatePost();
   const [btnDisabled, setBtnDisabled] = useState(false);
 
   const handleCreatePost = () => {
@@ -312,7 +311,6 @@ const CreatePostForm = () => {
         />
       )}
       {showMsg && <AlertPopUp error>{errorMsg}</AlertPopUp>}
-      {showSuccessMsg && <AlertPopUp>글 작성이 완료되었습니다.</AlertPopUp>}
     </>
   );
 };

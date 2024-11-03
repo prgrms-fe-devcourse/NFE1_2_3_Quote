@@ -162,6 +162,7 @@ const MyPage = memo(() => {
   const theme = useTheme();
 
   const [showDeleteSuccess, setShowDeleteSuccess] = useState(false);
+  const [showPostSuccessMsg, setShowPostSuccessMsg] = useState(false);
 
   useEffect(() => {
     const deleteSuccess = localStorage.getItem("deleteSuccess");
@@ -169,6 +170,15 @@ const MyPage = memo(() => {
       setShowDeleteSuccess(true);
       localStorage.removeItem("deleteSuccess");
       setTimeout(() => setShowDeleteSuccess(false), 2000);
+    }
+  }, []);
+
+  useEffect(() => {
+    const postSuccess = localStorage.getItem("postSuccessMessage");
+    if (postSuccess) {
+      setShowPostSuccessMsg(true);
+      localStorage.removeItem("postSuccessMessage");
+      setTimeout(() => setShowPostSuccessMsg(false), 2000);
     }
   }, []);
 
@@ -266,6 +276,9 @@ const MyPage = memo(() => {
             onClose={() => setIsDeleteModalOpen(false)}
             onConfirm={handleDeleteAccount}
           />
+        )}
+        {showPostSuccessMsg && (
+          <AlertPopUp>글 작성이 완료되었습니다.</AlertPopUp>
         )}
         {showDeleteSuccess && <AlertPopUp>글이 삭제되었습니다.</AlertPopUp>}
       </Container>

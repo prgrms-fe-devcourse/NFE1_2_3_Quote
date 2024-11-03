@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import profile from "@assets/images/profile.png";
 import MainLayout from "@/layouts/MainLayout";
-import WriteButton from "@/components/WriteButton/WriteButton";
 import PostCard from "./components/PostCard";
 import { useUserPage } from "./hooks/useUserPage";
 import { Post } from "@/types/Types";
