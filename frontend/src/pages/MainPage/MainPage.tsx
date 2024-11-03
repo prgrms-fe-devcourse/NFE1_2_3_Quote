@@ -85,6 +85,7 @@ const MainPage = () => {
   const [showDeleteMessage, setShowDeleteMessage] = useState(false);
   const [alert, setAlert] = useState<string>("");
   const [showDeleteSuccess, setShowDeleteSuccess] = useState(false);
+  const [showPostSuccessMsg, setShowPostSuccessMsg] = useState(false);
 
   //카테고리 선택
   const handleSelectCategory = (category: string) => {
@@ -168,6 +169,15 @@ const MainPage = () => {
     }
   }, []);
 
+  useEffect(() => {
+    const postSuccess = localStorage.getItem("postSuccessMessage");
+    if (postSuccess) {
+      setShowPostSuccessMsg(true);
+      localStorage.removeItem("postSuccessMessage");
+      setTimeout(() => setShowPostSuccessMsg(false), 2000);
+    }
+  }, []);
+
   return (
     <MainLayout>
       <Container>
@@ -210,6 +220,9 @@ const MainPage = () => {
               <AlertPopUp>회원 탈퇴가 완료되었습니다.</AlertPopUp>
             )}
             {alert && <AlertPopUp>{alert}</AlertPopUp>}
+            {showPostSuccessMsg && (
+              <AlertPopUp>글 작성이 완료되었습니다.</AlertPopUp>
+            )}
             {showDeleteSuccess && <AlertPopUp>글이 삭제되었습니다.</AlertPopUp>}
           </PostContainer>
         </PostSection>
