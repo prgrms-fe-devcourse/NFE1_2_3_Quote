@@ -1,6 +1,19 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { useTheme } from "styled-components";
+import { useEffect } from "react";
+
+const PopupOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.34);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 11;
+`;
 
 const PopUpContainer = styled.div`
   width: 360px;
@@ -14,7 +27,7 @@ const PopUpContainer = styled.div`
   background-color: ${({ theme }) => theme.colorCancelPopUp};
   border-radius: 20px;
   padding: 35px 50px;
-  z-index: 10;
+  z-index: 12;
 `;
 
 const PopUpTitle = styled.p`
@@ -56,7 +69,6 @@ const CancelPopUp = ({
   showCancelPopUp,
   setShowCancelPopUp,
 }: CancelPopUpProps) => {
-  const theme = useTheme();
   const handlePopUpCancel = () => {
     setShowCancelPopUp(!showCancelPopUp);
   };
@@ -78,13 +90,20 @@ const CancelPopUp = ({
     }
   };
 
+  useEffect(() => {
+    if (showCancelPopUp) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [showCancelPopUp]);
+
   return (
-    <>
-      <PopUpContainer
-        style={{
-          boxShadow: theme.mode == "lightMode" ? "0px 0px 6px #dfdfdf" : "none",
-        }}
-      >
+    <PopupOverlay>
+      <PopUpContainer>
         <PopUpTitle>
           {modify
             ? "글 수정을 취소하시겠습니까?"
@@ -99,7 +118,7 @@ const CancelPopUp = ({
           </PopUpConfirmButton>
         </PopUpButtonContainer>
       </PopUpContainer>
-    </>
+    </PopupOverlay>
   );
 };
 

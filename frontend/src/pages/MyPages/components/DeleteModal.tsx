@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { useEffect } from "react";
 
 // Styled Components
 
@@ -83,6 +84,14 @@ const DeleteModal = ({ onClose, onConfirm }: DeleteModalProps) => {
       alert("탈퇴에 실패했습니다. 다시 시도해 주세요.");
     }
   };
+
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, []);
 
   return (
     <ModalOverlay>
