@@ -34,7 +34,7 @@ const PostCardContainer = styled.div<PostCardContainerProps>`
 `;
 
 const PostContentContainer = styled.div<PostCardContainerProps>`
-  padding: 20px;
+  padding: 15px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -83,7 +83,7 @@ const BottomContainer = styled.div`
   height: 60px;
   display: flex;
   justify-content: space-between;
-  padding: 0 20px;
+  padding: 0 15px;
   background-color: ${({ theme }) => theme.colorSub};
   color: ${({ theme }) => theme.colorMainFont};
   font-size: 10px;
@@ -123,6 +123,12 @@ const UserText = styled.p<{ $noUser: boolean }>`
   justify-content: end;
   align-items: center;
   cursor: pointer;
+  color: ${({ theme, $noUser }) =>
+    $noUser
+      ? theme.mode === "darkMode"
+        ? "#656565"
+        : "#c7c7c7"
+      : theme.colorMainFont};
 
   &:hover {
     ${({ $noUser }) => !$noUser && "text-decoration: underline;"}

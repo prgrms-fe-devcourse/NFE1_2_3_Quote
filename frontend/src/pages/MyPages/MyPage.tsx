@@ -25,20 +25,17 @@ const Container = styled.div`
 `;
 
 const ProfileSection = styled.div`
-  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   margin-top: 70px;
   width: 100%;
-  max-width: 600px;
+  max-width: 840px;
 `;
 
 const SettingsButtonWrapper = styled.div`
-  position: absolute;
-  top: 0;
-  right: -20px;
+  align-self: flex-end;
   z-index: 1;
   cursor: pointer;
   width: 20px;
@@ -58,8 +55,8 @@ const ProfileImage = styled.img`
 `;
 
 const UserName = styled.h1`
-  margin-top: 10px;
-  font-size: 20px;
+  margin-top: 15px;
+  font-size: 18px;
   color: ${({ theme }) => theme.colorMainFont};
   text-align: center;
 `;
@@ -72,11 +69,11 @@ const UserEmail = styled.p`
 `;
 
 const ContentSection = styled.div`
-  width: 860px;
+  width: 840px;
   height: 100%;
   display: flex;
   justify-content: space-evenly;
-  margin-top: 50px;
+  margin-top: 100px;
 `;
 
 const TabButton = styled.button<{ $isActive: boolean }>`
@@ -84,19 +81,19 @@ const TabButton = styled.button<{ $isActive: boolean }>`
   height: 100%;
   background: none;
   border: none;
-  font-size: 18px;
+  font-size: 16px;
   padding-top: 20px;
-  padding-bottom: 15px;
+  padding-bottom: 20px;
   cursor: pointer;
   color: ${({ theme, $isActive }) =>
     $isActive ? theme.colorMainFont : theme.colorSubFont};
   border-bottom: ${({ $isActive, theme }) =>
-    $isActive ? `2px solid ${theme.colorMainFont}` : "none"};
+    $isActive ? `1.5px solid ${theme.colorMainFont}` : "none"};
 `;
 
 const MessageContainer = styled.div`
-  margin-top: 50px;
-  font-size: 18px;
+  margin-top: 100px;
+  font-size: 15px;
   color: ${({ theme }) => theme.colorSubFont};
 `;
 
@@ -112,7 +109,7 @@ const PostContainer = styled.div`
 const Menu = styled.div`
   position: absolute;
   top: 30px;
-  right: -20px;
+  right: -100px;
   width: 110px;
   background: ${({ theme }) => theme.colorCategoryList};
   border-radius: 8px;
@@ -121,13 +118,22 @@ const Menu = styled.div`
 
 const MenuItem = styled.button`
   width: 100%;
-  padding: 12px;
+  padding: 14px 10px;
   border: none;
   background: none;
   cursor: pointer;
   text-align: center;
   font-size: 12px;
   color: ${({ theme }) => theme.colorMainFont};
+  border-radius: 8px 8px 0 0;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.colorCategoryListHover};
+  }
+
+  &:last-child {
+    border-radius: 0 0 8px 8px;
+  }
 
   &:not(:last-child) {
     border-bottom: 1px solid ${({ theme }) => theme.colorBottom};

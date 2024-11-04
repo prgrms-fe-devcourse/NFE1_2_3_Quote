@@ -36,8 +36,8 @@ const ProfileImage = styled.img`
 `;
 
 const UserName = styled.h1`
-  margin-top: 10px;
-  font-size: 20px;
+  margin-top: 15px;
+  font-size: 18px;
   color: ${({ theme }) => theme.colorMainFont};
   text-align: center;
 `;
@@ -50,11 +50,11 @@ const UserEmail = styled.p`
 `;
 
 const ContentSection = styled.div`
-  width: 860px;
+  width: 840px;
   height: 40px;
   display: flex;
   justify-content: center;
-  margin-top: 50px;
+  margin-top: 100px;
 `;
 
 const TabLabel = styled.h3`
@@ -62,15 +62,15 @@ const TabLabel = styled.h3`
   height: 100%;
   background: none;
   border: none;
-  font-size: 18px;
+  font-size: 16px;
   text-align: center;
   color: ${({ theme }) => theme.colorMainFont};
-  border-bottom: 2px solid ${({ theme }) => theme.colorMainFont};
+  border-bottom: 1.5px solid ${({ theme }) => theme.colorMainFont};
 `;
 
 const MessageContainer = styled.div`
-  margin-top: 50px;
-  font-size: 18px;
+  margin-top: 100px;
+  font-size: 15px;
   color: ${({ theme }) => theme.colorSubFont};
   text-align: center;
 `;

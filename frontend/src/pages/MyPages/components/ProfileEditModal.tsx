@@ -21,18 +21,22 @@ const ModalOverlay = styled.div`
 
 const ModalContainer = styled.div`
   width: 100%;
-  max-width: 700px;
+  max-width: 650px;
+  height: 420px;
   background: ${({ theme }) => theme.colorCancelPopUp};
   border-radius: 16px;
-  padding: 30px 120px;
+  padding: 20px 100px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   text-align: center;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
 `;
 
 const Title = styled.h2`
-  font-size: 20px;
-  margin-bottom: 30px;
+  font-size: 18px;
+  margin-bottom: 20px;
   color: ${({ theme }) => theme.colorMainFont};
   font-weight: bold;
 `;
@@ -41,7 +45,7 @@ const ProfileImageWrapper = styled.div`
   position: relative;
   width: 120px;
   height: 120px;
-  margin: 0 auto 15px;
+  margin: 0 auto 10px;
 `;
 
 const ProfileImage = styled.div`
@@ -91,7 +95,7 @@ const LabelContainer = styled.div`
 const Label = styled.span`
   font-size: 12px;
   color: ${({ theme }) => theme.colorSubFont};
-  margin-top: 10px;
+  margin-bottom: 10px;
   display: block;
   cursor: pointer;
 `;
@@ -99,18 +103,17 @@ const Label = styled.span`
 const InputWrapper = styled.div`
   position: relative;
   width: 100%;
-  margin: 10px 0;
   cursor: text;
 `;
 
 const Input = styled.input`
   width: 100%;
-  padding: 12px;
+  padding: 8px;
   padding-right: 80px;
   border: none;
-  border-bottom: 1px solid ${({ theme }) => theme.colorButton};
+  border-bottom: 0.7px solid ${({ theme }) => theme.colorButton};
   outline: none;
-  font-size: 16px;
+  font-size: 15px;
   color: ${({ theme }) => theme.colorMainFont};
   background-color: ${({ theme }) => theme.colorCancelPopUp};
   caret-color: ${({ theme }) => theme.colorButton};
@@ -150,39 +153,38 @@ const ModifyButtonWrapper = styled.button`
   }
 `;
 
-const ErrorMessageWrapper = styled.div`
+const ErrMsgCommonStyle = styled.span`
   height: 15px;
-  margin-top: 5px;
+  font-size: 12px;
+  display: block;
+  text-align: start;
+  margin-left: 8px;
 `;
-
-const ErrorMessage = styled.span`
+const ErrMsgContainer = styled.div`
+  height: 15px;
+  margin: 5px 0;
+`;
+const ErrorMessage = styled(ErrMsgCommonStyle)`
   color: ${({ theme }) => theme.colorValidation};
-  font-size: 12px;
-  display: block;
-  text-align: left;
-  margin-left: 12px;
 `;
 
-const SuccessMessage = styled.span`
+const SuccessMessage = styled(ErrMsgCommonStyle)`
   color: #28a745;
-  font-size: 12px;
-  display: block;
-  text-align: left;
-  margin-left: 12px;
 `;
 
 const ButtonContainer = styled.div`
   display: flex;
-  justify-content: space-evenly;
-  margin-top: 30px;
+  gap: 15px;
+  align-items: center;
+  justify-content: center;
+  margin: 10px 0;
 `;
 
 const Button = styled.button`
-  width: 40%;
+  width: 35%;
   height: 35px;
-  padding: 8px;
   border-radius: 30px;
-  font-size: 16px;
+  font-size: 14px;
   cursor: pointer;
 `;
 
@@ -271,10 +273,10 @@ const ProfileEditModal = ({
             중복확인
           </ModifyButtonWrapper>
         </InputWrapper>
-        <ErrorMessageWrapper>
+        <ErrMsgContainer>
           {error && <ErrorMessage>{error}</ErrorMessage>}
           {success && <SuccessMessage>{success}</SuccessMessage>}
-        </ErrorMessageWrapper>
+        </ErrMsgContainer>
         <ButtonContainer>
           <CancelButton onClick={handleCancel}>취소</CancelButton>
           <SaveButton onClick={handleSave}>수정</SaveButton>
