@@ -16,7 +16,7 @@ const ModalOverlay = styled.div`
 `;
 
 const ModalContainer = styled.div`
-  width: 400px;
+  width: 360px;
   padding: 30px;
   background-color: ${({ theme }) => theme.colorCancelPopUp};
   border-radius: 20px;
@@ -32,7 +32,7 @@ const ModalTitle = styled.h2`
 
 const ModalMessage = styled.p`
   font-size: 14px;
-  margin-bottom: 30px;
+  line-height: 20px;
   color: ${({ theme }) => theme.colorMainFont};
 `;
 
@@ -41,25 +41,30 @@ const ButtonContainer = styled.div`
   justify-content: space-evenly;
 `;
 
-const CancelButton = styled.button`
-  width: 40%;
-  background-color: ${({ theme }) => theme.colorCancelPopUp};
-  border: 1px solid ${({ theme }) => theme.colorButton};
-  color: ${({ theme }) => theme.colorCancelPopUPBtnFont};
-  padding: 10px 20px;
+
+const Button = styled.button`
+  width: 125px;
+  height: 35px;
   border-radius: 30px;
   cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  margin: 14px 0;
 `;
 
-const ConfirmButton = styled.button`
-  width: 40%;
+const CancelButton = styled(Button)`
+  background-color: ${({ theme }) => theme.colorCancelPopUp};
+  color: ${({ theme }) => theme.colorCancelPopUPBtnFont};
+  border: 1px solid ${({ theme }) => theme.colorCancelPopUPBtnFont};
+`;
+const ConfirmButton = styled(Button)`
   background-color: ${({ theme }) => theme.colorMain};
-  color: #fff;
-  padding: 10px 20px;
-  border-radius: 30px;
-  cursor: pointer;
+  color: #ffffff;
   border: none;
 `;
+
 
 interface DeleteModalProps {
   onClose: () => void;
@@ -84,8 +89,8 @@ const DeleteModal = ({ onClose, onConfirm }: DeleteModalProps) => {
       <ModalContainer>
         <ModalTitle>정말 탈퇴하시겠습니까?</ModalTitle>
         <ModalMessage>
-          탈퇴하시면 게시글, 북마크 등 모든 활동 정보가 <br />
-          삭제되며 복구되지 않습니다.
+          탈퇴하시면 사용자 정보가 삭제되며<br />
+          복구되지 않습니다.
         </ModalMessage>
         <ButtonContainer>
           <CancelButton onClick={onClose}>취소</CancelButton>

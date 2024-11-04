@@ -12,6 +12,7 @@ import { useTheme } from "styled-components";
 import AlertPopUp from "@/components/AlertPopUp/AlertPopUp";
 import Spinner from "@/components/Spinner/Spinner";
 import PostComment from "./PostComment";
+import Tooltip from "@/components/Tooltip/Tooltip";
 
 const SpinnerContainer = styled.div`
   position: fixed;
@@ -151,6 +152,7 @@ const QuoteContainer = styled.div`
   /* border-left: 3px solid
     ${({ theme }) => (theme.mode === "lightMode" ? "black" : "#ffffff")}; */
 `;
+
 const Quote = styled.p`
   font-size: 18px;
   line-height: 30px;
@@ -160,12 +162,17 @@ const Quote = styled.p`
   padding: 50px 0;
   color: #a7a7a7;
   text-align: center;
+  cursor: pointer;
 `;
 const Content = styled.p`
   font-size: 15px;
   line-height: 30px;
   margin: 0;
   white-space: pre-wrap;
+`;
+
+const UrlText = styled.a`
+  color: ${({ theme }) => theme.colorSubFont};
 `;
 
 const PostDetail = () => {
@@ -217,7 +224,7 @@ const PostDetail = () => {
   };
 
   // 프로필 누르면 해당 유저 프로필로 이동
-  const noUser = postInfo && !postInfo.authorId._id;
+  const noUser = postInfo && !postInfo.authorId?._id;
 
   const handleProfileClick = () => {
     if (noUser) {
@@ -228,6 +235,39 @@ const PostDetail = () => {
     } else {
       navigate(`/user-page/${postInfo?.authorId._id}`);
     }
+  };
+
+  // 클릭 시 복사
+  const [isCopy, setIsCopy] = useState<boolean>(false);
+  const handleCopyClipBoard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setIsCopy(true);
+      setTimeout(() => setIsCopy(false), 3000);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  // url 삽입 시 링크 연동
+  const formatUrlText = (inputUrl: string) => {
+    const urlRegex = /(https?:\/\/[^\s]+)/g; //URL 정규표현식
+    const urlText = inputUrl.split(urlRegex);
+
+    return urlText.map((text, index) => {
+      if (urlRegex.test(text)) {
+        return (
+          <UrlText
+            key={index}
+            href={text}
+          >
+            {text}
+          </UrlText>
+        );
+      } else {
+        return text;
+      }
+    });
   };
 
   return (
@@ -297,10 +337,17 @@ const PostDetail = () => {
           <ContentContainer>
             <QuoteContainer>
               <QuoteStartIcon />
-              <Quote>{postInfo?.quote}</Quote>
+              <Tooltip message="클릭해서 인용글을 복사해보세요 !">
+                <Quote
+                  onClick={() => handleCopyClipBoard(postInfo?.quote || "")}
+                >
+                  {postInfo?.quote}
+                </Quote>
+              </Tooltip>
+
               <QuoteEndIcon />
             </QuoteContainer>
-            <Content>{postInfo?.content}</Content>
+            <Content>{formatUrlText(postInfo?.content || "")}</Content>
           </ContentContainer>
           {showPopUp && (
             <PostDeletePopUp
@@ -314,6 +361,7 @@ const PostDetail = () => {
         </DetailContainer>
       )}
       {showSuccessMsg && <AlertPopUp>{showSuccessMsg}</AlertPopUp>}
+      {isCopy && <AlertPopUp>문장이 복사되었습니다.</AlertPopUp>}
     </>
   );
 };
