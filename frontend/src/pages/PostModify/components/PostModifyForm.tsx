@@ -179,8 +179,8 @@ const PostModifyForm = () => {
   // };
 
   //textarea 높이조절 위해서 함수 변경
-  const quoteRef = useRef(null);
-  const contentRef = useRef(null);
+  const quoteRef = useRef<HTMLTextAreaElement | null>(null);
+  const contentRef = useRef<HTMLTextAreaElement | null>(null);
 
   //quote textarea 높이 조절
   const handleQuoteChange = (
@@ -188,8 +188,11 @@ const PostModifyForm = () => {
     e: React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
     if (quoteRef.current) {
-      const defaultHeight = quoteRef.current.scrollHeight;
-      quoteRef.current.style.height = `${defaultHeight}` + "px"; // 내용에 맞춰 높이 설정
+      const currentScrollY = window.scrollY;
+      quoteRef.current.style.height = "auto"; // 기존 높이 초기화
+      quoteRef.current.style.height = quoteRef.current.scrollHeight + "px"; // 내용에 맞춰 높이 설정
+      
+      window.scrollTo(0, currentScrollY);
       if (e.target.value.length > 300) {
         e.target.value = e.target.value.substring(0, 300);
       }
@@ -203,10 +206,24 @@ const PostModifyForm = () => {
     e: React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
     if (contentRef.current) {
+      const currentScrollY = window.scrollY;
+      contentRef.current.style.height = "auto"; // 기존 높이 초기화 
       contentRef.current.style.height = contentRef.current.scrollHeight + "px"; // 내용에 맞춰 높이 설정
+      window.scrollTo(0, currentScrollY);
       setContent(e.target.value);
     }
   };
+
+  const initialQuote = quote;
+  const initialContent = content;
+  useEffect(() => {
+    if (quoteRef.current && contentRef.current) {
+      const quoteDefaultHeight = quoteRef.current.scrollHeight;
+      const contentDefaultHeight = contentRef.current.scrollHeight;
+      quoteRef.current.style.height = `${quoteDefaultHeight}px`;
+      contentRef.current.style.height = `${contentDefaultHeight}px`;
+    }
+  }, [initialQuote, initialContent]);
 
   const [showCancelPopUp, setShowCancelPopUp] = useState(false);
   const [showMsg, setShowMsg] = useState(false);
