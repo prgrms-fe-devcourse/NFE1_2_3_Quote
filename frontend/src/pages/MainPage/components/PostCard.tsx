@@ -130,6 +130,12 @@ const UserText = styled.p<{ $noUser: boolean }>`
   justify-content: end;
   align-items: center;
   cursor: pointer;
+  color: ${({ theme, $noUser }) =>
+    $noUser
+      ? theme.mode === "darkMode"
+        ? "#656565"
+        : "#c7c7c7"
+      : theme.colorMainFont};
 
   &:hover {
     //탈퇴한 회원이 아닐 때만 적용

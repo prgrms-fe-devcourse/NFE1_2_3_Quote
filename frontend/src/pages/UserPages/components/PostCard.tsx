@@ -32,7 +32,7 @@ const PostCardContainer = styled.div<PostCardContainerProps>`
 `;
 
 const PostContentContainer = styled.div<PostCardContainerProps>`
-  padding: 20px;
+  padding: 15px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -80,8 +80,9 @@ const BottomContainer = styled.div`
   height: 60px;
   display: flex;
   justify-content: space-between;
-  padding: 0 1rem;
+  padding: 0 15px;
   background-color: ${({ theme }) => theme.colorSub};
+  color: ${({ theme }) => theme.colorMainFont};
   font-size: 10px;
 `;
 
@@ -94,7 +95,6 @@ const BookMark = styled.div`
   width: auto;
   display: flex;
   align-items: center;
-  color: ${({ theme }) => theme.colorMainFont};
   svg {
     width: 14px;
     height: 14px;
@@ -108,10 +108,8 @@ const Comment = styled.div`
   display: flex;
   align-items: center;
   svg {
-    color: ${({ theme }) => theme.colorFont};
     width: 14px;
     height: 14px;
-    cursor: pointer;
     margin-right: 3px;
   }
 `;
