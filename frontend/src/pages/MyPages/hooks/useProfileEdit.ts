@@ -43,6 +43,14 @@ export const useProfileEdit = (
     loadUserData();
   }, []);
 
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, []);
+
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file || !["image/png", "image/jpeg"].includes(file.type)) {
