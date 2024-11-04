@@ -15,7 +15,7 @@ const ModalOverlay = styled.div`
   z-index: 1000;
 `;
 const Modal = styled.div`
-  width: 380px;
+  width: 360px;
   height: 200px;
   padding: 35px 50px;
   background: ${({ theme }) => theme.colorCancelPopUp};
@@ -34,7 +34,7 @@ const ButtonContainer = styled.div`
 `;
 const Button = styled.button`
   width: 125px;
-  height: 30px;
+  height: 35px;
   border-radius: 30px;
   cursor: pointer;
   font-size: 14px;

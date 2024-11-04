@@ -31,7 +31,7 @@ const ModalContainer = styled.div`
 `;
 
 const Title = styled.h2`
-  font-size: 24px;
+  font-size: 20px;
   margin-bottom: 30px;
   color: ${({ theme }) => theme.colorMainFont};
   font-weight: bold;
@@ -179,6 +179,7 @@ const ButtonContainer = styled.div`
 
 const Button = styled.button`
   width: 40%;
+  height: 35px;
   padding: 8px;
   border-radius: 30px;
   font-size: 16px;

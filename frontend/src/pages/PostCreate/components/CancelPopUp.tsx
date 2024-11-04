@@ -14,6 +14,7 @@ const PopUpContainer = styled.div`
   background-color: ${({ theme }) => theme.colorCancelPopUp};
   border-radius: 20px;
   padding: 35px 50px;
+  z-index: 10;
 `;
 
 const PopUpTitle = styled.p`
@@ -25,6 +26,7 @@ const PopUpButtonContainer = styled.div`
   display: flex;
   justify-content: space-around;
 `;
+
 const Button = styled.button`
   width: 125px;
   height: 35px;

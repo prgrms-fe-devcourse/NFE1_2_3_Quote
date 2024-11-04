@@ -11,7 +11,6 @@ const PopUpContainer = styled.div`
   height: 290px;
   z-index: 10;
   position: fixed;
-  /* position: absolute; */
   display: flex;
   top: 50%;
   left: 50%;
@@ -27,7 +26,6 @@ const PopUpContainer = styled.div`
 
 const PopUpTitle = styled.p`
   font-size: 16px;
-  font-weight: bold;
   margin: 14px 0;
 `;
 
@@ -36,38 +34,28 @@ const PopUpButtonContainer = styled.div`
   justify-content: center;
 `;
 
-const PopUpCancelButton = styled.p`
-  width: 120px;
+const Button = styled.button`
+  width: 135px;
   height: 35px;
-  background-color: ${({ theme }) => theme.colorCancelPopUp};
+  border-radius: 30px;
+  cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 14px;
+  margin: 14px 7px;
+`;
+const PopUpCancelButton = styled(Button)`
+  background-color: ${({ theme }) => theme.colorCancelPopUp};
   color: ${({ theme }) => theme.colorCancelPopUPBtnFont};
   border: 1px solid ${({ theme }) => theme.colorCancelPopUPBtnFont};
-  border-radius: 30px;
-  margin: 14px 7px;
-  &:hover {
-    cursor: pointer;
-  }
+`;
+const PopUpConfirmButton = styled(Button)`
+  background-color: ${({ theme }) => theme.colorMain};
+  color: #ffffff;
+  border: none;
 `;
 
-const PopUpConfirmButton = styled.p`
-  width: 120px;
-  height: 35px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: ${({ theme }) => theme.colorMain};
-  font-size: 14px;
-  color: #ffffff;
-  border-radius: 30px;
-  margin: 14px 7px;
-  &:hover {
-    cursor: pointer;
-  }
-`;
 
 const PopUpTextAreaContainer = styled.div`
   width: 400px;

@@ -4,7 +4,7 @@ import useDeletePost from "../hooks/useDeletePost";
 import { useTheme } from "styled-components";
 
 const PopUpContainer = styled.div`
-  width: 400px;
+  width: 360px;
   height: 200px;
   position: absolute;
   display: flex;
@@ -15,11 +15,11 @@ const PopUpContainer = styled.div`
   align-items: center;
   background-color: ${({ theme }) => theme.colorCancelPopUp};
   border-radius: 20px;
+  z-index: 10;
 `;
 
 const PopUpTitle = styled.p`
-  font-size: 18px;
-  font-weight: bold;
+  font-size: 16px;
 `;
 
 const PopUpButtonContainer = styled.div`
@@ -27,38 +27,26 @@ const PopUpButtonContainer = styled.div`
   justify-content: center;
 `;
 
-const PopUpCancelButton = styled.button`
-  width: 120px;
-  height: 40px;
-  background-color: ${({ theme }) => theme.colorCancelPopUp};
+const Button = styled.button`
+  width: 125px;
+  height: 35px;
+  border-radius: 30px;
+  cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 14px;
+  margin: 14px 7px;
+`;
+const PopUpCancelButton = styled(Button)`
+  background-color: ${({ theme }) => theme.colorCancelPopUp};
   color: ${({ theme }) => theme.colorCancelPopUPBtnFont};
   border: 1px solid ${({ theme }) => theme.colorCancelPopUPBtnFont};
-  border-radius: 30px;
-  margin: 14px 7px;
-  &:hover {
-    cursor: pointer;
-  }
 `;
-
-const PopUpConfirmButton = styled.button`
-  width: 120px;
-  height: 40px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+const PopUpConfirmButton = styled(Button)`
   background-color: ${({ theme }) => theme.colorMain};
-  font-size: 14px;
   color: #ffffff;
   border: none;
-  border-radius: 30px;
-  margin: 14px 7px;
-  &:hover {
-    cursor: pointer;
-  }
 `;
 
 interface DeletePopUpProps {
