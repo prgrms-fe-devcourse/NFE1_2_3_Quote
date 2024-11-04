@@ -31,11 +31,12 @@ const ProfileSection = styled.div`
   justify-content: center;
   margin-top: 70px;
   width: 100%;
-  max-width: 840px;
+  max-width: 860px;
 `;
 
 const SettingsButtonWrapper = styled.div`
   align-self: flex-end;
+  position: relative;
   z-index: 1;
   cursor: pointer;
   width: 20px;
@@ -69,7 +70,7 @@ const UserEmail = styled.p`
 `;
 
 const ContentSection = styled.div`
-  width: 840px;
+  width: 860px;
   height: 100%;
   display: flex;
   justify-content: space-evenly;
@@ -82,8 +83,7 @@ const TabButton = styled.button<{ $isActive: boolean }>`
   background: none;
   border: none;
   font-size: 16px;
-  padding-top: 20px;
-  padding-bottom: 20px;
+  padding: 20px 0;
   cursor: pointer;
   color: ${({ theme, $isActive }) =>
     $isActive ? theme.colorMainFont : theme.colorSubFont};
@@ -100,16 +100,15 @@ const MessageContainer = styled.div`
 const PostContainer = styled.div`
   width: 840px;
   height: 100%;
-  margin: 10px auto;
-  display: flex;
+  margin: 20px auto 100px auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
   flex-wrap: wrap;
-  justify-content: flex-start;
 `;
 
 const Menu = styled.div`
   position: absolute;
-  top: 30px;
-  right: -100px;
+  right: 0;
   width: 110px;
   background: ${({ theme }) => theme.colorCategoryList};
   border-radius: 8px;
@@ -223,35 +222,36 @@ const MyPage = memo(() => {
             ) : (
               <ProfileModifyDarkMode />
             )}
+            {menuVisible && (
+              <Menu
+                ref={menuRef}
+                style={{
+                  boxShadow:
+                    theme.mode == "lightMode"
+                      ? "0 4px 8px rgba(0, 0, 0, 0.2)"
+                      : "none",
+                }}
+              >
+                <MenuItem
+                  onClick={() => {
+                    setIsModalOpen(true);
+                    setMenuVisible(false);
+                  }}
+                >
+                  프로필 수정
+                </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    setIsDeleteModalOpen(true);
+                    setMenuVisible(false);
+                  }}
+                >
+                  회원탈퇴
+                </MenuItem>
+              </Menu>
+            )}
           </SettingsButtonWrapper>
-          {menuVisible && (
-            <Menu
-              ref={menuRef}
-              style={{
-                boxShadow:
-                  theme.mode == "lightMode"
-                    ? "0 4px 8px rgba(0, 0, 0, 0.2)"
-                    : "none",
-              }}
-            >
-              <MenuItem
-                onClick={() => {
-                  setIsModalOpen(true);
-                  setMenuVisible(false);
-                }}
-              >
-                프로필 수정
-              </MenuItem>
-              <MenuItem
-                onClick={() => {
-                  setIsDeleteModalOpen(true);
-                  setMenuVisible(false);
-                }}
-              >
-                회원탈퇴
-              </MenuItem>
-            </Menu>
-          )}
+
           <ProfileImage
             src={userProfile?.profileImage || profile}
             alt='Profile'

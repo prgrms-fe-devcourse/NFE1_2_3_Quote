@@ -22,9 +22,9 @@ const ProfileSection = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin-top: 70px;
+  margin-top: 90px;
   width: 100%;
-  max-width: 600px;
+  max-width: 860px;
 `;
 
 const ProfileImage = styled.img`
@@ -50,19 +50,20 @@ const UserEmail = styled.p`
 `;
 
 const ContentSection = styled.div`
-  width: 840px;
-  height: 40px;
+  width: 860px;
+  height: 100%;
   display: flex;
   justify-content: center;
   margin-top: 100px;
 `;
 
-const TabLabel = styled.h3`
+const TabLabel = styled.div`
   width: 100%;
-  height: 100%;
+  height: 58px;
   background: none;
   border: none;
   font-size: 16px;
+  padding: 20px 0;
   text-align: center;
   color: ${({ theme }) => theme.colorMainFont};
   border-bottom: 1.5px solid ${({ theme }) => theme.colorMainFont};
@@ -78,10 +79,10 @@ const MessageContainer = styled.div`
 const PostContainer = styled.div`
   width: 840px;
   height: 100%;
-  margin: 30px auto;
-  display: flex;
+  margin: 20px auto 100px auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
   flex-wrap: wrap;
-  justify-content: flex-start;
 `;
 
 const UserPage = () => {
