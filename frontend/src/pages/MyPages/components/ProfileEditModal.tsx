@@ -31,7 +31,7 @@ const ModalContainer = styled.div`
 `;
 
 const Title = styled.h2`
-  font-size: 24px;
+  font-size: 20px;
   margin-bottom: 30px;
   color: ${({ theme }) => theme.colorMainFont};
   font-weight: bold;
