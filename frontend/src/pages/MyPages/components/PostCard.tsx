@@ -7,7 +7,6 @@ import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useBookmark } from "../hooks/useBookmark";
 
-
 interface PostCardContainerProps {
   $category: string;
 }
@@ -86,6 +85,7 @@ const BottomContainer = styled.div`
   justify-content: space-between;
   padding: 0 20px;
   background-color: ${({ theme }) => theme.colorSub};
+  color: ${({ theme }) => theme.colorMainFont};
   font-size: 10px;
 `;
 
@@ -98,7 +98,6 @@ const BookMark = styled.div`
   width: auto;
   display: flex;
   align-items: center;
-  color: ${({ theme }) => theme.colorMainFont};
   svg {
     width: 16px;
     height: 16px;
@@ -112,10 +111,8 @@ const Comment = styled.div`
   display: flex;
   align-items: center;
   svg {
-    color: ${({ theme }) => theme.colorFont};
     width: 16px;
     height: 16px;
-    cursor: pointer;
     margin-right: 3px;
   }
 `;
@@ -126,7 +123,6 @@ const UserText = styled.p<{ $noUser: boolean }>`
   justify-content: end;
   align-items: center;
   cursor: pointer;
-  color: ${({ theme }) => theme.colorMainFont};
 
   &:hover {
     ${({ $noUser }) => !$noUser && "text-decoration: underline;"}
@@ -185,14 +181,14 @@ const PostCard = ({
       </PostContentContainer>
       <BottomContainer>
         <BookMarkComment>
-        <BookMark onClick={toggleBookmark}>
-          {isBookmarked ? <BookMarkAfter /> : <BookMarkBefore />}
-          {bookmarkCount}
-        </BookMark>
-        <Comment>
-              <CommentIcon />
-              {post.comments.length}
-            </Comment>
+          <BookMark onClick={toggleBookmark}>
+            {isBookmarked ? <BookMarkAfter /> : <BookMarkBefore />}
+            {bookmarkCount}
+          </BookMark>
+          <Comment>
+            <CommentIcon />
+            {post.comments.length}
+          </Comment>
         </BookMarkComment>
 
         <UserText

@@ -25,7 +25,7 @@ const HeaderContainer = styled.header`
   position: fixed;
   left: 0;
   top: 0;
-  z-index: 1;
+  z-index: 100;
   user-select: none; /* 텍스트 선택 방지 */
 `;
 
