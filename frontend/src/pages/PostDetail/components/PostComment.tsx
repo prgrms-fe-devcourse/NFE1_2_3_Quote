@@ -153,7 +153,7 @@ const PostComment = () => {
         ) : (
           commentData?.map((comment) => (
             <Comment
-              isUser={userId === comment.authorId._id}
+              isUser={userId === comment.authorId?._id}
               key={comment._id}
               comment={comment}
               onSetShowDeleteMessage={setShowDeleteMessage}

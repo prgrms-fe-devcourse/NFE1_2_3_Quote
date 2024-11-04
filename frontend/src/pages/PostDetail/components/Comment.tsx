@@ -36,18 +36,20 @@ const TextContainer = styled.div`
   flex-direction: column;
 `;
 const UserName = styled.span`
-  width: auto;
   display: inline-block;
+  align-self: flex-start;
   font-size: 14px;
   font-weight: bold;
   margin: 0;
   cursor: pointer;
 `;
+
 const DateContainer = styled.span`
   font-size: 12px;
   margin: 5px 0 15px 0;
   color: ${({ theme }) => theme.colorSubFont};
 `;
+
 const Contents = styled.p`
   font-size: 14px;
   margin: 0;
@@ -182,7 +184,7 @@ const Comment = (props: CommentProps) => {
         <ImgBox>
           <Profile
             src={
-              comment.authorId.profileImage ||
+              comment.authorId?.profileImage ||
               "https://img1.daumcdn.net/thumb/R1280x0/?fname=http://t1.daumcdn.net/brunch/service/user/7r5X/image/9djEiPBPMLu_IvCYyvRPwmZkM1g.jpg"
             }
             onClick={handleUserPage}
@@ -191,7 +193,7 @@ const Comment = (props: CommentProps) => {
 
         <TextContainer>
           <UserName onClick={handleUserPage}>
-            {comment.authorId.nickname || "탈퇴한 회원"}
+            {comment.authorId?.nickname || "탈퇴한 회원"}
           </UserName>
           <DateContainer>{formatTime(comment.createdAt)}</DateContainer>
           <Contents>{comment.contents}</Contents>
