@@ -120,7 +120,6 @@ const Comment = styled.div`
     color: ${({ theme }) => theme.colorMainFont};
     width: 18px;
     height: 18px;
-    cursor: pointer;
     margin-right: 3px;
   }
 `;
