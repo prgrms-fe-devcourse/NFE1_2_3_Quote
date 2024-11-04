@@ -32,11 +32,9 @@ export class AuthService {
       bearerToken: this.jwtService.sign(payload),
     };
   }
-
   async kakaoLogin() {
     const CLIENT_ID = process.env.CLIENT_ID;
-    const CALLBACK_URL = process.env.CALLBACK_URL;
-    return `https://kauth.kakao.com/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${CALLBACK_URL}&response_type=code`;
+    return `https://kauth.kakao.com/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=https://quote.n-e.kr/kakao/callback&response_type=code`;
   }
   async kakaoSignUpOrSignIn(user: KakaoUserInfo) {
     const { kakaoId, nickname, profileImage } = user;

@@ -17,6 +17,7 @@ export class PostsRepository {
   constructor(
     @InjectModel(Post.name) private postModel: Model<Post>,
     @InjectModel(User.name) private usersModel: Model<User>,
+    @InjectModel(Comments.name) private commentsModel: Model<Comments>,
   ) {}
 
   //모든 포스트 가져오기
@@ -78,12 +79,16 @@ export class PostsRepository {
   }
 
   async searchPosts(title: string, category: string) {
+    // 검색어의 띄어쓰기를 무시하기 위해 정규식 변환
+    const formattedTitle = title.replace(/\s+/g, '').split('').join('.*');
+    const regex = new RegExp(formattedTitle, 'i'); // 대소문자 구분 없이 검색
+
     const query: any = {
-      title: { $regex: title, $options: 'i' }, // 대소문자 구분 없이 제목 검색
+      title: { $regex: regex },
     };
 
     // category가 제공되었을 때만 추가
-    if (category != '') {
+    if (category) {
       query.category = category; // 정확한 카테고리 일치
     }
 
@@ -152,10 +157,16 @@ export class PostsRepository {
     );
     await author.save();
 
+    // 포스트에 달린 모든 댓글 삭제
+    await this.commentsModel.deleteMany({
+      _id: { $in: post.comments },
+    });
+
     //포스트 삭제
     await this.postModel.findByIdAndDelete(postId);
   }
 
+  //포스트 작성할 때 댓글 없어지게, 댓글 없앨 때 포스트에서 없어지게
   //게시글에 좋아요 추가
   async likePost(postId: string, userId: string) {
     //포스트 정보 가져오기
