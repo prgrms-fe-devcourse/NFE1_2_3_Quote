@@ -179,6 +179,7 @@ const ButtonContainer = styled.div`
 
 const Button = styled.button`
   width: 40%;
+  height: 35px;
   padding: 8px;
   border-radius: 30px;
   font-size: 16px;

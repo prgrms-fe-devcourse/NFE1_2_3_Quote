@@ -1,21 +1,28 @@
 import CancelPopUp from "@/pages/PostCreate/components/CancelPopUp";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import styled from "styled-components";
 import useModifyPost from "../hooks/useModifyPost";
 import useGetPostInfo from "@/pages/PostDetail/hooks/useGetPostInfo";
 import AlertPopUp from "@/components/AlertPopUp/AlertPopUp";
+import CancelIcon from "@assets/icons/cancelBtn.svg?react";
 
+const WholeContentContainer = styled.div`
+  width: 85%;
+  margin-top: 30px;
+  height: auto;
+  position: relative;
+`;
 const SelectedCategory = styled.p`
-  width: 90%;
-  margin-top: 50px;
+  width: 100%;
   padding-top: 20px;
-  font-size: 20px;
+  font-size: 16px;
   text-align: end;
 `;
 
 const TitleContainer = styled.div`
-  width: 90%;
+  width: 100%;
+  position: relative;
 `;
 const TitleInput = styled.input`
   &::placeholder {
@@ -25,25 +32,26 @@ const TitleInput = styled.input`
     outline: none;
   }
   width: 100%;
-  padding: 20px;
-  font-size: 26px;
+  padding: 30px 10px;
+  font-size: 24px;
   color: ${({ theme }) => theme.colorMainFont};
   border: none;
-  border-bottom: 1px solid #797979;
   background-color: ${({ theme }) => theme.colorBackground};
 `;
 const TitleText = styled.p`
-  font-size: 17px;
+  font-size: 14px;
   color: #a7a7a7;
   position: absolute;
-  right: 55px;
-  top: 135px;
-  margin: 12px;
+  bottom: 15px;
+  right: 10px;
+  margin: 0;
 `;
 
 const QuoteContainer = styled.div`
-  width: 90%;
-  height: 170px;
+  width: 100%;
+  border-top: 0.7px solid #797979;
+  display: flex;
+  flex-direction: column;
 `;
 const QuoteSentence = styled.textarea`
   &::placeholder {
@@ -53,27 +61,26 @@ const QuoteSentence = styled.textarea`
     outline: none;
   }
   width: 100%;
-  height: 100%;
-  padding: 20px;
-  font-size: 18px;
+  height: auto;
+  overflow: hidden;
+  line-height: 30px;
+  padding: 30px 10px 10px 10px;
+  font-size: 15px;
   color: ${({ theme }) => theme.colorMainFont};
   resize: none;
   border: none;
-  border-bottom: 1px solid #797979;
   background-color: ${({ theme }) => theme.colorBackground};
 `;
 const QuoteText = styled.p`
-  font-size: 17px;
+  font-size: 14px;
   color: #a7a7a7;
-  position: absolute;
-  right: 55px;
-  top: 305px;
-  margin: 12px;
+  align-self: flex-end;
+  margin: 15px 10px;
 `;
 
 const ContentContainer = styled.div`
-  width: 90%;
-  height: 320px;
+  width: 100%;
+  border-top: 0.7px solid #797979;
 `;
 const ContentInput = styled.textarea`
   &::placeholder {
@@ -83,21 +90,37 @@ const ContentInput = styled.textarea`
     outline: none;
   }
   width: 100%;
-  height: 100%;
-  padding: 20px;
-  font-size: 18px;
+  height: auto;
+  overflow: hidden;
+  line-height: 30px;
+  padding: 30px 10px;
+  font-size: 15px;
   color: ${({ theme }) => theme.colorMainFont};
   resize: none;
   border: none;
-  border-bottom: 1px solid #797979;
   background-color: ${({ theme }) => theme.colorBackground};
 `;
 
-const CancelButton = styled.button`
-  width: 130px;
-  height: 45px;
-  margin: 40px 10px;
-  font-size: 16px;
+const BtnContainer = styled.div`
+  position: fixed;
+  left: calc(50% + 480px - 25px);
+  bottom: 50px;
+  align-self: flex-end;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-direction: column;
+`;
+const BtnCommonStyle = styled.button`
+  width: 50px;
+  height: 50px;
+  border-radius: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+`;
+const CancelButton = styled(BtnCommonStyle)`
   color: ${({ theme }) => theme.colorButton};
   background-color: ${({ theme }) => theme.colorBackground};
   border-radius: 30px;
@@ -106,11 +129,7 @@ const CancelButton = styled.button`
     cursor: pointer;
   }
 `;
-const PublishButton = styled.button`
-  width: 130px;
-  height: 45px;
-  margin: 40px 10px;
-  font-size: 16px;
+const PublishButton = styled(BtnCommonStyle)`
   color: #f3f3f3;
   background-color: ${({ theme }) => theme.colorMain};
   border: none;
@@ -145,15 +164,44 @@ const PostModifyForm = () => {
     setTitle(e.target.value);
   };
 
-  const handleQuoteChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    if (e.target.value.length > 300) {
-      e.target.value = e.target.value.substring(0, 300);
+  // const handleQuoteChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  //   if (e.target.value.length > 300) {
+  //     e.target.value = e.target.value.substring(0, 300);
+  //   }
+  //   setQuote(e.target.value);
+  // };
+
+  // const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  //   setContent(e.target.value);
+  // };
+
+  //textarea 높이조절 위해서 함수 변경
+  const quoteRef = useRef(null);
+  const contentRef = useRef(null);
+
+  //quote textarea 높이 조절
+  const handleQuoteChange = (
+    quoteRef: React.RefObject<HTMLTextAreaElement>,
+    e: React.ChangeEvent<HTMLTextAreaElement>,
+  ) => {
+    if (quoteRef.current) {
+      quoteRef.current.style.height = quoteRef.current.scrollHeight + "px"; // 내용에 맞춰 높이 설정
+      if (e.target.value.length > 300) {
+        e.target.value = e.target.value.substring(0, 300);
+      }
+      setQuote(e.target.value);
     }
-    setQuote(e.target.value);
   };
 
-  const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setContent(e.target.value);
+  //content textarea 높이 조절
+  const handleContentChange = (
+    contentRef: React.RefObject<HTMLTextAreaElement>,
+    e: React.ChangeEvent<HTMLTextAreaElement>,
+  ) => {
+    if (contentRef.current) {
+      // contentRef.current.style.height = contentRef.current.scrollHeight + "px"; // 내용에 맞춰 높이 설정
+      setContent(e.target.value);
+    }
   };
 
   const [showCancelPopUp, setShowCancelPopUp] = useState(false);
@@ -210,68 +258,72 @@ const PostModifyForm = () => {
 
   return (
     <>
-      <SelectedCategory>{category}</SelectedCategory>
-      <TitleContainer>
-        <TitleInput
-          placeholder={
-            category === "기타"
-              ? "출처 및 생각하신 제목을 입력해주세요."
-              : "감명받은 작품을 입력해주세요."
-          }
-          maxLength={20}
-          value={title}
-          onChange={handleTitleChange}
-        />
-        <TitleText>{title.length}/20</TitleText>
-      </TitleContainer>
-      <QuoteContainer>
-        <QuoteSentence
-          placeholder={
-            category === "기타"
-              ? "자유로운 형식으로 작성해주세요."
-              : "감명받은 부분을 입력해주세요."
-          }
-          maxLength={300}
-          value={quote}
-          onChange={handleQuoteChange}
-        />
-        <QuoteText>{quote.length}/300</QuoteText>
-      </QuoteContainer>
-      <ContentContainer>
-        <ContentInput
-          placeholder={
-            category === "기타"
-              ? "자유롭게 의견을 표현해주세요."
-              : "생각 또는 느낌을 자유롭게 입력해주세요."
-          }
-          value={content}
-          onChange={handleContentChange}
-        />
-      </ContentContainer>
-      <div>
-        <CancelButton
-          type='button'
-          onClick={handleCancel}
-          disabled={btnDisabled}
-        >
-          취소
-        </CancelButton>
-        <PublishButton
-          type='button'
-          onClick={handleCreatePost}
-          disabled={btnDisabled}
-        >
-          수정
-        </PublishButton>
-      </div>
-      {showCancelPopUp && (
-        <CancelPopUp
-          modify={true}
-          showCancelPopUp={showCancelPopUp}
-          setShowCancelPopUp={setShowCancelPopUp}
-        />
-      )}
-      {showMsg && <AlertPopUp error>{errorMsg}</AlertPopUp>}
+      <WholeContentContainer>
+        <SelectedCategory>{category}</SelectedCategory>
+        <TitleContainer>
+          <TitleInput
+            placeholder={
+              category === "기타"
+                ? "출처 및 생각하신 제목을 입력해주세요."
+                : "감명받은 작품을 입력해주세요."
+            }
+            maxLength={20}
+            value={title}
+            onChange={handleTitleChange}
+          />
+          <TitleText>{title.length}/20</TitleText>
+        </TitleContainer>
+        <QuoteContainer>
+          <QuoteSentence
+            placeholder={
+              category === "기타"
+                ? "자유로운 형식으로 작성해주세요."
+                : "감명받은 부분을 입력해주세요."
+            }
+            maxLength={300}
+            value={quote}
+            onChange={(e) => handleQuoteChange(quoteRef, e)}
+            ref={quoteRef}
+          />
+          <QuoteText>{quote.length}/300</QuoteText>
+        </QuoteContainer>
+        <ContentContainer>
+          <ContentInput
+            placeholder={
+              category === "기타"
+                ? "자유롭게 의견을 표현해주세요."
+                : "생각 또는 느낌을 자유롭게 입력해주세요."
+            }
+            value={content}
+            onChange={(e) => handleContentChange(contentRef, e)}
+            ref={contentRef}
+          />
+        </ContentContainer>
+        <BtnContainer>
+          <CancelButton
+            type='button'
+            onClick={handleCancel}
+            disabled={btnDisabled}
+          >
+            <CancelIcon />
+          </CancelButton>
+          <PublishButton
+            type='button'
+            onClick={handleCreatePost}
+            disabled={btnDisabled}
+          >
+            수정
+          </PublishButton>
+        </BtnContainer>
+        {showCancelPopUp && (
+          <CancelPopUp
+            modify={true}
+            showCancelPopUp={showCancelPopUp}
+            setShowCancelPopUp={setShowCancelPopUp}
+          />
+        )}
+        {showMsg && <AlertPopUp error>{errorMsg}</AlertPopUp>}
+      </WholeContentContainer>
     </>
   );
 };
