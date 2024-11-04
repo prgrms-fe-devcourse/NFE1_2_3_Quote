@@ -15,7 +15,7 @@ const Content = styled.span`
   padding: 8px;
   position: absolute;
   z-index: 1;
-  bottom: 130%; 
+  top : -70px;
   left: 50%;
   transform: translateX(-50%);
   opacity: 0;
