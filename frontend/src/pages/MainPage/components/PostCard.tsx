@@ -49,11 +49,11 @@ const PostContent = styled.p`
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 7;
   height: 80%;
-  font-size: 16px;
+  font-size: 15px;
   margin: 0;
   white-space: pre-wrap;
   overflow: hidden;
-  line-height: 24px;
+  line-height: 27px;
 `;
 
 const TitleDateContainer = styled.div`
@@ -68,7 +68,7 @@ const PostTitle = styled.p<PostCardContainerProps>`
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 1;
   width: 10rem;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: bold;
   margin: 0;
   overflow: hidden;
@@ -104,7 +104,7 @@ const BookMark = styled.div`
   display: flex;
   align-items: center;
   svg {
-    color: ${({ theme }) => theme.colorFont};
+    color: ${({ theme }) => theme.colorMainFont};
     width: 16px;
     height: 16px;
     cursor: pointer;
@@ -117,7 +117,7 @@ const Comment = styled.div`
   display: flex;
   align-items: center;
   svg {
-    color: ${({ theme }) => theme.colorFont};
+    color: ${({ theme }) => theme.colorMainFont};
     width: 18px;
     height: 18px;
     cursor: pointer;
