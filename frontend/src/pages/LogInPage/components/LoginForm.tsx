@@ -198,13 +198,11 @@ const LoginForm = () => {
     <MainLayout>
       <Container>
         <Header>
-          <Link to='/'>
-            {themeMode === "lightMode" ? (
-              <Logo src={lightModeLogo} />
-            ) : (
-              <Logo src={darkModeLogo} />
-            )}
-          </Link>
+          {themeMode === "lightMode" ? (
+            <Logo src={lightModeLogo} />
+          ) : (
+            <Logo src={darkModeLogo} />
+          )}
         </Header>
 
         <form onSubmit={onSubmitHandler}>
