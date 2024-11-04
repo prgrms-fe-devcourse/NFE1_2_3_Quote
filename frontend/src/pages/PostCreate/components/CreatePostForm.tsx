@@ -167,8 +167,11 @@ const CreatePostForm = () => {
     e: React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
     if (quoteRef.current) {
+      const currentScrollY = window.scrollY;
       quoteRef.current.style.height = "auto"; // 기존 높이 초기화
       quoteRef.current.style.height = quoteRef.current.scrollHeight + "px"; // 내용에 맞춰 높이 설정
+      window.scrollTo(0, currentScrollY);
+
       if (e.target.value.length > 300) {
         e.target.value = e.target.value.substring(0, 300);
       }
@@ -182,8 +185,10 @@ const CreatePostForm = () => {
     e: React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
     if (contentRef.current) {
+      const currentScrollY = window.scrollY;
       contentRef.current.style.height = "auto"; // 기존 높이 초기화
       contentRef.current.style.height = contentRef.current.scrollHeight + "px"; // 내용에 맞춰 높이 설정
+      window.scrollTo(0, currentScrollY);
       setContent(e.target.value);
     }
   };
