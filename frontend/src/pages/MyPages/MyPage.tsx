@@ -116,7 +116,6 @@ const Menu = styled.div`
   width: 110px;
   background: ${({ theme }) => theme.colorCategoryList};
   border-radius: 8px;
-  box-shadow: 0 4px 8px ${({ theme }) => theme.colorLine};
   z-index: 10;
 `;
 
@@ -220,7 +219,15 @@ const MyPage = memo(() => {
             )}
           </SettingsButtonWrapper>
           {menuVisible && (
-            <Menu ref={menuRef}>
+            <Menu
+              ref={menuRef}
+              style={{
+                boxShadow:
+                  theme.mode == "lightMode"
+                    ? "0 4px 8px rgba(0, 0, 0, 0.2)"
+                    : "none",
+              }}
+            >
               <MenuItem
                 onClick={() => {
                   setIsModalOpen(true);
