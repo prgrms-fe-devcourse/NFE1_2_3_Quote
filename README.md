@@ -1,7 +1,7 @@
 # Quote.
 ![썸네일](https://github.com/user-attachments/assets/0fb7ce9b-3e68-4a27-83e9-a60663694202)
 
-> 프로그래머스 프론트엔드 데브코스 1기 3차 프로젝트 3팀 <br>
+> 프로그래머스 데브코스 프론트엔드 1기 3차 프로젝트 3팀 <br>
 **개발 기간** : 2024.10.22 ~ 24.11.06
 
 <br/>
@@ -17,7 +17,7 @@
 |:------:|:------:|:------:|:------:|:------:|
 | ![이은수](https://avatars.githubusercontent.com/eunjju2?v=4) | ![조현진](https://avatars.githubusercontent.com/JOEIH?v=4) | ![김현빈](https://avatars.githubusercontent.com/Hyun-bin-Kim?v=4) | ![최성령](https://avatars.githubusercontent.com/ryeong9?v=4) |![김용환](https://avatars.githubusercontent.com/yonghwna?v=4) |
 | [이은수](https://github.com/eunjju2) | [조현진](https://github.com/JOEIH) | [김현빈](https://github.com/Hyun-bin-Kim) | [최성령](https://github.com/ryeong9) | [김용환](https://github.com/yonghwna) |
-| FE | FE  | FE  | FE  | BE  |
+| 메인 페이지 <br> 글 상세 페이지 (댓글) | 로그인 페이지 <br> 회원가입 페이지  | 마이 페이지 <br> 다른 유저 페이지  | 글 작성 페이지 <br> 글 상세 페이지  | 백엔드 <br> 배포  |
 
 <br>
 
@@ -64,43 +64,6 @@
 ![Slack](https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=slack&logoColor=white)
 ![Figma](https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white)
 ![Discord](https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)
-
-<br>
-
-## 시작 가이드
-### 필수 조건
-- `Node.js` (버전 20 이상)
-- `npm` (Node 패키지 매니저)
-- VS Code 확장 프로그램: `Prettier` / `ESLint` (Prettier ESLint 같이 적혀있는 것 ❌)
-
-
-
-### 설치
-1. 레포지토리를 클론합니다.
-```bash
-  $ git clone https://github.com/prgrms-fe-devcourse/NFE1_2_3_Quote.git
-  $ cd NFE1_2_3_Quote
-```
-2. 각 환경에서 필요한 패키지를 설치합니다. (`frontend`, `backend`)
-```bash
-  $ npm install
-```
-3. `.env` 파일을 생성하고 필요한 환경 변수를 설정합니다.
-```bash
-VITE_APP_CALLBACK_URL=
-VITE_APP_SERVER_URL=
-```
-
-
-### 개발
-프론트엔드 애플리케이션을 실행하려면 다음 명령어를 사용합니다.
-```bash
-  $ cd frontend
-```
-Local (frontend)
-```bash
-  $ npm run dev
-```
 
 <br>
 
