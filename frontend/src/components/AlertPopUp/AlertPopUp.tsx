@@ -23,7 +23,7 @@ const StyledAlertPopup = styled.div<{ $error: boolean }>`
   z-index: 10;
   pointer-events: none;
   opacity: 1;
-  animation: ${fadeOut} 2s ease-in-out 1s forwards;
+  animation: ${fadeOut} 0.5s ease-in-out 1s forwards;
 `;
 
 // Alert PopUp

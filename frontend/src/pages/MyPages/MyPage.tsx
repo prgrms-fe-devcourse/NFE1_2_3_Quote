@@ -173,7 +173,7 @@ const MyPage = memo(() => {
     if (deleteSuccess) {
       setShowDeleteSuccess(true);
       localStorage.removeItem("deleteSuccess");
-      setTimeout(() => setShowDeleteSuccess(false), 2000);
+      setTimeout(() => setShowDeleteSuccess(false), 1500);
     }
   }, []);
 
@@ -182,7 +182,7 @@ const MyPage = memo(() => {
     if (postSuccess) {
       setShowPostSuccessMsg(true);
       localStorage.removeItem("postSuccessMessage");
-      setTimeout(() => setShowPostSuccessMsg(false), 2000);
+      setTimeout(() => setShowPostSuccessMsg(false), 1500);
     }
   }, []);
 
