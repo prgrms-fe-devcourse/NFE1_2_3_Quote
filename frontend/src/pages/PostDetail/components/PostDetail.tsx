@@ -201,7 +201,7 @@ const PostDetail = () => {
     if (successMsg) {
       setShowSuccessMsg(successMsg);
       localStorage.removeItem("postModifySuccess");
-      setTimeout(() => setShowSuccessMsg(""), 3000);
+      setTimeout(() => setShowSuccessMsg(""), 1500);
     }
   }, []);
 

@@ -132,7 +132,7 @@ const LoginForm = () => {
     if (signUpAlert) {
       setAlert(signUpAlert);
       localStorage.removeItem("signUpAlert");
-      setTimeout(() => setAlert(""), 3000);
+      setTimeout(() => setAlert(""), 1500);
     }
   }, []);
 

@@ -115,7 +115,7 @@ export const useMyPage = () => {
       nickname: updatedNickname,
     }));
     setShowEditSuccess(true);
-    setTimeout(() => setShowEditSuccess(false), 3000);
+    setTimeout(() => setShowEditSuccess(false), 1500);
     fetchUserProfileMutation.mutate();
   };
 

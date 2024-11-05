@@ -145,7 +145,7 @@ const MainPage = () => {
       const timer = setTimeout(() => {
         setShowDeleteMessage(false);
         localStorage.removeItem("showDeleteMessage");
-      }, 3000);
+      }, 1500);
 
       return () => clearTimeout(timer);
     }
@@ -156,7 +156,7 @@ const MainPage = () => {
     if (loginAlert) {
       setAlert(loginAlert);
       localStorage.removeItem("loginAlert");
-      setTimeout(() => setAlert(""), 3000);
+      setTimeout(() => setAlert(""), 1500);
     }
   }, []);
 
@@ -165,7 +165,7 @@ const MainPage = () => {
     if (deleteSuccess) {
       setShowDeleteSuccess(true);
       localStorage.removeItem("deleteSuccess");
-      setTimeout(() => setShowDeleteSuccess(false), 2000);
+      setTimeout(() => setShowDeleteSuccess(false), 1500);
     }
   }, []);
 
@@ -174,7 +174,7 @@ const MainPage = () => {
     if (postSuccess) {
       setShowPostSuccessMsg(true);
       localStorage.removeItem("postSuccessMessage");
-      setTimeout(() => setShowPostSuccessMsg(false), 2000);
+      setTimeout(() => setShowPostSuccessMsg(false), 1500);
     }
   }, []);
 

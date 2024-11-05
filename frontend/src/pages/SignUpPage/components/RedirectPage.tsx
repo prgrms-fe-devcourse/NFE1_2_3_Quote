@@ -39,7 +39,10 @@ const RedirectPage = () => {
         const { bearerToken } = data.data;
         //토큰 저장
         storeLogin(bearerToken);
-        navigate("/login"); //회원가입 완료되면 로그인 페이지로 이동
+
+        localStorage.setItem("loginAlert", "로그인 성공");
+        
+        navigate("/"); //회원가입 완료되면 로그인 페이지로 이동
       })
       .catch((error) => {
         console.error("Failed to exchange auth code:", error);
